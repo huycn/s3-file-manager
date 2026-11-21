@@ -1,0 +1,20 @@
+# Build trees
+/build/
+/out/
+/cmake-build-*/
+CMakeUserPresets.json
+compile_commands.json
+
+# vcpkg
+/vcpkg_installed/
+
+# IDEs / editors
+.vscode/
+.idea/
+*.user
+*.swp
+.cache/
+.clangd
+
+# Local dev data
+/.minio/

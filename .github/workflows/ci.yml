@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  linux:
+    name: Linux (Arch, GCC)
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: Install dependencies
+        run: |
+          pacman -Syu --noconfirm --needed git
+      - uses: actions/checkout@v4
+      - run: scripts/ci-linux.sh deps
+      - run: scripts/ci-linux.sh build
+      - run: scripts/ci-linux.sh test
+
+  linux-integration:
+    name: Linux integration (MinIO)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start MinIO
+        run: S3FM_CONTAINER_ENGINE=docker scripts/dev-minio.sh start
+      - name: Build and run integration tests in Arch container
+        run: |
+          docker run --rm --network host -v "$GITHUB_WORKSPACE:/src" -w /src \
+            $(scripts/dev-minio.sh env | sed -e 's/^export /-e /') \
+            archlinux:latest bash -c "
+              git config --global --add safe.directory /src &&
+              scripts/ci-linux.sh deps &&
+              scripts/ci-linux.sh build &&
+              scripts/ci-linux.sh test integration"
+
+  windows:
+    name: Windows (MSVC, vcpkg)
+    runs-on: windows-latest
+    env:
+      VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}\vcpkg-cache,readwrite
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare vcpkg
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\vcpkg-cache" | Out-Null
+          "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Cache vcpkg binaries
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}\vcpkg-cache
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json') }}
+          restore-keys: vcpkg-${{ runner.os }}-
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.3'
+          arch: win64_msvc2022_64
+          cache: true
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure
+        run: cmake --preset windows-vcpkg -DS3FM_WARNINGS_AS_ERRORS=ON
+      - name: Build
+        run: cmake --build --preset windows-vcpkg
+      - name: Test
+        run: ctest --preset windows-vcpkg -LE integration

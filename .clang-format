@@ -1,0 +1,34 @@
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++20
+IndentWidth: 4
+ColumnLimit: 110
+AccessModifierOffset: -4
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: All
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  AfterEnum: true
+  AfterControlStatement: Never
+  BeforeElse: false
+  BeforeCatch: false
+DerivePointerAlignment: false
+PointerAlignment: Left
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"'
+    Priority: 1
+  - Regex: '^<(Q|q)'
+    Priority: 3
+  - Regex: '^<aws/'
+    Priority: 4
+  - Regex: '^<'
+    Priority: 5
+NamespaceIndentation: None
+FixNamespaceComments: true
+SortIncludes: CaseSensitive
