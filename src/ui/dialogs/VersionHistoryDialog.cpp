@@ -98,7 +98,8 @@ void VersionHistoryDialog::selectRow(int row)
 EntryList VersionHistoryDialog::selectedVersions() const
 {
     EntryList out;
-    for (const QModelIndex& index : m_table->selectionModel()->selectedRows()) {
+    const auto rows = m_table->selectionModel()->selectedRows();
+    for (const QModelIndex& index : rows) {
         if (index.row() < m_versions.size())
             out.push_back(m_versions[index.row()]);
     }
@@ -123,13 +124,14 @@ void VersionHistoryDialog::reload()
     m_busy = true;
     updateButtons();
     m_status->setText(tr("Loading versions…"));
-    QPointer<VersionHistoryDialog> self(this);
+    QPointer<VersionHistoryDialog> guard(this);
     auto service = m_service;
     const Location object = m_object;
     runIo([service, object] {
         OperationContext ctx;
         return service->versions(object, ctx);
-    }).then(this, [self](Result<EntryList> result) {
+    }).then(this, [guard](Result<EntryList> result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_busy = false;
@@ -168,9 +170,10 @@ void VersionHistoryDialog::run(const QString& done, std::function<VoidResult()> 
     m_busy = true;
     updateButtons();
     m_status->setText(tr("Working…"));
-    QPointer<VersionHistoryDialog> self(this);
+    QPointer<VersionHistoryDialog> guard(this);
     const Location object = m_object;
-    runIo(std::move(fn)).then(this, [self, done, object](VoidResult result) {
+    runIo(std::move(fn)).then(this, [guard, done, object](const VoidResult& result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_busy = false;

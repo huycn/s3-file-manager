@@ -25,7 +25,6 @@ public:
     Location location() const { return m_location; }
     void edit();
     bool isEditing() const;
-    void setActive(bool active);
 
 Q_SIGNALS:
     void navigateRequested(const s3fm::Location& location);

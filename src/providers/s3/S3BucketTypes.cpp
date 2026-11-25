@@ -27,7 +27,7 @@ QPair<int, int> position(const QByteArray& utf8, qsizetype offset)
         if (c == '\n') {
             ++line;
             column = 1;
-        } else if ((uchar(c) & 0xC0) != 0x80) { // count characters, not continuation bytes
+        } else if ((unsigned(uchar(c)) & 0xC0u) != 0x80u) { // count characters, not continuation bytes
             ++column;
         }
     }
@@ -91,7 +91,8 @@ QStringList fromArray(const QJsonValue& v)
         out.push_back(v.toString());
         return out;
     }
-    for (const QJsonValue& item : v.toArray())
+    const QJsonArray items = v.toArray();
+    for (const auto& item : items)
         out.push_back(item.toString());
     return out;
 }
@@ -571,7 +572,8 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
                                                 where + tr(" filter"));
                     !e.isEmpty())
                     return invalid(e);
-                for (const QJsonValue& t : source.value(QStringLiteral("Tags")).toArray())
+                const QJsonArray tags = source.value(QStringLiteral("Tags")).toArray();
+                for (const auto& t : tags)
                     tagFromJson(t.toObject(), r.tags);
             }
             if (source.contains(QStringLiteral("Prefix")))
@@ -583,7 +585,8 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
             if (source.contains(QStringLiteral("ObjectSizeLessThan")))
                 r.sizeLessThan = source.value(QStringLiteral("ObjectSizeLessThan")).toInteger(-1);
         }
-        for (const QJsonValue& v : o.value(QStringLiteral("Transitions")).toArray()) {
+        const QJsonArray transitions = o.value(QStringLiteral("Transitions")).toArray();
+        for (const auto& v : transitions) {
             const QJsonObject t = v.toObject();
             LifecycleTransition tr2;
             tr2.days = intOr(t.value(QStringLiteral("Days")), -1);
@@ -597,7 +600,8 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
         if (exp.contains(QStringLiteral("Date")))
             r.expirationDate = dateFromJson(exp.value(QStringLiteral("Date")));
         r.expiredDeleteMarker = exp.value(QStringLiteral("ExpiredObjectDeleteMarker")).toBool();
-        for (const QJsonValue& v : o.value(QStringLiteral("NoncurrentVersionTransitions")).toArray()) {
+        const QJsonArray noncurrent = o.value(QStringLiteral("NoncurrentVersionTransitions")).toArray();
+        for (const auto& v : noncurrent) {
             const QJsonObject t = v.toObject();
             NoncurrentTransition nt;
             nt.days = intOr(t.value(QStringLiteral("NoncurrentDays")), 0);
@@ -731,7 +735,8 @@ bool hasPublicPrincipal(const QJsonValue& principal)
         const QJsonValue aws = principal.toObject().value(QStringLiteral("AWS"));
         if (aws.isString())
             return aws.toString() == u"*";
-        for (const QJsonValue& v : aws.toArray()) {
+        const QJsonArray principals = aws.toArray();
+        for (const auto& v : principals) {
             if (v.toString() == u"*")
                 return true;
         }
@@ -744,7 +749,8 @@ QStringList stringsOf(const QJsonValue& v)
     QStringList out;
     if (v.isString())
         out.push_back(v.toString());
-    for (const QJsonValue& item : v.toArray())
+    const QJsonArray items = v.toArray();
+    for (const auto& item : items)
         out.push_back(item.toString());
     return out;
 }
@@ -817,13 +823,15 @@ QList<PolicyIssue> validatePolicy(const QString& text, const QString& bucket)
             error(tr("%1: \"Action\" is missing.").arg(name));
         if (!s.contains(QStringLiteral("Resource")) && !s.contains(QStringLiteral("NotResource")))
             error(tr("%1: \"Resource\" is missing.").arg(name));
-        for (const QString& action :
-             stringsOf(s.value(QStringLiteral("Action"))) + stringsOf(s.value(QStringLiteral("NotAction")))) {
+        const QStringList actions =
+            stringsOf(s.value(QStringLiteral("Action"))) + stringsOf(s.value(QStringLiteral("NotAction")));
+        for (const QString& action : actions) {
             if (action != u"*" && !action.startsWith(QStringLiteral("s3:"), Qt::CaseInsensitive))
                 warn(tr("%1: \"%2\" is not an S3 action.").arg(name, action));
         }
-        for (const QString& resource : stringsOf(s.value(QStringLiteral("Resource"))) +
-                                           stringsOf(s.value(QStringLiteral("NotResource")))) {
+        const QStringList resources = stringsOf(s.value(QStringLiteral("Resource"))) +
+                                      stringsOf(s.value(QStringLiteral("NotResource")));
+        for (const QString& resource : resources) {
             if (resource == u"*")
                 continue;
             const qsizetype at = resource.indexOf(QStringLiteral(":s3:::"));

@@ -129,15 +129,18 @@ Result<ObjectDetails> S3ObjectService::details(const Location& object, Operation
     auto lock = objectLockEnabled(object.bucket());
     if (!lock) {
         d.lockError = lock.error();
-    } else if ((d.lockEnabled = lock.value())) {
-        if (auto r = retention(object))
-            d.retention = r.value();
-        else
-            d.lockError = r.error();
-        if (auto h = legalHold(object))
-            d.legalHold = h.value();
-        else if (!d.lockError)
-            d.lockError = h.error();
+    } else {
+        d.lockEnabled = lock.value();
+        if (d.lockEnabled) {
+            if (auto r = retention(object))
+                d.retention = r.value();
+            else
+                d.lockError = r.error();
+            if (auto h = legalHold(object))
+                d.legalHold = h.value();
+            else if (!d.lockError)
+                d.lockError = h.error();
+        }
     }
     return d;
 }

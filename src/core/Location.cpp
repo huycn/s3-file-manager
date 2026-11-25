@@ -8,7 +8,7 @@ namespace s3fm {
 
 namespace {
 
-const QString kS3Scheme = QStringLiteral("s3://");
+constexpr QLatin1StringView kS3Scheme("s3://");
 
 bool isDriveSpec(const QString& p) // "C:"
 {
@@ -197,7 +197,7 @@ Location Location::parent() const
             p += u'/';
         Location l;
         l.m_kind = Kind::Local;
-        l.m_path = p;
+        l.m_path = std::move(p);
         return l;
     }
     }

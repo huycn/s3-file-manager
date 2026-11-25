@@ -67,6 +67,31 @@ private Q_SLOTS:
         QCOMPARE(window.activePanel(), window.leftPanel());
     }
 
+    void mouseBackForwardButtons()
+    {
+        MainWindow window(&m_registry);
+        window.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&window));
+        PanelWidget* right = window.rightPanel();
+        const Location parent = Location::local(m_tmp.path() + QStringLiteral("/left"));
+        const Location child = Location::local(m_tmp.path() + QStringLiteral("/left/folder"));
+        right->setLocation(parent);
+        QVERIFY(waitIdle(right));
+        right->setLocation(child);
+        QVERIFY(waitIdle(right));
+        QCOMPARE(window.activePanel(), window.leftPanel());
+
+        // Acts on the panel under the cursor, which becomes active.
+        QTest::mouseClick(right->view()->viewport(), Qt::BackButton);
+        QVERIFY(waitIdle(right));
+        QCOMPARE(right->location(), parent);
+        QCOMPARE(window.activePanel(), right);
+
+        QTest::mouseClick(right->view()->viewport(), Qt::ForwardButton);
+        QVERIFY(waitIdle(right));
+        QCOMPARE(right->location(), child);
+    }
+
     void copyBetweenPanels()
     {
         MainWindow window(&m_registry);

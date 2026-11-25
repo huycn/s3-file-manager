@@ -82,7 +82,11 @@ public:
 
     bool ok() const { return !m_error.has_value(); }
     explicit operator bool() const { return ok(); }
-    const Error& error() const { return *m_error; }
+    const Error& error() const
+    {
+        Q_ASSERT(m_error.has_value()); // only valid when !ok()
+        return *m_error;
+    }
 
 private:
     std::optional<Error> m_error;

@@ -89,11 +89,11 @@ struct TransferRequest
 // Engine-wide settings (Transfers settings dialog; QSettings group "transfers").
 struct TransferSettings
 {
-    int maxJobs = 2;              // jobs running at the same time
-    int filesPerJob = 4;          // files of one job transferred in parallel
-    int partConcurrency = 4;      // parts of one file in parallel
-    qint64 partSize = 16LL << 20; // preferred multipart part size
-    qint64 multipartThreshold = 64LL << 20;
+    int maxJobs = 2;                            // jobs running at the same time
+    int filesPerJob = 4;                        // files of one job transferred in parallel
+    int partConcurrency = 4;                    // parts of one file in parallel
+    qint64 partSize = qint64{16} * 1024 * 1024; // preferred multipart part size
+    qint64 multipartThreshold = qint64{64} * 1024 * 1024;
     qint64 bandwidthLimit = 0; // bytes/s, 0 = unlimited
     int maxRetries = 3;        // retries per file for transient errors
     int retryBaseDelayMs = 1000;

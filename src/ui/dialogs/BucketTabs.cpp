@@ -74,8 +74,9 @@ void BucketTab::apply(const QString& done, std::function<VoidResult()> fn)
 {
     report(tr("Applying…"));
     begin();
-    QPointer<BucketTab> self(this);
-    runIo(std::move(fn)).then(this, [self, done](VoidResult result) {
+    QPointer<BucketTab> guard(this);
+    runIo(std::move(fn)).then(this, [guard, done](const VoidResult& result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         if (!self->end(result ? nullptr : &result.error()))
@@ -602,10 +603,11 @@ void BucketStatisticsTab::calculate()
     const QString bucket = m_bucket;
     const QString prefix = m_prefix->text();
     auto ctx = m_ctx;
-    QPointer<BucketStatisticsTab> self(this);
+    QPointer<BucketStatisticsTab> guard(this);
     runIo([service, bucket, prefix, ctx] {
         return service->statistics(bucket, prefix, *ctx);
-    }).then(this, [self](Result<BucketStats> stats) {
+    }).then(this, [guard](Result<BucketStats> stats) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_ctx.reset();

@@ -12,6 +12,7 @@
 #include <QRandomGenerator>
 #include <QThread>
 
+#include <mutex>
 #include <thread>
 #include <vector>
 
@@ -82,8 +83,10 @@ void JobRunner::publish(bool force)
             inflight += it.value();
         m_progress.bytesDone =
             qMin(m_doneBytes + inflight, qMax(m_progress.bytesTotal, m_doneBytes + inflight));
-        if (!m_inflightNames.isEmpty())
-            m_progress.currentItem = m_inflightNames.cbegin().value();
+        // Any in-flight name will do. A guarded iterator rather than isEmpty() + cbegin().value():
+        // GCC at -O3 can't link the two and raises -Wnull-dereference inside QHash.
+        if (auto it = m_inflightNames.cbegin(); it != m_inflightNames.cend())
+            m_progress.currentItem = it.value();
 
         // Smoothed rate: moves a third of the way to the latest sample per second.
         const qint64 now = m_clock.elapsed();
@@ -255,7 +258,7 @@ Location JobRunner::uniqueTarget(const Location& target, OperationContext& ctx)
     const bool dir = target.isDirectoryLike();
     const Location parent = target.parent();
     for (int n = 2; n < 10000; ++n) {
-        const Location candidate = parent.child(transfer::numberedName(target.name(), n), dir);
+        Location candidate = parent.child(transfer::numberedName(target.name(), n), dir);
         auto exists = m_dst->exists(candidate, ctx);
         if (exists && !exists.value())
             return candidate;
@@ -366,13 +369,17 @@ bool JobRunner::plan(QList<TransferTask>& tasks)
                 continue;
             }
             const VoidResult r = m_src->rename(src.location, target, ctx);
-            if (r) {
+            // Source gone but target present: already moved by an earlier, interrupted run.
+            const auto movedEarlier = [&] {
+                if (r.error().code != ErrorCode::NotFound)
+                    return false;
+                auto there = m_dst->exists(target, ctx);
+                return there && there.value();
+            };
+            if (r || movedEarlier()) {
                 ++m_renamed;
             } else if (r.error().code == ErrorCode::Unsupported) {
                 needCopy.push_back(i);
-            } else if (auto there = m_dst->exists(target, ctx);
-                       r.error().code == ErrorCode::NotFound && there && there.value()) {
-                ++m_renamed; // already moved by an earlier, interrupted run
             } else {
                 jobFail(src.location, r.error());
             }
@@ -746,7 +753,9 @@ VoidResult JobRunner::transferFile(int index, const TransferTask& task, const Lo
     auto progressFor = [this, index](qint64 offset, double scale) {
         return [this, index, offset, scale](qint64 done, qint64) {
             {
-                QMutexLocker lock(&m_progressMutex);
+                // lock_guard, not QMutexLocker: the latter's null check makes the analyzer think `this` may
+                // be null.
+                const std::lock_guard lock(m_progressMutex);
                 m_inflight[index] = qint64(double(offset + done) * scale);
             }
             publish();
@@ -832,7 +841,7 @@ void JobRunner::runDelete()
     ctx.setParent(m_master.get());
     ctx.setProgressHandler([this](qint64 done, qint64) {
         {
-            QMutexLocker lock(&m_progressMutex);
+            const std::lock_guard lock(m_progressMutex); // see progressFor() in transferFile()
             m_progress.filesDone = int(done);
         }
         publish();
@@ -866,9 +875,7 @@ void JobRunner::discardPartials(const std::shared_ptr<detail::JobCore>& core)
         if (!src || !dst)
             continue;
         const Location& from = t.source.location;
-        if (src == dst && src->capabilities(from).testFlag(Capability::ServerSideCopy)) {
-            dst->discardPartialTransfer(t.target, {}, t.checkpoint);
-        } else if (from.isLocal()) {
+        if ((src == dst && src->capabilities(from).testFlag(Capability::ServerSideCopy)) || from.isLocal()) {
             dst->discardPartialTransfer(t.target, {}, t.checkpoint);
         } else if (t.target.isLocal()) {
             src->discardPartialTransfer(from, t.target.localPath(), t.checkpoint);

@@ -111,7 +111,7 @@ ViewerDialog::ViewerDialog(const QString& localFile, const QString& title, QWidg
         m_text->setReadOnly(true);
         m_text->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
         m_text->setLineWrapMode(QPlainTextEdit::NoWrap);
-        if (looksLikeText(content.left(64 * 1024))) {
+        if (looksLikeText(content.left(qsizetype{64} * 1024))) {
             m_mode = Mode::Text;
             m_text->setPlainText(QString::fromUtf8(content));
             if (size > kTextLimit)

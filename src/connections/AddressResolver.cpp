@@ -102,7 +102,7 @@ Location resolveAddress(const QString& input, const Location& current,
 {
     const QString text = input.trimmed();
     if (text.startsWith(QStringLiteral("s3://"), Qt::CaseInsensitive)) {
-        const Location parsed = Location::fromString(text);
+        Location parsed = Location::fromString(text);
         if (parsed.isS3Root() || findById(profiles, parsed.connectionId()))
             return parsed;
         // First segment is not a connection: treat it as a bucket name.

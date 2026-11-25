@@ -337,6 +337,8 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
             if (e.isDeleteMarker)
                 return e.isLatest ? tr("Delete marker (deleted)") : tr("Delete marker");
             return e.isLatest ? tr("%1 (current)").arg(e.versionId) : e.versionId;
+        default:
+            break;
         }
         return {};
     case SortRole:
@@ -404,6 +406,8 @@ QVariant EntryListModel::headerData(int section, Qt::Orientation orientation, in
         return tr("ETag");
     case VersionColumn:
         return tr("Version");
+    default:
+        break;
     }
     return {};
 }

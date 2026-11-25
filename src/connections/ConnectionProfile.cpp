@@ -139,7 +139,8 @@ QString ConnectionProfile::makeId(const QString& name, const QStringList& taken)
 {
     QString base;
     bool lastDash = false;
-    for (QChar c : name.toLower().normalized(QString::NormalizationForm_KD)) {
+    const auto folded = name.toLower().normalized(QString::NormalizationForm_KD);
+    for (QChar c : folded) {
         if ((c >= u'a' && c <= u'z') || (c >= u'0' && c <= u'9')) {
             base += c;
             lastDash = false;

@@ -25,7 +25,7 @@ QString age(const QDateTime& when)
     const qint64 secs = when.secsTo(QDateTime::currentDateTimeUtc());
     if (secs < 3600)
         return MultipartUploadsDialog::tr("%n minute(s)", nullptr, int(qMax<qint64>(0, secs / 60)));
-    if (secs < 86400 * 2)
+    if (secs < qint64{86400} * 2)
         return MultipartUploadsDialog::tr("%n hour(s)", nullptr, int(secs / 3600));
     return MultipartUploadsDialog::tr("%n day(s)", nullptr, int(secs / 86400));
 }
@@ -129,7 +129,7 @@ void MultipartUploadsDialog::reload()
     m_busy = true;
     updateButtons();
     m_status->setText(tr("Loading…"));
-    QPointer<MultipartUploadsDialog> self(this);
+    QPointer<MultipartUploadsDialog> guard(this);
     auto service = m_service;
     const QString bucket = m_bucket;
     const QString prefix = m_prefix->text();
@@ -141,7 +141,8 @@ void MultipartUploadsDialog::reload()
         for (int i = 0; i < list->size() && i < kCountLimit; ++i)
             (void)service->countParts(bucket, (*list)[i], ctx); // best effort
         return list;
-    }).then(this, [self](Result<QList<PendingUpload>> result) {
+    }).then(this, [guard](Result<QList<PendingUpload>> result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_busy = false;
@@ -159,7 +160,8 @@ void MultipartUploadsDialog::reload()
 void MultipartUploadsDialog::abortSelected(bool confirm)
 {
     QList<PendingUpload> chosen;
-    for (const QModelIndex& index : m_table->selectionModel()->selectedRows()) {
+    const auto rows = m_table->selectionModel()->selectedRows();
+    for (const QModelIndex& index : rows) {
         if (index.row() < m_uploads.size())
             chosen.push_back(m_uploads[index.row()]);
     }
@@ -173,7 +175,7 @@ void MultipartUploadsDialog::abortSelected(bool confirm)
     m_busy = true;
     updateButtons();
     m_status->setText(tr("Aborting…"));
-    QPointer<MultipartUploadsDialog> self(this);
+    QPointer<MultipartUploadsDialog> guard(this);
     auto service = m_service;
     const QString bucket = m_bucket;
     runIo([service, bucket, chosen] {
@@ -183,7 +185,8 @@ void MultipartUploadsDialog::abortSelected(bool confirm)
                 failures.push_back(u.key + QStringLiteral(": ") + r.error().toString());
         }
         return failures;
-    }).then(this, [self](QStringList failures) {
+    }).then(this, [guard](const QStringList& failures) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_busy = false;

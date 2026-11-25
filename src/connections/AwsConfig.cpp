@@ -17,7 +17,8 @@ Sections parseIni(const QString& text, bool isConfigFile)
     Sections out;
     QString current;
     bool skipSection = false;
-    for (const QString& raw : text.split(u'\n')) {
+    const auto lines = text.split(u'\n');
+    for (const QString& raw : lines) {
         if (raw.isEmpty() || raw.front().isSpace())
             continue;
         const QString line = raw.trimmed();

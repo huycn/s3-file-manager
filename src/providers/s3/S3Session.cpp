@@ -260,7 +260,7 @@ ConnectionTestResult testConnection(S3Session& session)
                 int(reachable.size()));
             return result;
         }
-        result.error = lastError;
+        result.error = std::move(lastError);
     }
     result.summary = result.error.toString();
     return result;

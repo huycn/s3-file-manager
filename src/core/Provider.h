@@ -36,17 +36,17 @@ struct ListOptions
 enum class Capability : quint32
 {
     None = 0,
-    MakeDirectory = 1u << 0,
-    Remove = 1u << 1,
-    Rename = 1u << 2,
-    AtomicRename = 1u << 3,   // rename is a single atomic operation (local), not copy + delete (S3)
-    ServerSideCopy = 1u << 4, // copy() inside the provider without streaming through the client
-    Read = 1u << 5,           // download() supported
-    Write = 1u << 6,          // upload() supported
+    MakeDirectory = 1u << 0u,
+    Remove = 1u << 1u,
+    Rename = 1u << 2u,
+    AtomicRename = 1u << 3u,   // rename is a single atomic operation (local), not copy + delete (S3)
+    ServerSideCopy = 1u << 4u, // copy() inside the provider without streaming through the client
+    Read = 1u << 5u,           // download() supported
+    Write = 1u << 6u,          // upload() supported
     // Directories exist implicitly while they contain something (S3 prefixes);
     // makeDirectory() is only needed to keep an empty directory.
-    ImplicitDirectories = 1u << 7,
-    Versions = 1u << 8, // listWithOptions() supports ListOptions
+    ImplicitDirectories = 1u << 7u,
+    Versions = 1u << 8u, // listWithOptions() supports ListOptions
 };
 Q_DECLARE_FLAGS(Capabilities, Capability)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Capabilities)

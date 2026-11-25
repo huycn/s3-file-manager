@@ -118,7 +118,7 @@ Result<EntryList> S3VersionService::versions(const Location& object, OperationCo
 {
     EntryList out;
     QString token;
-    const QString key = object.key();
+    const QString& key = object.key();
     do {
         // Prefix = the key itself; other keys starting with it are filtered out.
         auto page = m_provider->listVersionsPage(object.bucket(), key, false, token, ctx);
@@ -155,7 +155,7 @@ VoidResult S3VersionService::deleteVersions(const EntryList& versions, bool bypa
     QStringList failures;
     qint64 done = 0;
     for (auto it = byBucket.cbegin(); it != byBucket.cend(); ++it) {
-        const QString bucket = it.key();
+        const QString& bucket = it.key();
         m_provider->invalidateCache(Location::s3(session.profile().id, bucket));
         for (qsizetype start = 0; start < it->size(); start += 1000) {
             if (ctx.isCancelled())
@@ -215,7 +215,7 @@ VoidResult S3VersionService::undelete(const Location& object, OperationContext& 
     auto all = versions(object, ctx);
     if (!all)
         return all.error();
-    for (const Entry& v : all.value()) {
+    for (const Entry& v : std::as_const(*all)) {
         if (v.isLatest) {
             if (!v.isDeleteMarker)
                 return Error::make(ErrorCode::InvalidArgument,

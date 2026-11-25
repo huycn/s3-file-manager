@@ -10,7 +10,7 @@
 namespace s3fm {
 
 namespace {
-const QString kMetaPrefix = QStringLiteral("x-amz-meta-");
+constexpr QLatin1StringView kMetaPrefix("x-amz-meta-");
 
 QString tr(const char* text)
 {

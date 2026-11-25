@@ -8,9 +8,9 @@
 
 namespace s3fm::transfer {
 
-inline constexpr int kMaxParts = 10000;           // S3 limit per multipart upload
-inline constexpr qint64 kMinPartSize = 5LL << 20; // S3 minimum (except the last part)
-inline constexpr qint64 kMaxPartSize = 5LL << 30;
+inline constexpr int kMaxParts = 10000;                         // S3 limit per multipart upload
+inline constexpr qint64 kMinPartSize = qint64{5} * 1024 * 1024; // S3 minimum (except the last part)
+inline constexpr qint64 kMaxPartSize = qint64{5} * 1024 * 1024 * 1024;
 
 // Part size for a multipart transfer of `size` bytes: at least `preferred` (and the
 // S3 minimum), large enough to stay within 10,000 parts, rounded up to 1 MiB.

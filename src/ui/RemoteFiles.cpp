@@ -155,7 +155,7 @@ void RemoteFiles::fetch(const Entry& entry, Purpose purpose)
 
     runIo([provider, location = entry.location, path, state] {
         return provider->download(location, path, state->ctx);
-    }).then(this, [this, entry, path, purpose, progress](VoidResult result) {
+    }).then(this, [this, entry, path, purpose, progress](const VoidResult& result) {
         if (progress)
             progress->deleteLater();
         if (!result) {

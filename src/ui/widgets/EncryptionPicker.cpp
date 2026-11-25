@@ -9,7 +9,7 @@ namespace s3fm {
 
 namespace {
 constexpr int kDefault = -1;
-const QString kRecentKeys = QStringLiteral("encryption/recentKmsKeys");
+constexpr QLatin1StringView kRecentKeys("encryption/recentKmsKeys");
 } // namespace
 
 EncryptionPicker::EncryptionPicker(QWidget* parent, bool offerDefault)
@@ -30,7 +30,8 @@ EncryptionPicker::EncryptionPicker(QWidget* parent, bool offerDefault)
     m_kmsKey->setEditable(true);
     m_kmsKey->lineEdit()->setPlaceholderText(tr("KMS key id, ARN or alias (empty: aws/s3)"));
     m_kmsKey->addItem(QString());
-    for (const QString& k : QSettings().value(kRecentKeys).toStringList())
+    const auto recent = QSettings().value(kRecentKeys).toStringList();
+    for (const QString& k : recent)
         m_kmsKey->addItem(k);
     m_kmsKey->setMinimumContentsLength(24);
     layout->addWidget(m_kmsKey, 2);

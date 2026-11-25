@@ -150,7 +150,8 @@ BulkObjectChange ObjectEditDialog::change() const
         h.userMetadata = m_metadata->values();
         c.headers = h;
         c.replaceUserMetadata = m_replaceMetadata->isChecked();
-        for (const QString& k : m_removeMetadata->text().split(u',', Qt::SkipEmptyParts)) {
+        const auto removed = m_removeMetadata->text().split(u',', Qt::SkipEmptyParts);
+        for (const QString& k : removed) {
             if (!k.trimmed().isEmpty())
                 c.removeUserMetadata.push_back(k.trimmed());
         }
@@ -172,7 +173,8 @@ QString ObjectEditDialog::validate() const
     if (c.isEmpty())
         return tr("Check at least one section to change.");
     if (c.headers) {
-        for (const QString& k : c.headers->userMetadata.keys()) {
+        for (auto it = c.headers->userMetadata.cbegin(); it != c.headers->userMetadata.cend(); ++it) {
+            const QString& k = it.key();
             if (!isValidMetadataKey(k))
                 return tr("Invalid metadata key \"%1\": use letters, digits, '-', '_' and '.'").arg(k);
         }

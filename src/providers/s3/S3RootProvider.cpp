@@ -20,7 +20,8 @@ Result<ListPage> S3RootProvider::list(const Location& dir, const QString& pageTo
     if (!dir.isS3Root())
         return Error::make(ErrorCode::InvalidArgument, QStringLiteral("not s3://"));
     ListPage page;
-    for (const ConnectionProfile& p : m_store->profiles()) {
+    const auto profiles = m_store->profiles();
+    for (const ConnectionProfile& p : profiles) {
         Entry e;
         e.name = p.name;
         e.type = Entry::Type::Connection;

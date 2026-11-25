@@ -333,14 +333,15 @@ void PropertiesDialog::reload()
 {
     m_loading = true;
     setStatus(tr("Loading…"));
-    QPointer<PropertiesDialog> self(this);
+    QPointer<PropertiesDialog> guard(this);
     const Location location = m_entry.location;
     if (m_service) {
         auto service = m_service;
         runIo([service, location] {
             OperationContext ctx;
             return service->details(location, ctx);
-        }).then(this, [self](Result<ObjectDetails> result) {
+        }).then(this, [guard](Result<ObjectDetails> result) {
+            auto* self = guard.data(); // read once: GCC -Wnull-dereference
             if (!self)
                 return;
             self->m_loading = false;
@@ -362,7 +363,8 @@ void PropertiesDialog::reload()
     runIo([provider, location] {
         OperationContext ctx;
         return provider->stat(location, ctx);
-    }).then(this, [self](Result<Entry> result) {
+    }).then(this, [guard](Result<Entry> result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_loading = false;
@@ -433,8 +435,10 @@ void PropertiesDialog::populate(const Entry& e)
                        (enc.kmsKeyId.isEmpty() ? QString() : QStringLiteral(" — ") + enc.kmsKeyId));
         addRow(tr("S3 URI:"), s3urls::s3Uri(e.location));
         if (m_profile) {
-            addRow(tr("URL:"), s3urls::objectUrl(e.location, *m_profile, e.region));
-            addRow(tr("ARN:"), s3urls::arn(e.location, *m_profile));
+            const ConnectionProfile& profile =
+                *m_profile; // addRow() can't reset it, but the checker can't tell
+            addRow(tr("URL:"), s3urls::objectUrl(e.location, profile, e.region));
+            addRow(tr("ARN:"), s3urls::arn(e.location, profile));
         }
     }
 
@@ -540,9 +544,10 @@ void PropertiesDialog::runAction(const QString& done, std::function<VoidResult()
     m_tabs->setEnabled(false);
     setStatus(tr("Applying…"));
     m_loading = true;
-    QPointer<PropertiesDialog> self(this);
+    QPointer<PropertiesDialog> guard(this);
     const Location location = m_entry.location;
-    runIo(std::move(fn)).then(this, [self, done, location](VoidResult result) {
+    runIo(std::move(fn)).then(this, [guard, done, location](const VoidResult& result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_tabs->setEnabled(true);
@@ -657,13 +662,14 @@ void PropertiesDialog::compareChecksums()
         return;
     m_loading = true;
     setStatus(tr("Computing checksums of %1…").arg(QDir::toNativeSeparators(file)));
-    QPointer<PropertiesDialog> self(this);
+    QPointer<PropertiesDialog> guard(this);
     auto service = m_service;
     const Location l = m_entry.location;
     runIo([service, l, file] {
         OperationContext ctx;
         return service->compareWithLocal(l, file, ctx);
-    }).then(this, [self](Result<QList<ChecksumComparison>> result) {
+    }).then(this, [guard](const Result<QList<ChecksumComparison>>& result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_loading = false;

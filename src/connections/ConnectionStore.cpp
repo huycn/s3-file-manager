@@ -13,7 +13,7 @@
 namespace s3fm {
 
 namespace {
-const QString kGroup = QStringLiteral("connections");
+constexpr QLatin1StringView kGroup("connections");
 
 QString encodeSecret(const ConnectionSecret& s)
 {
@@ -51,7 +51,8 @@ void ConnectionStore::load()
     auto settings = openSettings();
     settings->beginGroup(kGroup);
     QMap<QString, ConnectionProfile> loaded;
-    for (const QString& id : settings->childGroups()) {
+    const auto ids = settings->childGroups();
+    for (const QString& id : ids) {
         if (!ConnectionProfile::isValidId(id))
             continue;
         settings->beginGroup(id);
@@ -209,7 +210,7 @@ VoidResult ConnectionStore::setSseCustomerKey(const QString& id, const QString& 
                                               const std::optional<SseCustomerKey>& key)
 {
     const QString name = sseKey(id, bucket);
-    const VoidResult r = key ? m_secrets->write(name, key->keyBase64()) : m_secrets->remove(name);
+    VoidResult r = key ? m_secrets->write(name, key->keyBase64()) : m_secrets->remove(name);
     if (!r && key)
         return r;
     QMutexLocker lock(&m_mutex);

@@ -19,7 +19,7 @@ QString tr(const char* text, const char* disambiguation = nullptr, int n = -1)
     return QCoreApplication::translate("s3fm::LocalProvider", text, disambiguation, n);
 }
 
-constexpr qint64 kCopyChunk = 1024 * 1024;
+constexpr qint64 kCopyChunk = qint64{1024} * 1024;
 constexpr int kMaxReportedFailures = 20;
 
 Error notFound(const QString& path)
@@ -173,9 +173,9 @@ Result<ListPage> LocalProvider::list(const Location& dir, const QString& pageTok
         return Error::make(ErrorCode::AccessDenied, tr("Permission denied: %1").arg(dir.nativePath()));
 
     QDirIterator it(path, QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
-    int n = 0;
+    unsigned n = 0;
     while (it.hasNext()) {
-        if ((++n & 0xff) == 0 && ctx.isCancelled())
+        if ((++n & 0xffu) == 0 && ctx.isCancelled())
             return Error::cancelled();
         it.next();
         page.entries.push_back(entryFromFileInfo(it.fileInfo()));

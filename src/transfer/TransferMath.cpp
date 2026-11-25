@@ -8,7 +8,7 @@
 namespace s3fm::transfer {
 
 namespace {
-constexpr qint64 kMiB = 1024 * 1024;
+constexpr qint64 kMiB = qint64{1024} * 1024;
 }
 
 qint64 partSizeFor(qint64 size, qint64 preferred)
@@ -64,8 +64,10 @@ PathFilter::PathFilter(const QStringList& include, const QStringList& exclude)
 
 QStringList PathFilter::splitPatterns(const QString& text)
 {
+    static const QRegularExpression separators(QStringLiteral("[;\\n]"));
     QStringList out;
-    for (QString p : text.split(QRegularExpression(QStringLiteral("[;\\n]")), Qt::SkipEmptyParts)) {
+    const QStringList parts = text.split(separators, Qt::SkipEmptyParts);
+    for (QString p : parts) {
         p = p.trimmed();
         if (!p.isEmpty())
             out.push_back(p);

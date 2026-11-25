@@ -171,7 +171,8 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this,
             [this](const QItemSelection& selected) {
                 // ".." can never be part of the selection.
-                for (const QModelIndex& idx : selected.indexes()) {
+                const auto indexes = selected.indexes();
+                for (const QModelIndex& idx : indexes) {
                     if (idx.column() == 0 && idx.data(EntryListModel::IsParentRole).toBool()) {
                         m_view->selectionModel()->select(idx, QItemSelectionModel::Deselect |
                                                                   QItemSelectionModel::Rows);
@@ -284,7 +285,8 @@ void PanelWidget::resolveTypedAddress(const QString& text)
     // Relative input: resolve against the current directory.
     QString rel = QDir::fromNativeSeparators(text.trimmed());
     Location target = location();
-    for (const QString& part : rel.split(u'/', Qt::SkipEmptyParts)) {
+    const auto parts = rel.split(u'/', Qt::SkipEmptyParts);
+    for (const QString& part : parts) {
         if (part == u".")
             continue;
         target = part == u".." ? target.parent() : target.child(part, true);
@@ -483,7 +485,6 @@ void PanelWidget::showPlacesMenu()
 void PanelWidget::setActive(bool active)
 {
     m_active = active;
-    m_address->setActive(active);
 }
 
 void PanelWidget::focusView()

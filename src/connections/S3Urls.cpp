@@ -43,7 +43,7 @@ QString objectUrl(const Location& location, const ConnectionProfile& profile, co
 {
     if (!location.isS3() || location.bucket().isEmpty())
         return {};
-    const QString bucket = location.bucket();
+    const QString& bucket = location.bucket();
     const QString key = encodeKey(location.key());
     if (profile.endpoint.isEmpty()) {
         const QString region = bucketRegion.isEmpty() ? profile.region : bucketRegion;

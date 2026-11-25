@@ -19,7 +19,8 @@ QJsonArray toArray(const QStringList& list)
 QStringList fromArray(const QJsonValue& v)
 {
     QStringList out;
-    for (const QJsonValue& item : v.toArray())
+    const QJsonArray items = v.toArray();
+    for (const auto& item : items)
         out.push_back(item.toString());
     return out;
 }
@@ -250,7 +251,8 @@ TransferRequest TransferRequest::fromJson(const QJsonObject& o)
 {
     TransferRequest r;
     r.kind = kindFromName(o.value(QStringLiteral("kind")).toString());
-    for (const QJsonValue& v : o.value(QStringLiteral("sources")).toArray())
+    const QJsonArray sources = o.value(QStringLiteral("sources")).toArray();
+    for (const auto& v : sources)
         r.sources.push_back(entryFromJson(v.toObject()));
     r.destination = Location::fromString(o.value(QStringLiteral("destination")).toString());
     r.destinationIsDirectory = o.value(QStringLiteral("destinationIsDirectory")).toBool();
@@ -286,9 +288,11 @@ void TransferSettings::load(QSettings& s)
     maxJobs = qBound(1, s.value(QStringLiteral("maxJobs"), d.maxJobs).toInt(), 16);
     filesPerJob = qBound(1, s.value(QStringLiteral("filesPerJob"), d.filesPerJob).toInt(), 32);
     partConcurrency = qBound(1, s.value(QStringLiteral("partConcurrency"), d.partConcurrency).toInt(), 32);
-    partSize = qMax<qint64>(5LL << 20, s.value(QStringLiteral("partSize"), d.partSize).toLongLong());
-    multipartThreshold = qMax<qint64>(
-        5LL << 20, s.value(QStringLiteral("multipartThreshold"), d.multipartThreshold).toLongLong());
+    partSize =
+        qMax<qint64>(qint64{5} * 1024 * 1024, s.value(QStringLiteral("partSize"), d.partSize).toLongLong());
+    multipartThreshold =
+        qMax<qint64>(qint64{5} * 1024 * 1024,
+                     s.value(QStringLiteral("multipartThreshold"), d.multipartThreshold).toLongLong());
     bandwidthLimit =
         qMax<qint64>(0, s.value(QStringLiteral("bandwidthLimit"), d.bandwidthLimit).toLongLong());
     maxRetries = qBound(0, s.value(QStringLiteral("maxRetries"), d.maxRetries).toInt(), 20);

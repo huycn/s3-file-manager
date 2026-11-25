@@ -11,7 +11,8 @@ namespace s3fm {
 TransferModel::TransferModel(TransferQueue* queue, QObject* parent)
     : QAbstractItemModel(parent), m_queue(queue)
 {
-    for (TransferJob* job : queue->jobs()) {
+    const auto jobs = queue->jobs();
+    for (TransferJob* job : jobs) {
         m_jobs.push_back(job);
         m_lastState.insert(job, job->state());
         if (!job->isRunning())

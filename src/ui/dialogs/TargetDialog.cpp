@@ -68,7 +68,8 @@ TargetDialog::TargetDialog(const QString& title, const QString& prompt, const QS
     m_storageClass = new QComboBox(m_optionsBox);
     m_storageClass->setObjectName(QStringLiteral("storageClass"));
     m_storageClass->addItem(tr("Connection default"), QString());
-    for (const QString& sc : storageClassNames())
+    const auto classes = storageClassNames();
+    for (const QString& sc : classes)
         m_storageClass->addItem(sc, sc);
     form->addRow(tr("S3 storage class:"), m_storageClass);
     m_encryption = new EncryptionPicker(m_optionsBox, true);

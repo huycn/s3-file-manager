@@ -277,7 +277,7 @@ S3BucketService::EmptyReport S3BucketService::emptyBucket(const QString& bucket,
             report.error = page.error();
             return report;
         }
-        for (const Entry& e : page->entries) {
+        for (const Entry& e : std::as_const(page->entries)) {
             if (e.isDirectory())
                 continue;
             batch.push_back({e.location.key(), e.versionId});
@@ -318,7 +318,7 @@ S3BucketService::EmptyReport S3BucketService::emptyBucket(const QString& bucket,
             report.error = pending.error();
         return report;
     }
-    for (const PendingUpload& u : pending.value()) {
+    for (const PendingUpload& u : std::as_const(*pending)) {
         if (ctx.isCancelled()) {
             report.error = Error::cancelled();
             return report;
@@ -625,7 +625,8 @@ Result<QString> S3BucketService::policy(const QString& bucket)
 
 VoidResult S3BucketService::setPolicy(const QString& bucket, const QString& json)
 {
-    for (const PolicyIssue& issue : validatePolicy(json, QString())) {
+    const auto issues = validatePolicy(json, QString());
+    for (const PolicyIssue& issue : issues) {
         if (issue.error)
             return Error::make(ErrorCode::InvalidArgument, issue.message);
     }
@@ -864,7 +865,7 @@ Result<BucketStats> S3BucketService::statistics(const QString& bucket, const QSt
                 return stats;
             return page.error();
         }
-        for (const Entry& e : page->entries)
+        for (const Entry& e : std::as_const(page->entries))
             count(e);
         token = page->nextPageToken;
     } while (!token.isEmpty());
@@ -886,7 +887,7 @@ Result<BucketStats> S3BucketService::statistics(const QString& bucket, const QSt
         return stats;
     S3VersionService uploads(m_provider);
     if (auto pending = uploads.pendingUploads(bucket, prefix, ctx)) {
-        for (const PendingUpload& u : pending.value()) {
+        for (const PendingUpload& u : std::as_const(*pending)) {
             Q_UNUSED(u)
             ++stats.uploads.objects;
         }

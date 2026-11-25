@@ -114,7 +114,7 @@ QByteArray hashRange(const QString& path, qint64 offset, qint64 length, Algorith
     if (!f.open(QIODevice::ReadOnly) || !f.seek(offset))
         return {};
     Hasher hasher(algorithm);
-    QByteArray buffer(1 << 20, Qt::Uninitialized);
+    QByteArray buffer(qsizetype{1024} * 1024, Qt::Uninitialized);
     qint64 left = length;
     while (left > 0) {
         if (ctx && ctx->isCancelled())

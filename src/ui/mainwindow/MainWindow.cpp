@@ -47,6 +47,7 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QMouseEvent>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QSettings>
@@ -75,6 +76,8 @@ MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections,
     layout->setSpacing(4);
 
     m_splitter = new QSplitter(Qt::Horizontal, central);
+    // Blank handle: the gap between the panels stays draggable but draws nothing.
+    m_splitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: transparent; image: none; }"));
     m_splitter->setChildrenCollapsible(false);
     m_left = new PanelWidget(registry, m_splitter);
     m_right = new PanelWidget(registry, m_splitter);
@@ -122,6 +125,9 @@ MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections,
 
     setActivePanel(m_left);
     restoreWindowState();
+    // Mouse back/forward buttons: application-wide, so they work over any child of a panel
+    // (list, header, address bar), including widgets created later.
+    qApp->installEventFilter(this);
     m_active->focusView();
 }
 
@@ -358,7 +364,8 @@ void MainWindow::buildPlacesMenu(QMenu* menu, PanelWidget* panel)
 #else
     menu->addAction(QIcon::fromTheme(QStringLiteral("drive-harddisk")), tr("Root (/)"), panel,
                     go(Location::local(QStringLiteral("/"))));
-    for (const QStorageInfo& storage : QStorageInfo::mountedVolumes()) {
+    const QList<QStorageInfo> volumes = QStorageInfo::mountedVolumes();
+    for (const QStorageInfo& storage : volumes) {
         const QString root = storage.rootPath();
         if (!storage.isValid() || !storage.isReady() || root == u"/")
             continue;
@@ -372,7 +379,8 @@ void MainWindow::buildPlacesMenu(QMenu* menu, PanelWidget* panel)
 #endif
     if (m_connections) {
         menu->addSection(tr("S3 Connections"));
-        for (const ConnectionProfile& p : m_connections->profiles())
+        const QList<ConnectionProfile> profiles = m_connections->profiles();
+        for (const ConnectionProfile& p : profiles)
             menu->addAction(QIcon(QStringLiteral(":/icons/cloud.svg")), p.name, panel,
                             go(Location::s3(p.id)));
         menu->addAction(tr("All Connections"), panel, go(Location::s3Root()));
@@ -440,6 +448,29 @@ void MainWindow::invertSelection()
 {
     m_active->invertSelection();
 }
+bool MainWindow::eventFilter(QObject* watched, QEvent* event)
+{
+    if (event->type() != QEvent::MouseButtonPress && event->type() != QEvent::MouseButtonDblClick)
+        return QMainWindow::eventFilter(watched, event);
+    const Qt::MouseButton button = static_cast<QMouseEvent*>(event)->button();
+    if (button != Qt::BackButton && button != Qt::ForwardButton)
+        return QMainWindow::eventFilter(watched, event);
+    // Act on the panel under the cursor, making it active as a click would.
+    for (QObject* o = watched; o; o = o->parent()) {
+        if (o != m_left && o != m_right)
+            continue;
+        auto* panel = static_cast<PanelWidget*>(o);
+        setActivePanel(panel);
+        panel->focusView();
+        if (button == Qt::BackButton)
+            panel->goBack();
+        else
+            panel->goForward();
+        return true; // consumed: stops the press propagating to parents (and firing twice)
+    }
+    return QMainWindow::eventFilter(watched, event);
+}
+
 void MainWindow::goBack()
 {
     m_active->goBack();
@@ -587,14 +618,16 @@ void MainWindow::showNextConflict()
     if (m_conflictOpen)
         return;
     while (!m_pendingConflicts.isEmpty()) {
-        const auto [job, info] = m_pendingConflicts.takeFirst();
+        // Raw pointers read once from the QPointer: GCC -Wnull-dereference can't follow repeated reads.
+        const auto [guard, info] = m_pendingConflicts.takeFirst();
+        const TransferJob* job = guard.data();
         if (!job || !job->isRunning())
             continue;
         m_conflictOpen = true;
         const ConflictAnswer answer = ConflictDialog::ask(info, this);
         m_conflictOpen = false;
-        if (job)
-            job->answerConflict(answer);
+        if (TransferJob* live = guard.data()) // the job may have gone while the dialog was open
+            live->answerConflict(answer);
     }
 }
 
@@ -745,7 +778,7 @@ void MainWindow::makeDirectory()
     runIo([provider, target] {
         OperationContext ctx;
         return provider->makeDirectory(target, ctx);
-    }).then(this, [this, panel, firstLevel](VoidResult result) {
+    }).then(this, [this, panel, firstLevel](const VoidResult& result) {
         if (!result) {
             QMessageBox::warning(this, tr("New Folder"), result.error().toString());
             return;
@@ -922,7 +955,7 @@ void MainWindow::editObjects()
     connect(progress, &QProgressDialog::canceled, this, [ctx] { ctx->cancel(); });
     runIo([service, items, change, ctx] {
         return service->applyBulk(items, change, *ctx);
-    }).then(this, [this, progress, ctx](S3ObjectService::BulkReport report) {
+    }).then(this, [this, progress, ctx](const S3ObjectService::BulkReport& report) {
         progress->reset();
         progress->deleteLater();
         m_active->refresh();
@@ -965,7 +998,7 @@ void MainWindow::toggleVersions()
     auto service = S3VersionService::forLocation(*m_registry, here);
     if (!service)
         return;
-    const QString bucket = here.bucket();
+    const QString& bucket = here.bucket();
     runIo([service, bucket] {
         return service->versioningStatus(bucket);
     }).then(this, [this, bucket](Result<QString> status) {
@@ -1056,7 +1089,7 @@ void MainWindow::deleteVersions(const EntryList& versions)
     runIo([service, versions] {
         OperationContext ctx;
         return service->deleteVersions(versions, false, ctx);
-    }).then(this, [this, panel, n](VoidResult r) {
+    }).then(this, [this, panel, n](const VoidResult& r) {
         panel->refresh();
         if (!r)
             QMessageBox::warning(this, tr("Delete Versions"), r.error().toString());
@@ -1086,7 +1119,7 @@ void MainWindow::restoreArchive()
         runIo([service, items, days, tier] {
             OperationContext ctx;
             return service->restoreAll(items, days, tier, ctx);
-        }).then(this, [this](S3VersionService::RestoreReport report) {
+        }).then(this, [this](const S3VersionService::RestoreReport& report) {
             QString text = tr("Restore requested for %n object(s)", nullptr, report.requested);
             if (report.alreadyAvailable > 0)
                 text += QStringLiteral("; ") + tr("%n not archived, already restored or in progress", nullptr,
@@ -1147,7 +1180,7 @@ void MainWindow::createBucket()
     statusBar()->showMessage(tr("Creating bucket %1…").arg(spec.name));
     runIo([service, spec] {
         return service->createBucket(spec);
-    }).then(this, [this, spec, connection](VoidResult result) {
+    }).then(this, [this, spec, connection](const VoidResult& result) {
         if (!result) {
             statusBar()->clearMessage();
             QMessageBox::warning(this, tr("New Bucket"),
@@ -1189,7 +1222,7 @@ void MainWindow::deleteBucket(const Entry& entry)
     auto service = S3BucketService::forLocation(*m_registry, bucket);
     if (!service)
         return;
-    const QString name = bucket.bucket();
+    const QString& name = bucket.bucket();
     const QString connection = bucket.connectionId();
     statusBar()->showMessage(tr("Checking the contents of %1…").arg(name));
     runIo([service, name] {
@@ -1239,7 +1272,7 @@ void MainWindow::deleteBucket(const Entry& entry)
             }
             out.deleted = service->deleteBucket(name);
             return out;
-        }).then(this, [this, progress, name, connection](Outcome out) {
+        }).then(this, [this, progress, name, connection](const Outcome& out) {
             progress->reset();
             progress->deleteLater();
             if (out.deleted) {
@@ -1355,13 +1388,12 @@ void MainWindow::showContextMenu(PanelWidget* panel, const QPoint& globalPos)
             menu.addAction(m_actions.value(QStringLiteral("restoreArchive")));
         if (panel->showsVersions() && !current->versionId.isEmpty() && !current->isLatest &&
             !current->isDeleteMarker) {
-            const Entry version = *current;
-            menu.addAction(tr("Make This Version Current"), this, [this, version, panel] {
+            menu.addAction(tr("Make This Version Current"), this, [this, version = *current, panel] {
                 auto service = S3VersionService::forLocation(*m_registry, version.location);
                 runIo([service, version] {
                     OperationContext ctx;
                     return service->restoreVersion(version.location, version.versionId, ctx);
-                }).then(this, [this, panel](VoidResult r) {
+                }).then(this, [this, panel](const VoidResult& r) {
                     panel->refresh();
                     if (!r)
                         QMessageBox::warning(this, tr("Restore Version"), r.error().toString());
@@ -1375,7 +1407,7 @@ void MainWindow::showContextMenu(PanelWidget* panel, const QPoint& globalPos)
                 runIo([service, location] {
                     OperationContext ctx;
                     return service->undelete(location, ctx);
-                }).then(this, [this, panel](VoidResult r) {
+                }).then(this, [this, panel](const VoidResult& r) {
                     panel->refresh();
                     if (!r)
                         QMessageBox::warning(this, tr("Undelete"), r.error().toString());
@@ -1406,7 +1438,8 @@ void MainWindow::copyLines(const QStringList& lines)
 void MainWindow::copyS3Uri()
 {
     QStringList lines;
-    for (const Entry& e : m_active->targetEntries())
+    const EntryList entries = m_active->targetEntries();
+    for (const Entry& e : entries)
         lines.push_back(s3urls::s3Uri(e.location));
     copyLines(lines);
 }
@@ -1414,7 +1447,8 @@ void MainWindow::copyS3Uri()
 void MainWindow::copyObjectUrl()
 {
     QStringList lines;
-    for (const Entry& e : m_active->targetEntries()) {
+    const EntryList entries = m_active->targetEntries();
+    for (const Entry& e : entries) {
         if (!m_connections || !e.location.isS3())
             continue;
         if (auto profile = m_connections->profile(e.location.connectionId()))
@@ -1426,7 +1460,8 @@ void MainWindow::copyObjectUrl()
 void MainWindow::copyArn()
 {
     QStringList lines;
-    for (const Entry& e : m_active->targetEntries()) {
+    const EntryList entries = m_active->targetEntries();
+    for (const Entry& e : entries) {
         if (!m_connections || !e.location.isS3())
             continue;
         if (auto profile = m_connections->profile(e.location.connectionId()))
@@ -1479,10 +1514,11 @@ void MainWindow::showShortcuts()
     row(tr("Shift+Arrows"), tr("Extend selection"));
     row(tr("Type letters"), tr("Jump to name"));
     for (QAction* a : std::as_const(m_actionOrder)) {
-        if (a->shortcuts().isEmpty())
+        const QList<QKeySequence> shortcuts = a->shortcuts();
+        if (shortcuts.isEmpty())
             continue;
         QStringList keys;
-        for (const QKeySequence& k : a->shortcuts())
+        for (const QKeySequence& k : shortcuts)
             keys.push_back(k.toString(QKeySequence::NativeText));
         QString text = a->text();
         text.remove(u'&');
@@ -1534,6 +1570,7 @@ void MainWindow::restoreWindowState()
     restoreGeometry(settings.value(QStringLiteral("mainWindow/geometry")).toByteArray());
     restoreState(settings.value(QStringLiteral("mainWindow/state")).toByteArray());
     m_splitter->restoreState(settings.value(QStringLiteral("mainWindow/splitter")).toByteArray());
+    m_splitter->setHandleWidth(4); // after restoreState(), which also restores the saved handle width
     const bool hidden = settings.value(QStringLiteral("view/showHidden"), false).toBool();
     m_actions.value(QStringLiteral("showHidden"))->setChecked(hidden);
     m_left->setShowHidden(hidden);

@@ -18,7 +18,7 @@ QSpinBox* spin(QWidget* parent, int min, int max, int value, const QString& suff
     s->setSuffix(suffix);
     return s;
 }
-constexpr qint64 kMiB = 1024 * 1024;
+constexpr qint64 kMiB = qint64{1024} * 1024;
 } // namespace
 
 TransferSettingsDialog::TransferSettingsDialog(const TransferSettings& settings, QWidget* parent)

@@ -107,13 +107,14 @@ void PresignDialog::generate()
     m_warning->clear();
     if (wanted > S3ObjectService::kMaxPresignSeconds)
         m_warning->setText(tr("Presigned URLs are valid for at most 7 days; the expiry was shortened."));
-    QPointer<PresignDialog> self(this);
+    QPointer<PresignDialog> guard(this);
     auto service = m_service;
     const Location object = m_object;
     const auto method = S3ObjectService::PresignMethod(m_method->currentData().toInt());
     runIo([service, object, method, wanted] {
         return service->presign(object, method, wanted);
-    }).then(this, [self, wanted](Result<S3ObjectService::Presigned> result) {
+    }).then(this, [guard, wanted](Result<S3ObjectService::Presigned> result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_busy = false;
@@ -163,7 +164,7 @@ QImage PresignDialog::qrCode(const QString& text, int scale)
     p.setBrush(Qt::black);
     for (int y = 0; y < code->width; ++y) {
         for (int x = 0; x < code->width; ++x) {
-            if (code->data[y * code->width + x] & 1)
+            if ((unsigned(code->data[y * code->width + x]) & 1u) != 0)
                 p.drawRect((x + border) * scale, (y + border) * scale, scale, scale);
         }
     }

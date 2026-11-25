@@ -165,7 +165,8 @@ void TransferDock::updateActions()
     bool anyPaused = false;
     bool anyActive = false;
     bool anyFinished = false;
-    for (TransferJob* j : m_queue->jobs()) {
+    const auto jobs = m_queue->jobs();
+    for (TransferJob* j : jobs) {
         anyPaused = anyPaused || j->state() == JobState::Paused;
         anyActive = anyActive || j->state() == JobState::Running || j->state() == JobState::Queued;
         anyFinished = anyFinished || j->state() == JobState::Done || j->state() == JobState::Cancelled;

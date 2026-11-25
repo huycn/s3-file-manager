@@ -335,7 +335,8 @@ QList<CorsRule> BucketCorsTab::rulesFromTable() const
     for (int row = 0; row < m_table->rowCount(); ++row) {
         CorsRule r;
         r.allowedOrigins = splitList(text(row, CorsOrigins));
-        for (const QString& m : splitList(text(row, CorsMethods)))
+        const auto methods = splitList(text(row, CorsMethods));
+        for (const QString& m : methods)
             r.allowedMethods.push_back(m.toUpper());
         r.allowedHeaders = splitList(text(row, CorsHeaders));
         r.exposeHeaders = splitList(text(row, CorsExpose));
@@ -408,7 +409,8 @@ void BucketPolicyTab::build()
     auto* tools = new QHBoxLayout;
     QPushButton* templates = button(tr("&Templates"), QStringLiteral("templates"), this);
     auto* menu = new QMenu(templates);
-    for (const auto& [name, json] : policyTemplates(m_bucket)) {
+    const auto policies = policyTemplates(m_bucket);
+    for (const auto& [name, json] : policies) {
         const QString text = json;
         menu->addAction(name, this, [this, text] {
             if (!m_editor->toPlainText().trimmed().isEmpty() &&

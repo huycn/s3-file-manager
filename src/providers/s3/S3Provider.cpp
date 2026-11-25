@@ -59,9 +59,8 @@ namespace {
 
 constexpr const char* kTag = "s3fm";
 constexpr int kMaxDeleteBatch = 1000;
-constexpr qint64 kMiB = 1024 * 1024;
-const QString kMtimeKey =
-    QStringLiteral("mtime"); // x-amz-meta-mtime, seconds since epoch (rclone-compatible)
+constexpr qint64 kMiB = qint64{1024} * 1024;
+constexpr QLatin1StringView kMtimeKey("mtime"); // x-amz-meta-mtime, seconds since epoch (rclone-compatible)
 
 QString tr(const char* text)
 {
@@ -303,8 +302,8 @@ Result<ListPage> S3Provider::listObjectVersions(const Location& dir, const QStri
 Result<ListPage> S3Provider::listAsOf(const Location& dir, const QDateTime& at, OperationContext& ctx)
 {
     // Newest version (or delete marker) of every key below `dir` not newer than `at`.
-    const QString bucket = dir.bucket();
-    const QString prefix = dir.key();
+    const QString& bucket = dir.bucket();
+    const QString& prefix = dir.key();
     QHash<QString, Entry> best;
     QString token;
     do {
@@ -393,8 +392,8 @@ Result<ListPage> S3Provider::listBuckets(const Location& connection)
 
 Result<ListPage> S3Provider::listObjects(const Location& dir, const QString& token, OperationContext& ctx)
 {
-    const QString bucket = dir.bucket();
-    const QString prefix = dir.key();
+    const QString& bucket = dir.bucket();
+    const QString& prefix = dir.key();
     const QString conn = dir.connectionId();
     const int pageSize = m_pageSize;
     return withClient<ListPage>(bucket, [&](Client& client) -> Result<ListPage> {
@@ -502,7 +501,7 @@ VoidResult S3Provider::walk(const Location& dir, const Visitor& visit, Operation
     // One flat listing instead of a request per directory. Keys arrive in
     // lexicographic order; every directory is emitted when the first key below it
     // is seen, so directories always precede their contents.
-    const QString bucket = dir.bucket();
+    const QString& bucket = dir.bucket();
     const QString prefix = dir.asDirectory().key();
     const QString conn = dir.connectionId();
     QSet<QString> emittedDirs;
@@ -969,7 +968,7 @@ QByteArray md5Range(const QString& path, qint64 offset, qint64 length, const Ope
     if (!f.open(QIODevice::ReadOnly) || !f.seek(offset))
         return {};
     QCryptographicHash hash(QCryptographicHash::Md5);
-    QByteArray buffer(1 << 20, Qt::Uninitialized);
+    QByteArray buffer(qsizetype{1024} * 1024, Qt::Uninitialized);
     qint64 left = length;
     while (left > 0) {
         if (ctx.isCancelled())

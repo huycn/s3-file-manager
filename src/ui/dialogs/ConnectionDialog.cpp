@@ -34,28 +34,36 @@ using Source = ConnectionProfile::CredentialSource;
 using Addressing = ConnectionProfile::Addressing;
 using Checksum = ConnectionProfile::ChecksumMode;
 
-const QStringList kAwsRegions = {
-    QStringLiteral("us-east-1"),      QStringLiteral("us-east-2"),      QStringLiteral("us-west-1"),
-    QStringLiteral("us-west-2"),      QStringLiteral("ca-central-1"),   QStringLiteral("eu-west-1"),
-    QStringLiteral("eu-west-2"),      QStringLiteral("eu-west-3"),      QStringLiteral("eu-central-1"),
-    QStringLiteral("eu-central-2"),   QStringLiteral("eu-north-1"),     QStringLiteral("eu-south-1"),
-    QStringLiteral("ap-south-1"),     QStringLiteral("ap-southeast-1"), QStringLiteral("ap-southeast-2"),
-    QStringLiteral("ap-northeast-1"), QStringLiteral("ap-northeast-2"), QStringLiteral("ap-northeast-3"),
-    QStringLiteral("ap-east-1"),      QStringLiteral("sa-east-1"),      QStringLiteral("me-south-1"),
-    QStringLiteral("af-south-1"),
-};
+const QStringList& awsRegions()
+{
+    static const QStringList regions = {
+        QStringLiteral("us-east-1"),      QStringLiteral("us-east-2"),      QStringLiteral("us-west-1"),
+        QStringLiteral("us-west-2"),      QStringLiteral("ca-central-1"),   QStringLiteral("eu-west-1"),
+        QStringLiteral("eu-west-2"),      QStringLiteral("eu-west-3"),      QStringLiteral("eu-central-1"),
+        QStringLiteral("eu-central-2"),   QStringLiteral("eu-north-1"),     QStringLiteral("eu-south-1"),
+        QStringLiteral("ap-south-1"),     QStringLiteral("ap-southeast-1"), QStringLiteral("ap-southeast-2"),
+        QStringLiteral("ap-northeast-1"), QStringLiteral("ap-northeast-2"), QStringLiteral("ap-northeast-3"),
+        QStringLiteral("ap-east-1"),      QStringLiteral("sa-east-1"),      QStringLiteral("me-south-1"),
+        QStringLiteral("af-south-1"),
+    };
+    return regions;
+}
 
-const QStringList kStorageClasses = {
-    QString(),
-    QStringLiteral("STANDARD"),
-    QStringLiteral("INTELLIGENT_TIERING"),
-    QStringLiteral("STANDARD_IA"),
-    QStringLiteral("ONEZONE_IA"),
-    QStringLiteral("GLACIER_IR"),
-    QStringLiteral("GLACIER"),
-    QStringLiteral("DEEP_ARCHIVE"),
-    QStringLiteral("REDUCED_REDUNDANCY"),
-};
+const QStringList& storageClassChoices()
+{
+    static const QStringList classes = {
+        QString(),
+        QStringLiteral("STANDARD"),
+        QStringLiteral("INTELLIGENT_TIERING"),
+        QStringLiteral("STANDARD_IA"),
+        QStringLiteral("ONEZONE_IA"),
+        QStringLiteral("GLACIER_IR"),
+        QStringLiteral("GLACIER"),
+        QStringLiteral("DEEP_ARCHIVE"),
+        QStringLiteral("REDUCED_REDUNDANCY"),
+    };
+    return classes;
+}
 
 template <class E> void selectData(QComboBox* combo, E value)
 {
@@ -102,7 +110,8 @@ void ConnectionDialog::buildUi()
     add->setToolButtonStyle(Qt::ToolButtonTextOnly);
     add->setPopupMode(QToolButton::InstantPopup);
     auto* addMenu = new QMenu(add);
-    for (ConnectionProfile::Preset preset : ConnectionProfile::allPresets())
+    const auto presets = ConnectionProfile::allPresets();
+    for (ConnectionProfile::Preset preset : presets)
         addMenu->addAction(ConnectionProfile::presetName(preset), this, [this, preset] { addNew(preset); });
     add->setMenu(addMenu);
     buttons->addWidget(add);
@@ -134,7 +143,8 @@ void ConnectionDialog::buildUi()
     m_id->setToolTip(tr("Used in addresses such as s3://<id>/bucket/key. Cannot be changed after saving."));
     form->addRow(tr("&ID:"), m_id);
     m_preset = new QComboBox(general);
-    for (ConnectionProfile::Preset preset : ConnectionProfile::allPresets())
+    const auto presetChoices = ConnectionProfile::allPresets();
+    for (ConnectionProfile::Preset preset : presetChoices)
         m_preset->addItem(ConnectionProfile::presetName(preset), static_cast<int>(preset));
     form->addRow(tr("&Provider:"), m_preset);
     m_endpoint = new QLineEdit(general);
@@ -142,7 +152,7 @@ void ConnectionDialog::buildUi()
     form->addRow(tr("&Endpoint URL:"), m_endpoint);
     m_region = new QComboBox(general);
     m_region->setEditable(true);
-    m_region->addItems(kAwsRegions);
+    m_region->addItems(awsRegions());
     form->addRow(tr("&Region:"), m_region);
     m_addressing = new QComboBox(general);
     m_addressing->addItem(tr("Automatic"), static_cast<int>(Addressing::Auto));
@@ -194,7 +204,8 @@ void ConnectionDialog::buildUi()
     profileForm->setContentsMargins(0, 0, 0, 0);
     m_awsProfile = new QComboBox(profilePage);
     m_awsProfile->setEditable(true);
-    for (const AwsProfileInfo& p : AwsConfig::profiles())
+    const auto awsProfiles = AwsConfig::profiles();
+    for (const AwsProfileInfo& p : awsProfiles)
         m_awsProfile->addItem(p.name);
     profileForm->addRow(tr("Profile:"), m_awsProfile);
     auto* profileNote =
@@ -236,7 +247,7 @@ void ConnectionDialog::buildUi()
     m_checksums->setToolTip(tr("Some S3-compatible services reject the newer integrity checksum headers."));
     advForm->addRow(tr("Request checksums:"), m_checksums);
     m_storageClass = new QComboBox(advanced);
-    for (const QString& sc : kStorageClasses)
+    for (const QString& sc : storageClassChoices())
         m_storageClass->addItem(sc.isEmpty() ? tr("Bucket default") : sc, sc);
     advForm->addRow(tr("Upload storage class:"), m_storageClass);
     m_pinnedBuckets = new QLineEdit(advanced);
@@ -351,7 +362,8 @@ void ConnectionDialog::reloadList(const QString& select)
     m_loading = true;
     m_list->clear();
     int selectRow = -1;
-    for (const ConnectionProfile& p : m_store->profiles()) {
+    const auto profiles = m_store->profiles();
+    for (const ConnectionProfile& p : profiles) {
         auto* item = new QListWidgetItem(QIcon(QStringLiteral(":/icons/cloud.svg")), p.name, m_list);
         item->setData(Qt::UserRole, p.id);
         item->setToolTip(QStringLiteral("s3://%1/ — %2").arg(p.id, ConnectionProfile::presetName(p.preset)));
@@ -480,7 +492,8 @@ void ConnectionDialog::importAwsProfiles()
 {
     const QList<AwsProfileInfo> profiles = AwsConfig::profiles();
     QStringList existing;
-    for (const ConnectionProfile& p : m_store->profiles()) {
+    const auto connections = m_store->profiles();
+    for (const ConnectionProfile& p : connections) {
         if (p.credentialSource == Source::AwsProfile)
             existing.push_back(p.awsProfile);
     }
@@ -560,11 +573,13 @@ ConnectionProfile ConnectionDialog::editedProfile() const
     p.caBundlePath = m_caBundle->text().trimmed();
     p.checksumMode = currentData<Checksum>(m_checksums);
     p.defaultStorageClass = m_storageClass->currentData().toString();
-    for (const QString& b : m_pinnedBuckets->text().split(u',', Qt::SkipEmptyParts)) {
+    const auto pinned = m_pinnedBuckets->text().split(u',', Qt::SkipEmptyParts);
+    for (const QString& b : pinned) {
         if (!b.trimmed().isEmpty())
             p.pinnedBuckets.push_back(b.trimmed());
     }
-    for (const QString& b : m_requesterPays->text().split(u',', Qt::SkipEmptyParts)) {
+    const auto requesterPays = m_requesterPays->text().split(u',', Qt::SkipEmptyParts);
+    for (const QString& b : requesterPays) {
         if (!b.trimmed().isEmpty())
             p.requesterPaysBuckets.push_back(b.trimmed());
     }
@@ -626,11 +641,12 @@ void ConnectionDialog::testCurrent()
     };
     m_test->setEnabled(false);
     m_testResult->setText(tr("Testing…"));
-    QPointer<ConnectionDialog> self(this);
+    QPointer<ConnectionDialog> guard(this);
     runIo([p, fetch] {
         S3Session session(p, fetch);
         return testConnection(session);
-    }).then(this, [self](const ConnectionTestResult& result) {
+    }).then(this, [guard](const ConnectionTestResult& result) {
+        auto* self = guard.data(); // read once: GCC -Wnull-dereference
         if (!self)
             return;
         self->m_test->setEnabled(true);

@@ -26,8 +26,8 @@ public:
     Mode mode() const { return m_mode; }
     QString text() const;
 
-    static constexpr qint64 kTextLimit = 8 * 1024 * 1024;
-    static constexpr qint64 kHexLimit = 64 * 1024;
+    static constexpr qint64 kTextLimit = qint64{8} * 1024 * 1024;
+    static constexpr qint64 kHexLimit = qint64{64} * 1024;
     // Heuristic used to choose between text and hex views.
     static bool looksLikeText(const QByteArray& head);
 

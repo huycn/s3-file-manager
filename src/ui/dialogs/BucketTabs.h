@@ -52,11 +52,12 @@ Q_SIGNALS:
 protected:
     // Runs `fn` on the I/O pool; `show` gets the value on the GUI thread. Errors go
     // to statusChanged() (or unsupported()).
-    template <class T> void fetch(std::function<Result<T>()> fn, std::function<void(const T&)> show)
+    template <class T> void fetch(std::function<Result<T>()> fn, const std::function<void(const T&)>& show)
     {
         begin();
-        QPointer<BucketTab> self(this);
-        runIo(std::move(fn)).then(this, [self, show](Result<T> result) {
+        QPointer<BucketTab> guard(this);
+        runIo(std::move(fn)).then(this, [guard, show](Result<T> result) {
+            auto* self = guard.data(); // read once: GCC -Wnull-dereference
             if (!self)
                 return;
             if (!self->end(result ? nullptr : &result.error()))

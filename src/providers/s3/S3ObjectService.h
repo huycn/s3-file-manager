@@ -62,7 +62,7 @@ public:
         QDateTime expires;
         bool limitedByCredentials = false; // temporary credentials expire earlier
     };
-    static constexpr qint64 kMaxPresignSeconds = 7 * 24 * 3600; // SigV4 limit
+    static constexpr qint64 kMaxPresignSeconds = qint64{7} * 24 * 3600; // SigV4 limit
     Result<Presigned> presign(const Location& object, PresignMethod method, qint64 seconds);
 
     // Stored checksums (and the ETag as MD5) against `localFile`.

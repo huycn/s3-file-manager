@@ -143,7 +143,8 @@ QList<TransferStore::LoadedJob> TransferStore::loadAll() const
     QMutexLocker lock(&m_mutex);
     QList<LoadedJob> out;
     const QDir root(m_root);
-    for (const QString& id : root.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name)) {
+    const auto ids = root.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+    for (const QString& id : ids) {
         const QString dir = root.filePath(id);
         QFile jf(dir + QStringLiteral("/job.json"));
         if (!jf.open(QIODevice::ReadOnly)) {
@@ -161,7 +162,8 @@ QList<TransferStore::LoadedJob> TransferStore::loadAll() const
         job.record.state = jobStateFromName(o.value(QStringLiteral("state")).toString());
         job.record.stickyConflict =
             conflictPolicyFromName(o.value(QStringLiteral("stickyConflict")).toString());
-        for (const QJsonValue& v : o.value(QStringLiteral("failures")).toArray()) {
+        const QJsonArray failureList = o.value(QStringLiteral("failures")).toArray();
+        for (const auto& v : failureList) {
             const QJsonObject fo = v.toObject();
             job.record.jobFailures.push_back(
                 {fo.value(QStringLiteral("item")).toString(), errorFromJson(fo)});
@@ -195,8 +197,9 @@ QList<TransferStore::LoadedJob> TransferStore::loadAll() const
                         t.error = errorFromJson(QJsonDocument::fromJson(line.mid(sp2 + 1)).object());
                 }
             }
-            for (const QString& name :
-                 QDir(dir).entryList({QStringLiteral("ckpt-*.json")}, QDir::Files, QDir::Name)) {
+            const QStringList checkpoints =
+                QDir(dir).entryList({QStringLiteral("ckpt-*.json")}, QDir::Files, QDir::Name);
+            for (const QString& name : checkpoints) {
                 bool ok = false;
                 const int index = name.mid(5, name.size() - 10).toInt(&ok);
                 if (!ok || index < 0 || index >= job.tasks.size())

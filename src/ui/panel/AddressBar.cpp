@@ -153,14 +153,6 @@ void AddressBar::stopEditing()
     Q_EMIT editingFinished();
 }
 
-void AddressBar::setActive(bool active)
-{
-    m_crumbPage->setBackgroundRole(active ? QPalette::Highlight : QPalette::Window);
-    m_crumbPage->setForegroundRole(active ? QPalette::HighlightedText : QPalette::WindowText);
-    for (QToolButton* b : std::as_const(m_crumbs))
-        b->setForegroundRole(active ? QPalette::HighlightedText : QPalette::ButtonText);
-}
-
 void AddressBar::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
