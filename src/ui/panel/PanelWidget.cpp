@@ -67,9 +67,12 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     layout->setSpacing(2);
 
     // Top: places button + address bar
-    auto* top = new QHBoxLayout;
+    m_header = new QWidget(this);
+    m_header->setObjectName(QStringLiteral("panelHeader"));
+    auto* top = new QHBoxLayout(m_header);
+    top->setContentsMargins(0, 0, 0, 0);
     top->setSpacing(2);
-    m_placesButton = new QToolButton(this);
+    m_placesButton = new QToolButton(m_header);
     m_placesButton->setIcon(
         QIcon::fromTheme(QStringLiteral("drive-harddisk"), style()->standardIcon(QStyle::SP_DriveHDIcon)));
     m_placesButton->setToolTip(tr("Places and connections"));
@@ -87,9 +90,9 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
         }
     });
     top->addWidget(m_placesButton);
-    m_address = new AddressBar(this);
+    m_address = new AddressBar(m_header);
     top->addWidget(m_address, 1);
-    layout->addLayout(top);
+    layout->addWidget(m_header);
 
     // Error banner
     m_errorFrame = new QFrame(this);
@@ -157,6 +160,7 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
 
     // Status line
     m_status = new QLabel(this);
+    m_status->setObjectName(QStringLiteral("status"));
     m_status->setTextInteractionFlags(Qt::TextSelectableByMouse);
     m_status->setContentsMargins(4, 0, 4, 0);
     layout->addWidget(m_status);
@@ -487,6 +491,11 @@ void PanelWidget::setActive(bool active)
     m_active = active;
 }
 
+QList<QWidget*> PanelWidget::chromeWidgets() const
+{
+    return {m_header, m_status};
+}
+
 void PanelWidget::focusView()
 {
     m_view->setFocus();
@@ -543,8 +552,10 @@ void PanelWidget::updateStatus()
             selBytes += e.isDirectory() ? 0 : qMax<qint64>(0, e.size);
         text = tr("%1 of %2 selected, %3").arg(selected.size()).arg(dirs + files).arg(formatSize(selBytes));
     } else {
-        text = tr("%n folder(s), ", nullptr, dirs) + tr("%n file(s)", nullptr, files) + QStringLiteral(", ") +
-               formatSize(bytes);
+        // One template, so translations choose the separators and the order.
+        text =
+            tr("%1, %2, %3", "panel status: folders, files, total size")
+                .arg(tr("%n folder(s)", nullptr, dirs), tr("%n file(s)", nullptr, files), formatSize(bytes));
     }
     if (m_model->showsVersions()) {
         const ListOptions& o = m_model->listOptions();

@@ -14,10 +14,12 @@ namespace s3fm {
 
 namespace {
 
-QString tr(const char* text, const char* disambiguation = nullptr, int n = -1)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::LocalProvider", text, disambiguation, n);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::LocalProvider)
+};
 
 constexpr qint64 kCopyChunk = qint64{1024} * 1024;
 constexpr int kMaxReportedFailures = 20;
@@ -25,7 +27,7 @@ constexpr int kMaxReportedFailures = 20;
 Error notFound(const QString& path)
 {
     return Error::make(ErrorCode::NotFound,
-                       tr("No such file or directory: %1").arg(QDir::toNativeSeparators(path)));
+                       Tr::tr("No such file or directory: %1").arg(QDir::toNativeSeparators(path)));
 }
 
 Error ioError(const QString& message, const QString& path, const QString& detail = {})
@@ -39,7 +41,7 @@ Error accessOrIo(const QString& message, const QString& path, const QString& det
     const QFileInfo parentInfo(QFileInfo(path).absolutePath());
     if (parentInfo.exists() && !parentInfo.isWritable())
         return Error::make(ErrorCode::AccessDenied, message.arg(QDir::toNativeSeparators(path)),
-                           tr("permission denied"));
+                           Tr::tr("permission denied"));
     return ioError(message, path, detail);
 }
 
@@ -149,7 +151,7 @@ Result<ListPage> LocalProvider::list(const Location& dir, const QString& pageTok
 {
     Q_UNUSED(pageToken)
     if (!dir.isLocal())
-        return Error::make(ErrorCode::InvalidArgument, tr("Not a local location"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Not a local location"));
 
     ListPage page;
 #ifdef Q_OS_WIN
@@ -163,14 +165,14 @@ Result<ListPage> LocalProvider::list(const Location& dir, const QString& pageTok
     if (!info.exists())
         return notFound(path);
     if (!info.isDir())
-        return Error::make(ErrorCode::InvalidArgument, tr("Not a directory: %1").arg(dir.nativePath()));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Not a directory: %1").arg(dir.nativePath()));
 #ifdef Q_OS_WIN
     const bool accessible = info.isReadable();
 #else
     const bool accessible = info.isReadable() && info.isExecutable(); // need +x to enter a directory
 #endif
     if (!accessible)
-        return Error::make(ErrorCode::AccessDenied, tr("Permission denied: %1").arg(dir.nativePath()));
+        return Error::make(ErrorCode::AccessDenied, Tr::tr("Permission denied: %1").arg(dir.nativePath()));
 
     QDirIterator it(path, QDir::AllEntries | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
     unsigned n = 0;
@@ -187,7 +189,7 @@ Result<Entry> LocalProvider::stat(const Location& location, OperationContext& ct
 {
     Q_UNUSED(ctx)
     if (!location.isLocal())
-        return Error::make(ErrorCode::InvalidArgument, tr("Not a local location"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Not a local location"));
     if (location.localPath().isEmpty()) {
         Entry e;
         e.location = location;
@@ -205,11 +207,11 @@ VoidResult LocalProvider::makeDirectory(const Location& dir, OperationContext& c
     Q_UNUSED(ctx)
     const QString path = dir.localPath();
     if (path.isEmpty())
-        return Error::make(ErrorCode::InvalidArgument, tr("Invalid directory"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Invalid directory"));
     if (QFileInfo::exists(path))
-        return Error::make(ErrorCode::AlreadyExists, tr("Already exists: %1").arg(dir.nativePath()));
+        return Error::make(ErrorCode::AlreadyExists, Tr::tr("Already exists: %1").arg(dir.nativePath()));
     if (!QDir().mkpath(path))
-        return accessOrIo(tr("Cannot create directory %1"), path);
+        return accessOrIo(Tr::tr("Cannot create directory %1"), path);
     return {};
 }
 
@@ -219,9 +221,9 @@ VoidResult LocalProvider::remove(const EntryList& items, OperationContext& ctx)
     for (const Entry& item : items) {
         const QString path = item.location.localPath();
         if (path.isEmpty() || item.location.isRoot())
-            return Error::make(ErrorCode::InvalidArgument, tr("Refusing to delete a filesystem root"));
+            return Error::make(ErrorCode::InvalidArgument, Tr::tr("Refusing to delete a filesystem root"));
         if (!QFileInfo::exists(path) && !QFileInfo(path).isSymLink()) {
-            st.failures.push_back(tr("%1: not found").arg(QDir::toNativeSeparators(path)));
+            st.failures.push_back(Tr::tr("%1: not found").arg(QDir::toNativeSeparators(path)));
             continue;
         }
         removeRecursive(path, st);
@@ -233,8 +235,8 @@ VoidResult LocalProvider::remove(const EntryList& items, OperationContext& ctx)
     const qsizetype count = st.failures.size();
     QStringList shown = st.failures.mid(0, kMaxReportedFailures);
     if (count > kMaxReportedFailures)
-        shown.push_back(tr("… and %1 more").arg(count - kMaxReportedFailures));
-    return Error::make(ErrorCode::Io, tr("%n item(s) could not be deleted", nullptr, int(count)),
+        shown.push_back(Tr::tr("… and %1 more").arg(count - kMaxReportedFailures));
+    return Error::make(ErrorCode::Io, Tr::tr("%n item(s) could not be deleted", nullptr, int(count)),
                        shown.join(u'\n'));
 }
 
@@ -247,7 +249,7 @@ VoidResult LocalProvider::rename(const Location& from, const Location& to, Opera
         return notFound(src);
     const bool caseOnlyRename = src.compare(dst, Qt::CaseInsensitive) == 0 && src != dst;
     if (QFileInfo::exists(dst) && !caseOnlyRename)
-        return Error::make(ErrorCode::AlreadyExists, tr("Already exists: %1").arg(to.nativePath()));
+        return Error::make(ErrorCode::AlreadyExists, Tr::tr("Already exists: %1").arg(to.nativePath()));
     if (QDir().rename(src, dst))
         return {};
     const QFileInfo srcInfo(src);
@@ -256,12 +258,13 @@ VoidResult LocalProvider::rename(const Location& from, const Location& to, Opera
         QFile f(src);
         if (f.rename(dst))
             return {};
-        return accessOrIo(tr("Cannot move %1"), src, f.errorString());
+        return accessOrIo(Tr::tr("Cannot move %1"), src, f.errorString());
     }
     if (QFileInfo(dst).absolutePath() != srcInfo.absolutePath() &&
         QStorageInfo(src).rootPath() != QStorageInfo(QFileInfo(dst).absolutePath()).rootPath())
-        return Error::make(ErrorCode::Unsupported, tr("Cannot move a directory across filesystems directly"));
-    return accessOrIo(tr("Cannot move %1"), src);
+        return Error::make(ErrorCode::Unsupported,
+                           Tr::tr("Cannot move a directory across filesystems directly"));
+    return accessOrIo(Tr::tr("Cannot move %1"), src);
 }
 
 VoidResult LocalProvider::copyFile(const QString& from, const QString& to, OperationContext& ctx)
@@ -272,15 +275,15 @@ VoidResult LocalProvider::copyFile(const QString& from, const QString& to, Opera
         return notFound(from);
     if (srcInfo.isDir())
         return Error::make(ErrorCode::InvalidArgument,
-                           tr("Is a directory: %1").arg(QDir::toNativeSeparators(from)));
+                           Tr::tr("Is a directory: %1").arg(QDir::toNativeSeparators(from)));
     if (!in.open(QIODevice::ReadOnly))
         return Error::make(srcInfo.isReadable() ? ErrorCode::Io : ErrorCode::AccessDenied,
-                           tr("Cannot read %1").arg(QDir::toNativeSeparators(from)), in.errorString());
+                           Tr::tr("Cannot read %1").arg(QDir::toNativeSeparators(from)), in.errorString());
 
     QSaveFile out(to);
     out.setDirectWriteFallback(true);
     if (!out.open(QIODevice::WriteOnly))
-        return accessOrIo(tr("Cannot write %1"), to, out.errorString());
+        return accessOrIo(Tr::tr("Cannot write %1"), to, out.errorString());
 
     const TransferParams* params = ctx.params();
     const qint64 total = in.size();
@@ -295,14 +298,14 @@ VoidResult LocalProvider::copyFile(const QString& from, const QString& to, Opera
         const qint64 n = in.read(buffer.data(), buffer.size());
         if (n < 0) {
             out.cancelWriting();
-            return ioError(tr("Error reading %1"), from, in.errorString());
+            return ioError(Tr::tr("Error reading %1"), from, in.errorString());
         }
         if (n == 0)
             break;
         if (out.write(buffer.constData(), n) != n) {
             const QString err = out.errorString();
             out.cancelWriting();
-            return ioError(tr("Error writing %1"), to, err);
+            return ioError(Tr::tr("Error writing %1"), to, err);
         }
         done += n;
         ctx.reportProgress(done, total);
@@ -310,15 +313,15 @@ VoidResult LocalProvider::copyFile(const QString& from, const QString& to, Opera
             params->limiter->consume(n, &ctx);
     }
     if (!out.commit())
-        return ioError(tr("Error writing %1"), to, out.errorString());
+        return ioError(Tr::tr("Error writing %1"), to, out.errorString());
 
     QFile written(to);
     written.setPermissions(srcInfo.permissions());
     if ((!params || params->preserveMtime) && written.open(QIODevice::Append))
         written.setFileTime(srcInfo.lastModified(), QFileDevice::FileModificationTime);
     if ((!params || params->verify) && QFileInfo(to).size() != done) {
-        Error e = ioError(tr("Integrity check failed for %1"), to,
-                          tr("%1 bytes written, %2 expected").arg(QFileInfo(to).size()).arg(done));
+        Error e = ioError(Tr::tr("Integrity check failed for %1"), to,
+                          Tr::tr("%1 bytes written, %2 expected").arg(QFileInfo(to).size()).arg(done));
         e.retryable = true;
         return e;
     }

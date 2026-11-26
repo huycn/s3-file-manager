@@ -1,6 +1,5 @@
 #include "providers/s3/S3ObjectService.h"
 
-#include "core/Logging.h"
 #include "core/ProviderRegistry.h"
 #include "providers/s3/AwsConvert.h"
 #include "providers/s3/Checksums.h"
@@ -36,10 +35,12 @@ namespace Model = Aws::S3::Model;
 
 namespace {
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3ObjectService", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3ObjectService)
+};
 
 template <class Req>
 void target(Req& req, const S3Session& session, const Location& l, const QString& versionId = {})
@@ -242,7 +243,7 @@ VoidResult S3ObjectService::setCannedAcl(const Location& object, const QString& 
     const Model::ObjectCannedACL canned =
         Model::ObjectCannedACLMapper::GetObjectCannedACLForName(toAws(cannedAcl));
     if (!cannedAclNames().contains(cannedAcl) || canned == Model::ObjectCannedACL::NOT_SET)
-        return Error::make(ErrorCode::InvalidArgument, tr("Unknown canned ACL: %1").arg(cannedAcl));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Unknown canned ACL: %1").arg(cannedAcl));
     S3Session& session = m_provider->session();
     auto r = m_provider->withClient<bool>(object.bucket(), [&](Aws::S3::S3Client& client) -> Result<bool> {
         Model::PutObjectAclRequest req;
@@ -399,7 +400,7 @@ Result<S3ObjectService::Presigned> S3ObjectService::presign(const Location& obje
                                                             qint64 seconds)
 {
     if (object.bucket().isEmpty() || object.key().isEmpty() || object.key().endsWith(u'/'))
-        return Error::make(ErrorCode::InvalidArgument, tr("Presigned URLs are for objects only"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Presigned URLs are for objects only"));
     seconds = qBound<qint64>(1, seconds, kMaxPresignSeconds);
     Presigned out;
     QDateTime credentialsExpire;
@@ -419,7 +420,8 @@ Result<S3ObjectService::Presigned> S3ObjectService::presign(const Location& obje
         method == PresignMethod::Get ? Aws::Http::HttpMethod::HTTP_GET : Aws::Http::HttpMethod::HTTP_PUT,
         static_cast<uint64_t>(seconds));
     if (url.empty())
-        return Error::make(ErrorCode::Authentication, tr("Could not sign the URL (no usable credentials)"));
+        return Error::make(ErrorCode::Authentication,
+                           Tr::tr("Could not sign the URL (no usable credentials)"));
     out.url = fromAws(url);
     out.expires = QDateTime::currentDateTimeUtc().addSecs(seconds);
     return out;
@@ -438,7 +440,7 @@ S3ObjectService::compareWithLocal(const Location& object, const QString& localFi
     const Entry& e = head.value();
     if (QFileInfo(localFile).size() != e.size) {
         ChecksumComparison size;
-        size.algorithm = tr("Size");
+        size.algorithm = Tr::tr("Size");
         size.remote = QString::number(e.size);
         size.local = QString::number(QFileInfo(localFile).size());
         return QList<ChecksumComparison>{size};
@@ -487,7 +489,8 @@ S3ObjectService::compareWithLocal(const Location& object, const QString& localFi
         if (ctx.isCancelled())
             return Error::cancelled();
         ChecksumComparison c;
-        c.algorithm = algorithm == checksums::Algorithm::MD5 ? tr("MD5 (ETag)") : checksums::name(algorithm);
+        c.algorithm =
+            algorithm == checksums::Algorithm::MD5 ? Tr::tr("MD5 (ETag)") : checksums::name(algorithm);
         c.remote = remote;
         c.local = checksums::objectValue(localFile, algorithm, remote.contains(u'-') ? partSize : 0, &ctx);
         c.matches = !c.local.isEmpty() && c.local.compare(remote, Qt::CaseInsensitive) == 0;

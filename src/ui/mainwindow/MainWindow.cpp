@@ -4,7 +4,6 @@
 #include "connections/ConnectionStore.h"
 #include "connections/S3Urls.h"
 #include "core/Async.h"
-#include "core/Logging.h"
 #include "core/Provider.h"
 #include "core/ProviderRegistry.h"
 #include "models/EntryListModel.h"
@@ -14,6 +13,8 @@
 #include "providers/s3/S3VersionService.h"
 #include "transfer/TransferJob.h"
 #include "transfer/TransferQueue.h"
+#include "ui/HeaderColors.h"
+#include "ui/I18n.h"
 #include "ui/RemoteFiles.h"
 #include "ui/dialogs/BucketPropertiesDialog.h"
 #include "ui/dialogs/ConflictDialog.h"
@@ -25,15 +26,16 @@
 #include "ui/dialogs/PresignDialog.h"
 #include "ui/dialogs/PropertiesDialog.h"
 #include "ui/dialogs/RestoreArchiveDialog.h"
+#include "ui/dialogs/SettingsDialog.h"
 #include "ui/dialogs/TargetDialog.h"
 #include "ui/dialogs/TransferSettingsDialog.h"
 #include "ui/dialogs/VersionHistoryDialog.h"
 #include "ui/dialogs/ViewerDialog.h"
 #include "ui/docks/TransferDock.h"
-#include "ui/panel/PanelView.h"
 #include "ui/panel/PanelWidget.h"
 
 #include <QApplication>
+#include <QChildEvent>
 #include <QClipboard>
 #include <QCloseEvent>
 #include <QDateTimeEdit>
@@ -48,17 +50,65 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QProgressDialog>
+#include <QProxyStyle>
 #include <QPushButton>
 #include <QSettings>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QStorageInfo>
+#include <QStyleOption>
 #include <QTimer>
+#include <QTreeView>
 #include <QUrl>
 #include <QVBoxLayout>
 
 namespace s3fm {
+
+namespace {
+
+// The gap between the panels stays draggable but draws nothing, so the header colour shows
+// through it. Not done with a style sheet: that would apply to everything in the panels and
+// stop palettes (the header colours) from reaching their widgets.
+class BlankSplitterHandle : public QSplitterHandle
+{
+public:
+    using QSplitterHandle::QSplitterHandle;
+
+protected:
+    void paintEvent(QPaintEvent*) override {}
+};
+
+// Paints the menu bar background with its own palette (the header colours, which follow
+// window activation). Breeze would otherwise fill it from the colour scheme in the active
+// colour even when the window is inactive.
+class MenuBarStyle : public QProxyStyle
+{
+public:
+    using QProxyStyle::QProxyStyle;
+
+    void drawControl(ControlElement element, const QStyleOption* option, QPainter* painter,
+                     const QWidget* widget) const override
+    {
+        if (element == CE_MenuBarEmptyArea || element == CE_MenuBarItem)
+            painter->fillRect(option->rect, option->palette.window());
+        if (element == CE_MenuBarEmptyArea)
+            return;
+        QProxyStyle::drawControl(element, option, painter, widget);
+    }
+};
+
+class BlankSplitter : public QSplitter
+{
+public:
+    using QSplitter::QSplitter;
+
+protected:
+    QSplitterHandle* createHandle() override { return new BlankSplitterHandle(orientation(), this); }
+};
+
+} // namespace
 
 MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections, TransferQueue* transfers,
                        QWidget* parent)
@@ -75,9 +125,7 @@ MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections,
     layout->setContentsMargins(4, 4, 4, 0);
     layout->setSpacing(4);
 
-    m_splitter = new QSplitter(Qt::Horizontal, central);
-    // Blank handle: the gap between the panels stays draggable but draws nothing.
-    m_splitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: transparent; image: none; }"));
+    m_splitter = new BlankSplitter(Qt::Horizontal, central);
     m_splitter->setChildrenCollapsible(false);
     m_left = new PanelWidget(registry, m_splitter);
     m_right = new PanelWidget(registry, m_splitter);
@@ -113,7 +161,9 @@ MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections,
 
     createActions();
     createMenus();
-    layout->addWidget(createFunctionKeyBar());
+    m_functionKeyBar = createFunctionKeyBar();
+    layout->addWidget(m_functionKeyBar);
+    applyHeaderColors();
 
     connect(m_remote, &RemoteFiles::uploaded, this, [this](const Location& location) {
         statusBar()->showMessage(tr("Uploaded %1").arg(location.displayString()), 4000);
@@ -154,7 +204,8 @@ QAction* MainWindow::addAction(const QString& name, const QString& text, const Q
 void MainWindow::createActions()
 {
     using K = QKeySequence;
-    addAction(QStringLiteral("view"), tr("&View"), {K(Qt::Key_F3)}, &MainWindow::viewCurrent);
+    addAction(QStringLiteral("view"), tr("&View", "action: view the current file (F3)"), {K(Qt::Key_F3)},
+              &MainWindow::viewCurrent);
     addAction(QStringLiteral("edit"), tr("&Edit"), {K(Qt::Key_F4)}, &MainWindow::editCurrent);
     addAction(QStringLiteral("copy"), tr("&Copy…"), {K(Qt::Key_F5)}, &MainWindow::copySelection);
     addAction(QStringLiteral("move"), tr("&Move…"), {K(Qt::Key_F6)}, &MainWindow::moveSelection);
@@ -163,6 +214,8 @@ void MainWindow::createActions()
     addAction(QStringLiteral("mkdir"), tr("New &Folder…"), {K(Qt::Key_F7)}, &MainWindow::makeDirectory);
     addAction(QStringLiteral("delete"), tr("&Delete…"), {K(Qt::Key_F8), K(Qt::Key_Delete)},
               &MainWindow::deleteSelection);
+    addAction(QStringLiteral("settings"), tr("Settin&gs…"), {K(Qt::CTRL | Qt::Key_Comma)},
+              &MainWindow::showSettings);
     addAction(QStringLiteral("quit"), tr("&Quit"), {K(Qt::Key_F10), K(Qt::CTRL | Qt::Key_Q)},
               &MainWindow::quit);
     addAction(QStringLiteral("copyLocation"), tr("Copy &Location"), {K(Qt::CTRL | Qt::SHIFT | Qt::Key_C)},
@@ -172,7 +225,7 @@ void MainWindow::createActions()
     addAction(QStringLiteral("copyArn"), tr("Copy &ARN"), {}, &MainWindow::copyArn);
     addAction(QStringLiteral("properties"), tr("&Properties"),
               {K(Qt::ALT | Qt::Key_Return), K(Qt::ALT | Qt::Key_Enter)}, &MainWindow::showProperties);
-    addAction(QStringLiteral("editObjects"), tr("Edit &Metadata, Tags, Storage…"), {K(Qt::CTRL | Qt::Key_E)},
+    addAction(QStringLiteral("editObjects"), tr("Edit Metadata, &Tags, Storage…"), {K(Qt::CTRL | Qt::Key_E)},
               &MainWindow::editObjects);
     addAction(QStringLiteral("shareLink"), tr("&Share Link (Presigned URL)…"),
               {K(Qt::CTRL | Qt::SHIFT | Qt::Key_L)}, &MainWindow::shareLink);
@@ -255,35 +308,24 @@ void MainWindow::createMenus()
                 menu->addAction(m_actions.value(n));
         }
     };
-    add(menuBar()->addMenu(tr("&File")), {QStringLiteral("view"),
-                                          QStringLiteral("edit"),
-                                          {},
-                                          QStringLiteral("copy"),
-                                          QStringLiteral("move"),
-                                          QStringLiteral("rename"),
-                                          QStringLiteral("mkdir"),
-                                          QStringLiteral("delete"),
-                                          {},
-                                          QStringLiteral("copyLocation"),
-                                          QStringLiteral("copyS3Uri"),
-                                          QStringLiteral("copyUrl"),
-                                          QStringLiteral("copyArn"),
-                                          QStringLiteral("shareLink"),
-                                          {},
-                                          QStringLiteral("editObjects"),
-                                          QStringLiteral("properties"),
-                                          {},
-                                          QStringLiteral("quit")});
+    add(menuBar()->addMenu(tr("&File")),
+        {QStringLiteral("view"),         QStringLiteral("edit"),       {},
+         QStringLiteral("copy"),         QStringLiteral("move"),       QStringLiteral("rename"),
+         QStringLiteral("mkdir"),        QStringLiteral("delete"),     {},
+         QStringLiteral("copyLocation"), QStringLiteral("copyS3Uri"),  QStringLiteral("copyUrl"),
+         QStringLiteral("copyArn"),      QStringLiteral("shareLink"),  {},
+         QStringLiteral("editObjects"),  QStringLiteral("properties"), {},
+         QStringLiteral("settings"),     QStringLiteral("quit")});
     add(menuBar()->addMenu(tr("&Select")), {QStringLiteral("selectAll"),
                                             QStringLiteral("deselectAll"),
                                             QStringLiteral("invertSelection"),
                                             {},
                                             QStringLiteral("quickFilter")});
-    add(menuBar()->addMenu(tr("&View")), {QStringLiteral("refresh"),
-                                          QStringLiteral("showHidden"),
-                                          {},
-                                          QStringLiteral("swapPanels"),
-                                          QStringLiteral("targetToOther")});
+    add(menuBar()->addMenu(tr("&View", "menu")), {QStringLiteral("refresh"),
+                                                  QStringLiteral("showHidden"),
+                                                  {},
+                                                  QStringLiteral("swapPanels"),
+                                                  QStringLiteral("targetToOther")});
     add(menuBar()->addMenu(tr("&Go")), {QStringLiteral("back"),
                                         QStringLiteral("forward"),
                                         QStringLiteral("home"),
@@ -343,6 +385,72 @@ QWidget* MainWindow::createFunctionKeyBar()
         layout->addWidget(button, 1);
     }
     return bar;
+}
+
+void MainWindow::applyHeaderColors()
+{
+    m_headerColors = HeaderColors::current();
+    QList<QWidget*> widgets = {menuBar(), m_functionKeyBar, m_transferDock};
+    widgets += m_left->chromeWidgets();
+    widgets += m_right->chromeWidgets();
+    for (QWidget* w : std::as_const(widgets))
+        applyHeaderPalette(w);
+    // The status bar is created on its first message; childEvent() styles it then.
+    if (auto* bar = findChild<QStatusBar*>(Qt::FindDirectChildrenOnly))
+        applyHeaderPalette(bar);
+    // The job list inside the Transfers dock keeps the normal colours, like the file lists.
+    QPalette normal;
+    if (m_headerColors) {
+        for (QPalette::ColorGroup g : {QPalette::Active, QPalette::Inactive, QPalette::Disabled}) {
+            for (QPalette::ColorRole r :
+                 {QPalette::Window, QPalette::WindowText, QPalette::Button, QPalette::ButtonText})
+                normal.setColor(g, r, normal.color(g, r)); // mark as set, so it is not inherited
+        }
+    }
+    m_transferDock->view()->setPalette(normal);
+    if (m_headerColors && !m_menuBarStyle) {
+        m_menuBarStyle = new MenuBarStyle;
+        m_menuBarStyle->setParent(this);
+    }
+    menuBar()->setStyle(m_headerColors ? m_menuBarStyle : nullptr);
+    update();
+}
+
+void MainWindow::applyHeaderPalette(QWidget* widget) const
+{
+    // QPalette() is the application palette with nothing marked as set, i.e. "inherit".
+    widget->setPalette(m_headerColors ? m_headerColors->apply(QPalette()) : QPalette());
+}
+
+void MainWindow::paintEvent(QPaintEvent* event)
+{
+    QMainWindow::paintEvent(event);
+    // Everything not covered by a list (panel and dock margins, splitter gaps, status bar) is
+    // transparent, so this extends the title bar's colour over the whole window frame.
+    if (m_headerColors) {
+        QPainter p(this);
+        p.fillRect(rect(),
+                   isActiveWindow() ? m_headerColors->background : m_headerColors->inactiveBackground);
+    }
+}
+
+void MainWindow::childEvent(QChildEvent* event)
+{
+    QMainWindow::childEvent(event);
+    if (event->type() == QEvent::ChildPolished) {
+        if (auto* bar = qobject_cast<QStatusBar*>(event->child()))
+            applyHeaderPalette(bar);
+    }
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+    // A colour scheme switch arrives as a new application palette; kdeglobals is updated by then.
+    if (event->type() == QEvent::ApplicationPaletteChange)
+        applyHeaderColors();
+    else if (event->type() == QEvent::ActivationChange)
+        update();
+    QMainWindow::changeEvent(event);
 }
 
 void MainWindow::buildPlacesMenu(QMenu* menu, PanelWidget* panel)
@@ -640,6 +748,18 @@ void MainWindow::transferSettings()
     m_transfers->setSettings(s);
     QSettings settings;
     s.save(settings);
+}
+
+void MainWindow::showSettings()
+{
+    SettingsDialog dialog(this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+    if (dialog.language() != languageSetting()) {
+        setLanguageSetting(dialog.language());
+        // Every window builds its texts once, at construction: the language applies on restart.
+        statusBar()->showMessage(tr("The new language is used after restarting S3 File Manager."), 8000);
+    }
 }
 
 void MainWindow::pauseAllTransfers()
@@ -970,9 +1090,8 @@ void MainWindow::editObjects()
         for (const auto& [item, error] : report.failures)
             lines.push_back(item + QStringLiteral(": ") + error.toString());
         QMessageBox box(QMessageBox::Warning, tr("Edit Objects"),
-                        tr("%1 of %2 object(s) updated; %3 failed.")
+                        tr("%1 of %n object(s) updated; %2 failed.", nullptr, report.objects)
                             .arg(report.done)
-                            .arg(report.objects)
                             .arg(report.failures.size()),
                         QMessageBox::Close, this);
         box.setDetailedText(lines.join(u'\n'));
@@ -1122,8 +1241,9 @@ void MainWindow::restoreArchive()
         }).then(this, [this](const S3VersionService::RestoreReport& report) {
             QString text = tr("Restore requested for %n object(s)", nullptr, report.requested);
             if (report.alreadyAvailable > 0)
-                text += QStringLiteral("; ") + tr("%n not archived, already restored or in progress", nullptr,
-                                                  report.alreadyAvailable);
+                text = tr("%1; %2", "restore summary: requested; skipped")
+                           .arg(text, tr("%n not archived, already restored or in progress", nullptr,
+                                         report.alreadyAvailable));
             if (report.failures.isEmpty()) {
                 statusBar()->showMessage(text, 8000);
                 return;
@@ -1250,7 +1370,8 @@ void MainWindow::deleteBucket(const Entry& entry)
                 guard.data(),
                 [guard, done] {
                     if (guard)
-                        guard->setLabelText(tr("Deleted %L1 item(s)…").arg(done));
+                        guard->setLabelText(
+                            tr("Deleted %Ln item(s)…", nullptr, int(qMin<qint64>(done, INT_MAX))));
                 },
                 Qt::QueuedConnection);
         });
@@ -1288,9 +1409,10 @@ void MainWindow::deleteBucket(const Entry& entry)
             }
             QString text = tr("Could not delete the bucket %1.").arg(name);
             if (out.report.deleted > 0 || out.report.uploadsAborted > 0)
-                text += u'\n' + tr("%1 item(s) deleted and %2 upload(s) aborted before the error.")
-                                    .arg(out.report.deleted)
-                                    .arg(out.report.uploadsAborted);
+                text += u'\n' +
+                        tr("%1 and %2 before the error.", "deleting a bucket: items deleted, uploads aborted")
+                            .arg(tr("%n item(s) deleted", nullptr, int(out.report.deleted)),
+                                 tr("%n upload(s) aborted", nullptr, out.report.uploadsAborted));
             if (!out.report.failures.isEmpty())
                 text += u'\n' + tr("%n item(s) could not be deleted (retention, legal hold or permissions).",
                                    nullptr, int(out.report.failures.size()));

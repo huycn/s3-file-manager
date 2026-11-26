@@ -15,10 +15,12 @@ namespace s3fm {
 
 namespace {
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::SecretStore", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::SecretStore)
+};
 
 // Runs a keychain job to completion on the calling thread.
 void runJob(QKeychain::Job& job)
@@ -32,7 +34,7 @@ void runJob(QKeychain::Job& job)
 
 Error keychainError(const QKeychain::Job& job)
 {
-    return Error::make(ErrorCode::Io, tr("System keychain error"), job.errorString());
+    return Error::make(ErrorCode::Io, Tr::tr("System keychain error"), job.errorString());
 }
 
 } // namespace
@@ -46,7 +48,7 @@ Result<QString> KeychainSecretStore::read(const QString& key)
     job.setKey(key);
     runJob(job);
     if (job.error() == QKeychain::EntryNotFound)
-        return Error::make(ErrorCode::NotFound, tr("No secret stored in the system keychain"));
+        return Error::make(ErrorCode::NotFound, Tr::tr("No secret stored in the system keychain"));
     if (job.error() != QKeychain::NoError) {
         qCWarning(lcConnections) << "keychain read failed:" << job.errorString();
         return keychainError(job);
@@ -84,7 +86,7 @@ Result<QString> MemorySecretStore::read(const QString& key)
     QMutexLocker lock(&m_mutex);
     ++m_reads;
     if (!m_values.contains(key))
-        return Error::make(ErrorCode::NotFound, QStringLiteral("not found"));
+        return Error::make(ErrorCode::NotFound, Tr::tr("Secret not found"));
     return m_values.value(key);
 }
 

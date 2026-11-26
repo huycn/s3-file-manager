@@ -14,6 +14,7 @@ add_library(s3fm_core STATIC
     core/BandwidthLimiter.cpp core/BandwidthLimiter.h
     core/Entry.h
     core/Format.cpp core/Format.h
+    core/NaturalSort.cpp core/NaturalSort.h
     core/Error.cpp core/Error.h
     core/Location.cpp core/Location.h
     core/Logging.cpp core/Logging.h
@@ -78,12 +79,15 @@ add_library(s3fm_ui STATIC
     ui/dialogs/PresignDialog.cpp ui/dialogs/PresignDialog.h
     ui/dialogs/PropertiesDialog.cpp ui/dialogs/PropertiesDialog.h
     ui/dialogs/RestoreArchiveDialog.cpp ui/dialogs/RestoreArchiveDialog.h
+    ui/dialogs/SettingsDialog.cpp ui/dialogs/SettingsDialog.h
     ui/dialogs/SseKeyDialog.cpp ui/dialogs/SseKeyDialog.h
     ui/dialogs/TargetDialog.cpp ui/dialogs/TargetDialog.h
     ui/dialogs/TransferSettingsDialog.cpp ui/dialogs/TransferSettingsDialog.h
     ui/dialogs/VersionHistoryDialog.cpp ui/dialogs/VersionHistoryDialog.h
     ui/dialogs/ViewerDialog.cpp ui/dialogs/ViewerDialog.h
     ui/docks/TransferDock.cpp ui/docks/TransferDock.h
+    ui/HeaderColors.cpp ui/HeaderColors.h
+    ui/I18n.cpp ui/I18n.h
     ui/mainwindow/MainWindow.cpp ui/mainwindow/MainWindow.h
     ui/panel/AddressBar.cpp ui/panel/AddressBar.h
     ui/panel/PanelView.cpp ui/panel/PanelView.h
@@ -113,6 +117,20 @@ if(QRENCODE_INCLUDE_DIR AND QRENCODE_LIBRARY)
     message(STATUS "qrencode found: QR codes for presigned URLs enabled")
 endif()
 s3fm_set_project_warnings(s3fm_ui)
+
+# Translations: lupdate scans the sources of both libraries; the compiled .qm files are
+# embedded in s3fm_ui under :/i18n and loaded by installTranslations() (ui/I18n.h).
+# translations/s3fm_en.ts holds only the English plural forms ("%n file(s)" -> "1 file" /
+# "3 files"). After adding or changing a %n string, refresh it and fill in the new forms:
+#   cmake --build --preset debug --target update_translations
+# Languages are listed in qt_standard_project_setup(I18N_TRANSLATED_LANGUAGES ...) in the
+# top-level CMakeLists.txt; update_translations creates/refreshes their s3fm_<lang>.ts files.
+qt_add_translations(TARGETS s3fm_ui
+    SOURCE_TARGETS s3fm_core s3fm_ui
+    TS_FILE_DIR "${PROJECT_SOURCE_DIR}/translations"
+    TS_FILE_BASE s3fm
+    PLURALS_TS_FILE "${PROJECT_SOURCE_DIR}/translations/s3fm_en.ts"
+    LUPDATE_OPTIONS -no-obsolete -locations none)
 
 # ---------------------------------------------------------------------------
 # Application executable

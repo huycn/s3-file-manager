@@ -9,10 +9,12 @@ namespace s3fm {
 
 namespace {
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::ConnectionProfile", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::ConnectionProfile)
+};
 
 template <class E> QString enumKey(E value, std::initializer_list<std::pair<E, const char*>> table)
 {
@@ -58,19 +60,19 @@ QString ConnectionProfile::presetName(Preset preset)
 {
     switch (preset) {
     case Preset::AmazonS3:
-        return tr("Amazon S3");
+        return Tr::tr("Amazon S3");
     case Preset::MinIO:
-        return tr("MinIO");
+        return Tr::tr("MinIO");
     case Preset::CloudflareR2:
-        return tr("Cloudflare R2");
+        return Tr::tr("Cloudflare R2");
     case Preset::Wasabi:
-        return tr("Wasabi");
+        return Tr::tr("Wasabi");
     case Preset::BackblazeB2:
-        return tr("Backblaze B2");
+        return Tr::tr("Backblaze B2");
     case Preset::DigitalOceanSpaces:
-        return tr("DigitalOcean Spaces");
+        return Tr::tr("DigitalOcean Spaces");
     case Preset::Custom:
-        return tr("Other S3-compatible");
+        return Tr::tr("Other S3-compatible");
     }
     return {};
 }
@@ -183,24 +185,24 @@ bool ConnectionProfile::usesPathStyle() const
 QString ConnectionProfile::validate() const
 {
     if (name.trimmed().isEmpty())
-        return tr("Enter a name for the connection.");
+        return Tr::tr("Enter a name for the connection.");
     if (!isValidId(id))
-        return tr("The ID may only contain lowercase letters, digits, '.', '-' and '_'.");
+        return Tr::tr("The ID may only contain lowercase letters, digits, '.', '-' and '_'.");
     if (!endpoint.isEmpty()) {
         const QUrl url(endpoint, QUrl::StrictMode);
         if (!url.isValid() || (url.scheme() != u"http" && url.scheme() != u"https") || url.host().isEmpty())
-            return tr("The endpoint must be an http:// or https:// URL.");
+            return Tr::tr("The endpoint must be an http:// or https:// URL.");
         if (endpoint.contains(u'<'))
-            return tr("Replace the placeholder in the endpoint URL.");
+            return Tr::tr("Replace the placeholder in the endpoint URL.");
     } else if (preset != Preset::AmazonS3) {
-        return tr("Enter the endpoint URL of the S3-compatible service.");
+        return Tr::tr("Enter the endpoint URL of the S3-compatible service.");
     }
     if (region.trimmed().isEmpty())
-        return tr("Enter a region (for example us-east-1).");
+        return Tr::tr("Enter a region (for example us-east-1).");
     if (credentialSource == CredentialSource::StaticKeys && accessKeyId.trimmed().isEmpty())
-        return tr("Enter the access key ID.");
+        return Tr::tr("Enter the access key ID.");
     if (credentialSource == CredentialSource::AwsProfile && awsProfile.trimmed().isEmpty())
-        return tr("Choose an AWS profile.");
+        return Tr::tr("Choose an AWS profile.");
     return {};
 }
 

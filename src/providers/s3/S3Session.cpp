@@ -23,10 +23,12 @@ using aws::toAws;
 
 namespace {
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3Session", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3Session)
+};
 
 // Credentials from a named profile: assume-role / credential_source / static keys
 // (CRT profile provider), then SSO, then credential_process.
@@ -66,7 +68,8 @@ Result<std::shared_ptr<Aws::Auth::AWSCredentialsProvider>> S3Session::credential
                 if (e.code == ErrorCode::NotFound)
                     e = Error::make(
                         ErrorCode::Authentication,
-                        tr("No secret key is stored for this connection; edit the connection to enter it"));
+                        Tr::tr(
+                            "No secret key is stored for this connection; edit the connection to enter it"));
                 return e;
             }
             secret = fetched.value();

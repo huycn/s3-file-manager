@@ -27,11 +27,14 @@ AddressBar::AddressBar(QWidget* parent) : QWidget(parent)
     m_overflow = new QToolButton(m_crumbPage);
     m_overflow->setText(QStringLiteral("«"));
     m_overflow->setAutoRaise(true);
-    m_overflow->setPopupMode(QToolButton::InstantPopup);
-    m_overflow->setMenu(new QMenu(m_overflow));
     m_overflow->setCursor(Qt::ArrowCursor);
     m_overflow->setFocusPolicy(Qt::NoFocus);
-    m_overflow->setStyleSheet(QStringLiteral("QToolButton::menu-indicator { image: none; width: 0; }"));
+    // The menu is popped up by hand rather than attached with setMenu(): an attached menu
+    // brings a drop-down arrow, and hiding that takes a style sheet, which would cut the
+    // button off from the palette of its parent (the header colours).
+    m_overflowMenu = new QMenu(m_overflow);
+    connect(m_overflow, &QToolButton::clicked, this,
+            [this] { m_overflowMenu->popup(m_overflow->mapToGlobal(QPoint(0, m_overflow->height()))); });
     m_crumbLayout->addWidget(m_overflow);
     m_crumbLayout->addStretch(1);
     m_stack->addWidget(m_crumbPage);
@@ -118,7 +121,7 @@ void AddressBar::relayoutCrumbs()
         used += w;
         firstVisible = i;
     }
-    QMenu* menu = m_overflow->menu();
+    QMenu* menu = m_overflowMenu;
     menu->clear();
     for (qsizetype i = 0; i < m_crumbs.size(); ++i) {
         const bool visible = i >= firstVisible;

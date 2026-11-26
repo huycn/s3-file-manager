@@ -32,10 +32,12 @@ namespace Model = Aws::S3::Model;
 
 namespace {
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3VersionService", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3VersionService)
+};
 
 } // namespace
 
@@ -76,12 +78,12 @@ RestoreStatus RestoreStatus::fromEntry(const Entry& head)
 QString RestoreStatus::describe() const
 {
     if (!archived)
-        return tr("Not archived");
+        return Tr::tr("Not archived");
     if (inProgress)
-        return tr("Archived; restore in progress");
+        return Tr::tr("Archived; restore in progress");
     if (expires.isValid())
-        return tr("Archived; restored copy available until %1").arg(formatDateTime(expires));
-    return tr("Archived; restore it to read the data");
+        return Tr::tr("Archived; restored copy available until %1").arg(formatDateTime(expires));
+    return Tr::tr("Archived; restore it to read the data");
 }
 
 // ---------------------------------------------------------------------------
@@ -148,7 +150,7 @@ VoidResult S3VersionService::deleteVersions(const EntryList& versions, bool bypa
     for (const Entry& v : versions) {
         if (v.versionId.isEmpty())
             return Error::make(ErrorCode::InvalidArgument,
-                               tr("Not a version: %1").arg(v.location.displayString()));
+                               Tr::tr("Not a version: %1").arg(v.location.displayString()));
         byBucket[v.location.bucket()].push_back(v);
     }
     S3Session& session = m_provider->session();
@@ -219,11 +221,11 @@ VoidResult S3VersionService::undelete(const Location& object, OperationContext& 
         if (v.isLatest) {
             if (!v.isDeleteMarker)
                 return Error::make(ErrorCode::InvalidArgument,
-                                   tr("%1 is not deleted").arg(object.displayString()));
+                                   Tr::tr("%1 is not deleted").arg(object.displayString()));
             return deleteVersions({v}, false, ctx);
         }
     }
-    return Error::make(ErrorCode::NotFound, tr("No versions of %1").arg(object.displayString()));
+    return Error::make(ErrorCode::NotFound, Tr::tr("No versions of %1").arg(object.displayString()));
 }
 
 VoidResult S3VersionService::downloadVersion(const Location& object, const QString& versionId,
@@ -247,9 +249,9 @@ VoidResult S3VersionService::requestRestore(const Location& object, int days, co
 {
     const Model::Tier t = Model::TierMapper::GetTierForName(toAws(tier));
     if (tier != u"Expedited" && tier != u"Standard" && tier != u"Bulk")
-        return Error::make(ErrorCode::InvalidArgument, tr("Unknown restore tier: %1").arg(tier));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Unknown restore tier: %1").arg(tier));
     if (days < 1)
-        return Error::make(ErrorCode::InvalidArgument, tr("Restore for at least one day"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Restore for at least one day"));
     S3Session& session = m_provider->session();
     auto r = m_provider->withClient<bool>(object.bucket(), [&](Aws::S3::S3Client& client) -> Result<bool> {
         Model::RestoreObjectRequest req;

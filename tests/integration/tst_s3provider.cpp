@@ -4,7 +4,6 @@
 #include "common/S3TestEnv.h"
 #include "core/ProviderRegistry.h"
 #include "providers/local/LocalProvider.h"
-#include "providers/s3/AwsConvert.h"
 #include "providers/s3/AwsSdk.h"
 #include "providers/s3/S3Provider.h"
 #include "providers/s3/S3Session.h"
@@ -17,9 +16,6 @@
 #include <QTemporaryDir>
 #include <QTest>
 #include <QUuid>
-
-#include <aws/s3/S3Client.h>
-#include <aws/s3/model/HeadObjectRequest.h>
 
 #include <cstring>
 

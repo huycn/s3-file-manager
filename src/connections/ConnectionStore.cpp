@@ -2,6 +2,7 @@
 
 #include "connections/SecretStore.h"
 #include "core/Logging.h"
+#include "core/NaturalSort.h"
 
 #include <QCollator>
 #include <QJsonDocument>
@@ -77,9 +78,7 @@ QList<ConnectionProfile> ConnectionStore::profiles() const
         QMutexLocker lock(&m_mutex);
         out = m_profiles.values();
     }
-    QCollator collator;
-    collator.setNumericMode(true);
-    collator.setCaseSensitivity(Qt::CaseInsensitive);
+    const QCollator collator = naturalCollator();
     std::sort(out.begin(), out.end(), [&](const ConnectionProfile& a, const ConnectionProfile& b) {
         return collator.compare(a.name, b.name) < 0;
     });

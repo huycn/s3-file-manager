@@ -1,10 +1,9 @@
 #include "ui/dialogs/PropertiesDialog.h"
 
-#include "connections/ConnectionStore.h"
 #include "connections/S3Urls.h"
 #include "core/Async.h"
 #include "core/Format.h"
-#include "core/Provider.h"
+#include "core/Provider.h" // IWYU pragma: keep (used through a shared_ptr; include-cleaner misses it)
 #include "core/ProviderRegistry.h"
 #include "models/IconCache.h"
 #include "providers/s3/S3ObjectService.h"

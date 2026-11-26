@@ -1,5 +1,6 @@
 #include "models/EntrySortProxy.h"
 
+#include "core/NaturalSort.h"
 #include "models/EntryListModel.h"
 
 #include <QDateTime>
@@ -15,10 +16,8 @@
 
 namespace s3fm {
 
-EntrySortProxy::EntrySortProxy(QObject* parent) : QSortFilterProxyModel(parent)
+EntrySortProxy::EntrySortProxy(QObject* parent) : QSortFilterProxyModel(parent), m_collator(naturalCollator())
 {
-    m_collator.setNumericMode(true);
-    m_collator.setCaseSensitivity(Qt::CaseInsensitive);
     setSortRole(EntryListModel::SortRole);
     setDynamicSortFilter(true);
 }

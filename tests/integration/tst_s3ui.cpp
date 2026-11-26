@@ -6,7 +6,6 @@
 #include "connections/SecretStore.h"
 #include "core/ProviderRegistry.h"
 #include "models/EntryListModel.h"
-#include "models/EntrySortProxy.h"
 #include "providers/local/LocalProvider.h"
 #include "providers/s3/AwsSdk.h"
 #include "providers/s3/S3ObjectService.h"

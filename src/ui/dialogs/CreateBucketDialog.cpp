@@ -52,7 +52,7 @@ CreateBucketDialog::CreateBucketDialog(bool aws, const QString& defaultRegion, Q
         m_acl->addItem(QString::fromLatin1(acl), QString::fromLatin1(acl));
     form->addRow(tr("Canned &ACL:"), m_acl);
 
-    m_objectLock = new QCheckBox(tr("Enable &Object Lock (turns on versioning; cannot be turned off)"), this);
+    m_objectLock = new QCheckBox(tr("Enable Object &Lock (turns on versioning; cannot be turned off)"), this);
     m_objectLock->setObjectName(QStringLiteral("objectLock"));
     form->addRow(QString(), m_objectLock);
     layout->addLayout(form);

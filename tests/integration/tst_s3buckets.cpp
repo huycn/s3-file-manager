@@ -15,7 +15,7 @@
 #include <QTest>
 #include <QUuid>
 
-#include <aws/s3/S3Client.h>
+#include <aws/s3/S3Client.h> // IWYU pragma: keep (used through a shared_ptr; include-cleaner misses it)
 #include <aws/s3/model/CreateMultipartUploadRequest.h>
 
 using namespace s3fm;

@@ -17,8 +17,11 @@ option(S3FM_FETCH_QTKEYCHAIN "Download and build QtKeychain when it is not insta
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Network Concurrent)
-qt_standard_project_setup(REQUIRES 6.8)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Network Concurrent LinguistTools)
+# Translations live in translations/s3fm_<lang>.ts (see src/CMakeLists.txt).
+qt_standard_project_setup(REQUIRES 6.8
+    I18N_SOURCE_LANGUAGE en
+    I18N_TRANSLATED_LANGUAGES zh_CN hi es ar fr bn pt ru de ja ko it nl pl ms vi)
 set(CMAKE_AUTORCC ON)
 
 # AWS SDK for C++ (Linux: distro packages; Windows: vcpkg manifest in vcpkg.json).

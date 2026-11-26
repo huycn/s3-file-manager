@@ -3,7 +3,7 @@
 #include "core/Logging.h"
 #include "core/Provider.h"
 #include "core/ProviderRegistry.h"
-#include "transfer/TransferStore.h"
+#include "transfer/TransferStore.h" // IWYU pragma: keep (used through a shared_ptr; include-cleaner misses it)
 
 #include <QCoreApplication>
 #include <QDir>
@@ -20,10 +20,12 @@ namespace s3fm {
 
 namespace {
 
-QString tr(const char* text, int n = -1)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::TransferJob", text, nullptr, n);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::TransferJob)
+};
 
 // Appends a '/'-separated relative path to `base`; the last segment is a directory
 // if `isDir`. Empty segments are preserved (S3 keys may contain "//").
@@ -151,7 +153,7 @@ void JobRunner::run()
     if (m_req.kind == TransferKind::Delete) {
         if (!m_src)
             jobFail(m_req.sources.first().location,
-                    Error::make(ErrorCode::NotFound, tr("No provider for this location")));
+                    Error::make(ErrorCode::NotFound, Tr::tr("No provider for this location")));
         else
             runDelete();
         setStage(TransferProgress::Stage::Finished);
@@ -159,7 +161,7 @@ void JobRunner::run()
     }
     m_dst = c.registry->providerFor(m_req.destination);
     if (!m_src || !m_dst) {
-        jobFail(m_req.destination, Error::make(ErrorCode::NotFound, tr("No provider for this location")));
+        jobFail(m_req.destination, Error::make(ErrorCode::NotFound, Tr::tr("No provider for this location")));
         setStage(TransferProgress::Stage::Finished);
         return;
     }
@@ -318,12 +320,12 @@ bool JobRunner::plan(QList<TransferTask>& tasks)
         targets.push_back(target);
         if (target == src.location) {
             jobFail(src.location,
-                    Error::make(ErrorCode::InvalidArgument, tr("Source and destination are the same")));
+                    Error::make(ErrorCode::InvalidArgument, Tr::tr("Source and destination are the same")));
             continue;
         }
         if (src.isDirectory() && src.location.isAncestorOf(target)) {
             jobFail(src.location,
-                    Error::make(ErrorCode::InvalidArgument, tr("Cannot copy a folder into itself")));
+                    Error::make(ErrorCode::InvalidArgument, Tr::tr("Cannot copy a folder into itself")));
             continue;
         }
         pending.push_back(i);
@@ -356,7 +358,8 @@ bool JobRunner::plan(QList<TransferTask>& tasks)
                 if (d == Decision::Rename) {
                     target = uniqueTarget(target, ctx);
                     if (!target.isValid()) {
-                        jobFail(targets[i], Error::make(ErrorCode::AlreadyExists, tr("No free name found")));
+                        jobFail(targets[i],
+                                Error::make(ErrorCode::AlreadyExists, Tr::tr("No free name found")));
                         continue;
                     }
                     targets[i] = target;
@@ -661,7 +664,7 @@ void JobRunner::processFile(int index)
     if (existing) {
         if (existing->isDirectory()) {
             markTask(index, TaskState::Failed,
-                     Error::make(ErrorCode::AlreadyExists, tr("A folder with this name already exists")));
+                     Error::make(ErrorCode::AlreadyExists, Tr::tr("A folder with this name already exists")));
             return;
         }
         switch (resolveConflict(task.source, *existing)) {
@@ -674,7 +677,7 @@ void JobRunner::processFile(int index)
             target = uniqueTarget(target, ctx);
             if (!target.isValid()) {
                 markTask(index, TaskState::Failed,
-                         Error::make(ErrorCode::AlreadyExists, tr("No free name found")));
+                         Error::make(ErrorCode::AlreadyExists, Tr::tr("No free name found")));
                 return;
             }
             break;

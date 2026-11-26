@@ -73,10 +73,12 @@ namespace {
 
 constexpr int kDeleteBatch = 1000;
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3BucketService", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3BucketService)
+};
 
 VoidResult toVoid(const Result<bool>& r)
 {
@@ -136,7 +138,7 @@ VoidResult S3BucketService::createBucket(const NewBucket& spec)
     if (const QString e = validateBucketName(spec.name, session.isAws()); !e.isEmpty())
         return Error::make(ErrorCode::InvalidArgument, e);
     if (!spec.objectOwnership.isEmpty() && !objectOwnershipValues().contains(spec.objectOwnership))
-        return Error::make(ErrorCode::InvalidArgument, tr("Unknown object ownership setting"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Unknown object ownership setting"));
     // AWS: the request goes to the target region's endpoint.
     const QString region = spec.region.isEmpty() && session.isAws() ? session.profile().region : spec.region;
     auto client = session.client(session.isAws() ? region : QString());

@@ -2,6 +2,7 @@
 #include "models/EntryListModel.h"
 #include "providers/local/LocalProvider.h"
 #include "transfer/TransferJob.h"
+#include "ui/docks/TransferDock.h"
 #include "ui/mainwindow/MainWindow.h"
 #include "ui/panel/PanelView.h"
 #include "ui/panel/PanelWidget.h"
@@ -9,10 +10,17 @@
 #include <QAction>
 #include <QDir>
 #include <QFile>
+#include <QHeaderView>
+#include <QLabel>
+#include <QMenuBar>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QStandardPaths>
+#include <QStatusBar>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QToolBar>
+#include <QTreeView>
 
 using namespace s3fm;
 
@@ -160,6 +168,56 @@ private Q_SLOTS:
         MainWindow window(&m_registry);
         QVERIFY(waitIdle(window.rightPanel()));
         QCOMPARE(window.rightPanel()->location(), Location::local(m_tmp.path() + QStringLiteral("/right")));
+    }
+
+    void headerColorsFromKdeColorScheme()
+    {
+        // A KDE colour scheme found through $XDG_CONFIG_DIRS (test mode only redirects the
+        // user config dir).
+        QTemporaryDir xdg;
+        QFile f(xdg.filePath(QStringLiteral("kdeglobals")));
+        QVERIFY(f.open(QIODevice::WriteOnly));
+        f.write("[Colors:Header]\nBackgroundNormal=10,20,30\nForegroundNormal=200,210,220\n"
+                "[Colors:Header][Inactive]\nBackgroundNormal=40,50,60\nForegroundNormal=1,2,3\n");
+        f.close();
+        const QByteArray oldDirs = qgetenv("XDG_CONFIG_DIRS");
+        const QByteArray oldDesktop = qgetenv("XDG_CURRENT_DESKTOP");
+        const auto restore = qScopeGuard([&] {
+            qputenv("XDG_CONFIG_DIRS", oldDirs);
+            qputenv("XDG_CURRENT_DESKTOP", oldDesktop);
+        });
+        qputenv("XDG_CONFIG_DIRS", xdg.path().toLocal8Bit());
+        qputenv("XDG_CURRENT_DESKTOP", "KDE");
+
+        MainWindow window(&m_registry);
+        window.show();
+        QVERIFY(QTest::qWaitForWindowExposed(&window));
+        const QColor bg(10, 20, 30);
+        QCOMPARE(window.menuBar()->palette().color(QPalette::Active, QPalette::Window), bg);
+        QCOMPARE(window.menuBar()->palette().color(QPalette::Inactive, QPalette::Window), QColor(40, 50, 60));
+        QCOMPARE(window.centralWidget()->palette().color(QPalette::Active, QPalette::Window),
+                 QPalette().color(QPalette::Active, QPalette::Window));
+        auto* status = window.leftPanel()->findChild<QLabel*>(QStringLiteral("status"));
+        QVERIFY(status);
+        QCOMPARE(status->palette().color(QPalette::Active, QPalette::WindowText), QColor(200, 210, 220));
+        // The list keeps the normal colours.
+        QCOMPARE(window.leftPanel()->view()->palette().color(QPalette::Active, QPalette::Window),
+                 QPalette().color(QPalette::Active, QPalette::Window));
+
+        // The status bar only exists from its first message on.
+        window.statusBar()->showMessage(QStringLiteral("hello"));
+        QTRY_COMPARE(window.statusBar()->palette().color(QPalette::Active, QPalette::Window), bg);
+
+        // Transfers dock: frame and toolbar take the header colours, the job list does not.
+        TransferDock* dock = window.transferDock();
+        QCOMPARE(dock->palette().color(QPalette::Active, QPalette::WindowText), QColor(200, 210, 220));
+        auto* toolBar = dock->findChild<QToolBar*>();
+        QVERIFY(toolBar);
+        QCOMPARE(toolBar->palette().color(QPalette::Active, QPalette::ButtonText), QColor(200, 210, 220));
+        QCOMPARE(dock->view()->palette().color(QPalette::Active, QPalette::Window),
+                 QPalette().color(QPalette::Active, QPalette::Window));
+        QCOMPARE(dock->view()->header()->palette().color(QPalette::Active, QPalette::Button),
+                 QPalette().color(QPalette::Active, QPalette::Button));
     }
 };
 

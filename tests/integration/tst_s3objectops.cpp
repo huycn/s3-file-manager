@@ -3,7 +3,6 @@
 // changes and requester pays.
 
 #include "common/S3TestEnv.h"
-#include "core/ProviderRegistry.h"
 #include "providers/s3/AwsConvert.h"
 #include "providers/s3/AwsSdk.h"
 #include "providers/s3/S3ObjectService.h"
@@ -22,7 +21,7 @@
 #include <QTimer>
 #include <QUuid>
 
-#include <aws/s3/S3Client.h>
+#include <aws/s3/S3Client.h> // IWYU pragma: keep (used through a shared_ptr; include-cleaner misses it)
 #include <aws/s3/model/DeleteObjectRequest.h>
 #include <aws/s3/model/ListObjectVersionsRequest.h>
 

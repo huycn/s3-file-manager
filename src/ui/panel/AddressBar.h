@@ -7,6 +7,7 @@
 class QHBoxLayout;
 class QLineEdit;
 class QStackedWidget;
+class QMenu;
 class QToolButton;
 
 namespace s3fm {
@@ -48,6 +49,7 @@ private:
     QWidget* m_crumbPage;
     QHBoxLayout* m_crumbLayout;
     QToolButton* m_overflow;
+    QMenu* m_overflowMenu;
     QList<QToolButton*> m_crumbs;
     QList<Location> m_crumbLocations;
     QLineEdit* m_edit;

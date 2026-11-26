@@ -21,7 +21,7 @@
 #include <QUuid>
 
 #include <aws/core/utils/stream/PreallocatedStreamBuf.h>
-#include <aws/s3/S3Client.h>
+#include <aws/s3/S3Client.h> // IWYU pragma: keep (used through a shared_ptr; include-cleaner misses it)
 #include <aws/s3/model/CreateMultipartUploadRequest.h>
 #include <aws/s3/model/UploadPartRequest.h>
 

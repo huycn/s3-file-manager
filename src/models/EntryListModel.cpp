@@ -2,7 +2,6 @@
 
 #include "core/Async.h"
 #include "core/Format.h"
-#include "core/Logging.h"
 #include "core/OperationContext.h"
 #include "core/ProviderRegistry.h"
 #include "models/IconCache.h"

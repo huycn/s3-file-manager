@@ -12,10 +12,12 @@ namespace s3fm {
 namespace {
 constexpr QLatin1StringView kMetaPrefix("x-amz-meta-");
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3Types", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3Types)
+};
 } // namespace
 
 ObjectHeaders ObjectHeaders::fromEntry(const Entry& e)
@@ -53,13 +55,13 @@ QString ObjectEncryption::modeName(Mode mode)
 {
     switch (mode) {
     case Mode::None:
-        return tr("None");
+        return Tr::tr("None");
     case Mode::S3:
-        return tr("SSE-S3 (AES-256, keys managed by S3)");
+        return Tr::tr("SSE-S3 (AES-256, keys managed by S3)");
     case Mode::Kms:
-        return tr("SSE-KMS (AWS KMS key)");
+        return Tr::tr("SSE-KMS (AWS KMS key)");
     case Mode::Customer:
-        return tr("SSE-C (customer-provided key)");
+        return Tr::tr("SSE-C (customer-provided key)");
     }
     return {};
 }
@@ -125,14 +127,14 @@ bool isArchiveStorageClass(const QString& storageClass)
 QString validateTags(const QMap<QString, QString>& tags)
 {
     if (tags.size() > 10)
-        return tr("An object can have at most 10 tags.");
+        return Tr::tr("An object can have at most 10 tags.");
     for (auto it = tags.cbegin(); it != tags.cend(); ++it) {
         if (it.key().isEmpty() || it.key().size() > 128)
-            return tr("Tag keys must have 1 to 128 characters.");
+            return Tr::tr("Tag keys must have 1 to 128 characters.");
         if (it.value().size() > 256)
-            return tr("Tag values can have at most 256 characters.");
+            return Tr::tr("Tag values can have at most 256 characters.");
         if (it.key().startsWith(QStringLiteral("aws:"), Qt::CaseInsensitive))
-            return tr("Tag keys must not start with \"aws:\".");
+            return Tr::tr("Tag keys must not start with \"aws:\".");
     }
     return {};
 }

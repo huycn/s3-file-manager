@@ -4,7 +4,7 @@
 #include "core/Format.h"
 #include "core/Logging.h"
 #include "core/OperationContext.h"
-#include "core/Provider.h"
+#include "core/Provider.h" // IWYU pragma: keep (Provider via shared_ptr, TransferParams; include-cleaner misses both)
 #include "core/ProviderRegistry.h"
 #include "ui/dialogs/ViewerDialog.h"
 

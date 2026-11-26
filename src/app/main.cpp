@@ -9,6 +9,7 @@
 #include "providers/s3/S3Session.h"
 #include "transfer/TransferQueue.h"
 #include "transfer/TransferStore.h"
+#include "ui/I18n.h"
 #include "ui/mainwindow/MainWindow.h"
 
 #include <QAction>
@@ -30,6 +31,7 @@ int main(int argc, char* argv[])
     QApplication::setApplicationVersion(QStringLiteral(S3FM_VERSION));
     QApplication::setDesktopFileName(QStringLiteral("io.github.huycn.s3fm"));
     QApplication::setWindowIcon(QIcon(QStringLiteral(":/icons/app.svg")));
+    s3fm::installTranslations(app, s3fm::uiLocale()); // before any widget or string is created
 
     s3fm::ProviderRegistry registry;
     registry.setLocalProvider(std::make_shared<s3fm::LocalProvider>());
@@ -69,8 +71,9 @@ int main(int argc, char* argv[])
         // Developer aid: S3FM_SCREENSHOT=<file.png> saves a screenshot after startup and quits.
         const QString screenshot = qEnvironmentVariable("S3FM_SCREENSHOT");
         if (!screenshot.isEmpty()) {
-            // S3FM_SCREENSHOT_DIALOG=connections captures that dialog instead of the main window.
-            const bool dialog = qEnvironmentVariable("S3FM_SCREENSHOT_DIALOG") == u"connections";
+            // S3FM_SCREENSHOT_DIALOG=<action id> (e.g. connections, settings) triggers that action
+            // and captures the dialog it opens instead of the main window.
+            QAction* dialog = window.action(qEnvironmentVariable("S3FM_SCREENSHOT_DIALOG"));
             QTimer::singleShot(1500, &window, [&window, screenshot, dialog] {
                 if (!dialog) {
                     window.grab().save(screenshot);
@@ -82,7 +85,7 @@ int main(int argc, char* argv[])
                         modal->grab().save(screenshot);
                     QApplication::exit();
                 });
-                window.action(QStringLiteral("connections"))->trigger();
+                dialog->trigger();
             });
         }
         rc = QApplication::exec();

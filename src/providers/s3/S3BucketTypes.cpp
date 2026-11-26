@@ -12,10 +12,12 @@ namespace s3fm {
 
 namespace {
 
-QString tr(const char* text, const char* disambiguation = nullptr, int n = -1)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3BucketTypes", text, disambiguation, n);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3BucketTypes)
+};
 
 // Line and column (1-based) of a byte offset in UTF-8 text.
 QPair<int, int> position(const QByteArray& utf8, qsizetype offset)
@@ -46,7 +48,7 @@ QString parseJson(const QByteArray& json, QJsonDocument& doc, int* line = nullpt
         *line = l;
     if (column)
         *column = c;
-    return tr("JSON syntax error at line %1, column %2: %3").arg(l).arg(c).arg(error.errorString());
+    return Tr::tr("JSON syntax error at line %1, column %2: %3").arg(l).arg(c).arg(error.errorString());
 }
 
 Error invalid(const QString& message)
@@ -71,7 +73,7 @@ QString checkKeys(const QJsonObject& o, const QStringList& known, const QString&
 {
     for (auto it = o.begin(); it != o.end(); ++it) {
         if (!known.contains(it.key()))
-            return tr("Unknown field \"%1\" in %2").arg(it.key(), where);
+            return Tr::tr("Unknown field \"%1\" in %2").arg(it.key(), where);
     }
     return {};
 }
@@ -157,25 +159,25 @@ QString bucketFeatureName(BucketFeature feature)
 {
     switch (feature) {
     case BucketFeature::Versioning:
-        return tr("Versioning");
+        return Tr::tr("Versioning");
     case BucketFeature::Encryption:
-        return tr("Default encryption");
+        return Tr::tr("Default encryption");
     case BucketFeature::Lifecycle:
-        return tr("Lifecycle rules");
+        return Tr::tr("Lifecycle rules");
     case BucketFeature::Cors:
-        return tr("CORS");
+        return Tr::tr("CORS");
     case BucketFeature::Policy:
-        return tr("Bucket policy");
+        return Tr::tr("Bucket policy");
     case BucketFeature::PublicAccessBlock:
-        return tr("Public access block");
+        return Tr::tr("Public access block");
     case BucketFeature::Tagging:
-        return tr("Tags");
+        return Tr::tr("Tags");
     case BucketFeature::Website:
-        return tr("Static website hosting");
+        return Tr::tr("Static website hosting");
     case BucketFeature::ObjectLock:
-        return tr("Object Lock");
+        return Tr::tr("Object Lock");
     case BucketFeature::Ownership:
-        return tr("Object Ownership");
+        return Tr::tr("Object Ownership");
     }
     return {};
 }
@@ -200,33 +202,33 @@ QString validateBucketName(const QString& name, bool aws, QString* warning)
     if (warning)
         warning->clear();
     if (name.size() < 3 || name.size() > 63)
-        return tr("Bucket names must be 3 to 63 characters long.");
+        return Tr::tr("Bucket names must be 3 to 63 characters long.");
     static const QRegularExpression chars(QStringLiteral("^[a-z0-9.-]+$"));
     if (!chars.match(name).hasMatch())
-        return tr("Bucket names can contain only lowercase letters, digits, dots and hyphens.");
+        return Tr::tr("Bucket names can contain only lowercase letters, digits, dots and hyphens.");
     auto alnum = [](QChar c) { return (c >= u'a' && c <= u'z') || (c >= u'0' && c <= u'9'); };
     if (!alnum(name.front()) || !alnum(name.back()))
-        return tr("Bucket names must begin and end with a letter or digit.");
+        return Tr::tr("Bucket names must begin and end with a letter or digit.");
     if (name.contains(QStringLiteral("..")))
-        return tr("Bucket names must not contain two adjacent dots.");
+        return Tr::tr("Bucket names must not contain two adjacent dots.");
     static const QRegularExpression ip(QStringLiteral("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$"));
     if (ip.match(name).hasMatch())
-        return tr("Bucket names must not look like an IP address.");
+        return Tr::tr("Bucket names must not look like an IP address.");
     if (aws) {
         for (const char* prefix : {"xn--", "sthree-", "amzn-s3-demo-"}) {
             if (name.startsWith(QLatin1StringView(prefix)))
-                return tr("Bucket names must not start with \"%1\" (reserved by AWS).")
+                return Tr::tr("Bucket names must not start with \"%1\" (reserved by AWS).")
                     .arg(QLatin1StringView(prefix));
         }
         for (const char* suffix : {"-s3alias", "--ol-s3", ".mrap", "--x-s3", "--table-s3"}) {
             if (name.endsWith(QLatin1StringView(suffix)))
-                return tr("Bucket names must not end with \"%1\" (reserved by AWS).")
+                return Tr::tr("Bucket names must not end with \"%1\" (reserved by AWS).")
                     .arg(QLatin1StringView(suffix));
         }
     }
     if (warning && name.contains(u'.'))
-        *warning = tr("Names with dots do not work with virtual-hosted HTTPS addressing (the TLS "
-                      "certificate does not match) or Transfer Acceleration.");
+        *warning = Tr::tr("Names with dots do not work with virtual-hosted HTTPS addressing (the TLS "
+                          "certificate does not match) or Transfer Acceleration.");
     return {};
 }
 
@@ -303,29 +305,29 @@ bool LifecycleRule::hasAction() const
 QString LifecycleRule::validate() const
 {
     if (id.size() > 255)
-        return tr("Rule IDs can have at most 255 characters.");
+        return Tr::tr("Rule IDs can have at most 255 characters.");
     if (!hasAction())
-        return tr("A rule needs at least one action: a transition, an expiration, or aborting incomplete "
-                  "uploads.");
+        return Tr::tr("A rule needs at least one action: a transition, an expiration, or aborting incomplete "
+                      "uploads.");
     if (sizeGreaterThan >= 0 && sizeLessThan >= 0 && sizeGreaterThan >= sizeLessThan)
-        return tr("The minimum object size must be smaller than the maximum.");
+        return Tr::tr("The minimum object size must be smaller than the maximum.");
     for (auto it = tags.cbegin(); it != tags.cend(); ++it) {
         if (it.key().isEmpty() || it.key().size() > 128)
-            return tr("Tag keys must have 1 to 128 characters.");
+            return Tr::tr("Tag keys must have 1 to 128 characters.");
         if (it.value().size() > 256)
-            return tr("Tag values can have at most 256 characters.");
+            return Tr::tr("Tag values can have at most 256 characters.");
     }
     if (!tags.isEmpty() && abortUploadDays > 0)
-        return tr("A rule that filters on tags cannot abort incomplete uploads (uploads have no tags).");
+        return Tr::tr("A rule that filters on tags cannot abort incomplete uploads (uploads have no tags).");
     if (!tags.isEmpty() && expiredDeleteMarker)
-        return tr("A rule that filters on tags cannot remove expired delete markers.");
+        return Tr::tr("A rule that filters on tags cannot remove expired delete markers.");
     if (expirationDays == 0 || expirationDays < -1)
-        return tr("Objects can expire after 1 day at the earliest.");
+        return Tr::tr("Objects can expire after 1 day at the earliest.");
     if (expirationDays > 0 && expirationDate.isValid())
-        return tr("Choose either a number of days or a date for the expiration.");
+        return Tr::tr("Choose either a number of days or a date for the expiration.");
     if (expiredDeleteMarker && (expirationDays > 0 || expirationDate.isValid()))
-        return tr("Removing expired delete markers cannot be combined with expiring current versions in "
-                  "the same rule.");
+        return Tr::tr("Removing expired delete markers cannot be combined with expiring current versions in "
+                      "the same rule.");
 
     const QStringList classes = lifecycleStorageClasses();
     bool usesDays = expirationDays > 0;
@@ -334,48 +336,48 @@ QString LifecycleRule::validate() const
     int maxTransitionDays = -1;
     for (const LifecycleTransition& t : transitions) {
         if (!classes.contains(t.storageClass))
-            return tr("Unknown transition storage class \"%1\".").arg(t.storageClass);
+            return Tr::tr("Unknown transition storage class \"%1\".").arg(t.storageClass);
         if (seen.contains(t.storageClass))
-            return tr("Two transitions to %1.").arg(t.storageClass);
+            return Tr::tr("Two transitions to %1.").arg(t.storageClass);
         seen.insert(t.storageClass);
         if (t.days < 0 && !t.date.isValid())
-            return tr("Each transition needs a number of days or a date.");
+            return Tr::tr("Each transition needs a number of days or a date.");
         if (t.days >= 0) {
             usesDays = true;
             maxTransitionDays = qMax(maxTransitionDays, t.days);
             if ((t.storageClass == u"STANDARD_IA" || t.storageClass == u"ONEZONE_IA") && t.days < 30)
-                return tr("Objects can move to %1 after 30 days at the earliest.").arg(t.storageClass);
+                return Tr::tr("Objects can move to %1 after 30 days at the earliest.").arg(t.storageClass);
         } else {
             usesDates = true;
         }
     }
     if (usesDays && usesDates)
-        return tr("Use either days or dates for all transitions and the expiration of a rule.");
+        return Tr::tr("Use either days or dates for all transitions and the expiration of a rule.");
     if (expirationDays > 0 && maxTransitionDays >= 0 && expirationDays <= maxTransitionDays)
-        return tr("The expiration must come after the last transition.");
+        return Tr::tr("The expiration must come after the last transition.");
 
     seen.clear();
     for (const NoncurrentTransition& t : noncurrentTransitions) {
         if (!classes.contains(t.storageClass))
-            return tr("Unknown transition storage class \"%1\".").arg(t.storageClass);
+            return Tr::tr("Unknown transition storage class \"%1\".").arg(t.storageClass);
         if (seen.contains(t.storageClass))
-            return tr("Two noncurrent-version transitions to %1.").arg(t.storageClass);
+            return Tr::tr("Two noncurrent-version transitions to %1.").arg(t.storageClass);
         seen.insert(t.storageClass);
         if (t.days < 1)
-            return tr("Noncurrent versions can move after 1 day at the earliest.");
+            return Tr::tr("Noncurrent versions can move after 1 day at the earliest.");
         if (t.newerVersions != -1 && (t.newerVersions < 1 || t.newerVersions > 100))
-            return tr("The number of newer versions to keep must be between 1 and 100.");
+            return Tr::tr("The number of newer versions to keep must be between 1 and 100.");
     }
     if (noncurrentExpirationDays == 0 || noncurrentExpirationDays < -1)
-        return tr("Noncurrent versions can be deleted after 1 day at the earliest.");
+        return Tr::tr("Noncurrent versions can be deleted after 1 day at the earliest.");
     if (newerNoncurrentVersions != -1) {
         if (noncurrentExpirationDays < 1)
-            return tr("Keeping newer noncurrent versions needs a noncurrent expiration.");
+            return Tr::tr("Keeping newer noncurrent versions needs a noncurrent expiration.");
         if (newerNoncurrentVersions < 1 || newerNoncurrentVersions > 100)
-            return tr("The number of newer versions to keep must be between 1 and 100.");
+            return Tr::tr("The number of newer versions to keep must be between 1 and 100.");
     }
     if (abortUploadDays == 0 || abortUploadDays < -1)
-        return tr("Incomplete uploads can be aborted after 1 day at the earliest.");
+        return Tr::tr("Incomplete uploads can be aborted after 1 day at the earliest.");
     return {};
 }
 
@@ -383,52 +385,53 @@ QString LifecycleRule::filterSummary() const
 {
     QStringList parts;
     if (!prefix.isEmpty())
-        parts.push_back(tr("prefix \"%1\"").arg(prefix));
+        parts.push_back(Tr::tr("prefix \"%1\"").arg(prefix));
     for (auto it = tags.cbegin(); it != tags.cend(); ++it)
-        parts.push_back(tr("tag %1=%2").arg(it.key(), it.value()));
+        parts.push_back(Tr::tr("tag %1=%2").arg(it.key(), it.value()));
     if (sizeGreaterThan >= 0)
-        parts.push_back(tr("larger than %1").arg(sizeText(sizeGreaterThan)));
+        parts.push_back(Tr::tr("larger than %1").arg(sizeText(sizeGreaterThan)));
     if (sizeLessThan >= 0)
-        parts.push_back(tr("smaller than %1").arg(sizeText(sizeLessThan)));
-    return parts.isEmpty() ? tr("Whole bucket") : parts.join(QStringLiteral(", "));
+        parts.push_back(Tr::tr("smaller than %1").arg(sizeText(sizeLessThan)));
+    return parts.isEmpty() ? Tr::tr("Whole bucket") : parts.join(QStringLiteral(", "));
 }
 
 QString LifecycleRule::actionSummary() const
 {
     QStringList parts;
     for (const LifecycleTransition& t : transitions)
-        parts.push_back(t.days >= 0 ? tr("to %1 after %2 d").arg(t.storageClass).arg(t.days)
-                                    : tr("to %1 on %2").arg(t.storageClass, t.date.toString(Qt::ISODate)));
+        parts.push_back(t.days >= 0
+                            ? Tr::tr("to %1 after %2 d").arg(t.storageClass).arg(t.days)
+                            : Tr::tr("to %1 on %2").arg(t.storageClass, t.date.toString(Qt::ISODate)));
     if (expirationDays > 0)
-        parts.push_back(tr("expire after %1 d").arg(expirationDays));
+        parts.push_back(Tr::tr("expire after %1 d").arg(expirationDays));
     if (expirationDate.isValid())
-        parts.push_back(tr("expire on %1").arg(expirationDate.toString(Qt::ISODate)));
+        parts.push_back(Tr::tr("expire on %1").arg(expirationDate.toString(Qt::ISODate)));
     if (expiredDeleteMarker)
-        parts.push_back(tr("remove expired delete markers"));
+        parts.push_back(Tr::tr("remove expired delete markers"));
     for (const NoncurrentTransition& t : noncurrentTransitions)
-        parts.push_back(tr("noncurrent to %1 after %2 d").arg(t.storageClass).arg(t.days));
+        parts.push_back(Tr::tr("noncurrent to %1 after %2 d").arg(t.storageClass).arg(t.days));
     if (noncurrentExpirationDays > 0)
         parts.push_back(newerNoncurrentVersions > 0
-                            ? tr("delete noncurrent after %1 d (keep %2)")
+                            ? Tr::tr("delete noncurrent after %1 d (keep %2)")
                                   .arg(noncurrentExpirationDays)
                                   .arg(newerNoncurrentVersions)
-                            : tr("delete noncurrent after %1 d").arg(noncurrentExpirationDays));
+                            : Tr::tr("delete noncurrent after %1 d").arg(noncurrentExpirationDays));
     if (abortUploadDays > 0)
-        parts.push_back(tr("abort uploads after %1 d").arg(abortUploadDays));
+        parts.push_back(Tr::tr("abort uploads after %1 d").arg(abortUploadDays));
     return parts.join(QStringLiteral("; "));
 }
 
 QString validateLifecycle(const QList<LifecycleRule>& rules)
 {
     if (rules.size() > 1000)
-        return tr("A bucket can have at most 1000 lifecycle rules.");
+        return Tr::tr("A bucket can have at most 1000 lifecycle rules.");
     QSet<QString> ids;
     for (qsizetype i = 0; i < rules.size(); ++i) {
         const LifecycleRule& r = rules.at(i);
-        const QString name = r.id.isEmpty() ? tr("Rule %1").arg(i + 1) : tr("Rule \"%1\"").arg(r.id);
+        const QString name = r.id.isEmpty() ? Tr::tr("Rule %1").arg(i + 1) : Tr::tr("Rule \"%1\"").arg(r.id);
         if (!r.id.isEmpty()) {
             if (ids.contains(r.id))
-                return tr("%1: another rule has the same ID.").arg(name);
+                return Tr::tr("%1: another rule has the same ID.").arg(name);
             ids.insert(r.id);
         }
         if (const QString e = r.validate(); !e.isEmpty())
@@ -527,16 +530,16 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
         rules = doc.array();
     } else {
         const QJsonObject root = doc.object();
-        if (const QString e = checkKeys(root, {QStringLiteral("Rules")}, tr("the configuration"));
+        if (const QString e = checkKeys(root, {QStringLiteral("Rules")}, Tr::tr("the configuration"));
             !e.isEmpty())
             return invalid(e);
         rules = root.value(QStringLiteral("Rules")).toArray();
     }
     QList<LifecycleRule> out;
     for (qsizetype i = 0; i < rules.size(); ++i) {
-        const QString where = tr("rule %1").arg(i + 1);
+        const QString where = Tr::tr("rule %1").arg(i + 1);
         if (!rules.at(i).isObject())
-            return invalid(tr("%1 is not an object").arg(where));
+            return invalid(Tr::tr("%1 is not an object").arg(where));
         const QJsonObject o = rules.at(i).toObject();
         if (const QString e =
                 checkKeys(o,
@@ -552,7 +555,7 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
         r.id = o.value(QStringLiteral("ID")).toString();
         const QString status = o.value(QStringLiteral("Status")).toString();
         if (status != u"Enabled" && status != u"Disabled")
-            return invalid(tr("%1: Status must be \"Enabled\" or \"Disabled\"").arg(where));
+            return invalid(Tr::tr("%1: Status must be \"Enabled\" or \"Disabled\"").arg(where));
         r.enabled = status == u"Enabled";
         r.prefix = o.value(QStringLiteral("Prefix")).toString(); // legacy, pre-Filter rules
         if (o.contains(QStringLiteral("Filter"))) {
@@ -560,7 +563,7 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
             const QStringList conditionKeys = {QStringLiteral("Prefix"), QStringLiteral("Tag"),
                                                QStringLiteral("ObjectSizeGreaterThan"),
                                                QStringLiteral("ObjectSizeLessThan"), QStringLiteral("And")};
-            if (const QString e = checkKeys(f, conditionKeys, where + tr(" filter")); !e.isEmpty())
+            if (const QString e = checkKeys(f, conditionKeys, where + Tr::tr(" filter")); !e.isEmpty())
                 return invalid(e);
             QJsonObject source = f;
             if (f.contains(QStringLiteral("And"))) {
@@ -569,7 +572,7 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
                                                 {QStringLiteral("Prefix"), QStringLiteral("Tags"),
                                                  QStringLiteral("ObjectSizeGreaterThan"),
                                                  QStringLiteral("ObjectSizeLessThan")},
-                                                where + tr(" filter"));
+                                                where + Tr::tr(" filter"));
                     !e.isEmpty())
                     return invalid(e);
                 const QJsonArray tags = source.value(QStringLiteral("Tags")).toArray();
@@ -628,37 +631,37 @@ Result<QList<LifecycleRule>> lifecycleFromJson(const QByteArray& json)
 QString CorsRule::validate() const
 {
     if (allowedOrigins.isEmpty())
-        return tr("A CORS rule needs at least one allowed origin.");
+        return Tr::tr("A CORS rule needs at least one allowed origin.");
     if (allowedMethods.isEmpty())
-        return tr("A CORS rule needs at least one allowed method.");
+        return Tr::tr("A CORS rule needs at least one allowed method.");
     static const QStringList methods = {QStringLiteral("GET"), QStringLiteral("PUT"), QStringLiteral("POST"),
                                         QStringLiteral("DELETE"), QStringLiteral("HEAD")};
     for (const QString& m : allowedMethods) {
         if (!methods.contains(m))
-            return tr("Unsupported method \"%1\" (use GET, PUT, POST, DELETE or HEAD).").arg(m);
+            return Tr::tr("Unsupported method \"%1\" (use GET, PUT, POST, DELETE or HEAD).").arg(m);
     }
     for (const QString& o : allowedOrigins) {
         if (o.isEmpty() || o.count(u'*') > 1)
-            return tr("Invalid origin \"%1\": at most one \"*\" wildcard.").arg(o);
+            return Tr::tr("Invalid origin \"%1\": at most one \"*\" wildcard.").arg(o);
     }
     for (const QString& h : allowedHeaders) {
         if (h.isEmpty() || h.count(u'*') > 1)
-            return tr("Invalid header \"%1\": at most one \"*\" wildcard.").arg(h);
+            return Tr::tr("Invalid header \"%1\": at most one \"*\" wildcard.").arg(h);
     }
     if (maxAgeSeconds < -1)
-        return tr("The max age cannot be negative.");
+        return Tr::tr("The max age cannot be negative.");
     if (id.size() > 255)
-        return tr("Rule IDs can have at most 255 characters.");
+        return Tr::tr("Rule IDs can have at most 255 characters.");
     return {};
 }
 
 QString validateCors(const QList<CorsRule>& rules)
 {
     if (rules.size() > 100)
-        return tr("A bucket can have at most 100 CORS rules.");
+        return Tr::tr("A bucket can have at most 100 CORS rules.");
     for (qsizetype i = 0; i < rules.size(); ++i) {
         if (const QString e = rules.at(i).validate(); !e.isEmpty())
-            return tr("Rule %1: %2").arg(i + 1).arg(e);
+            return Tr::tr("Rule %1: %2").arg(i + 1).arg(e);
     }
     return {};
 }
@@ -693,14 +696,14 @@ Result<QList<CorsRule>> corsFromJson(const QByteArray& json)
         rules = doc.array();
     } else {
         const QJsonObject root = doc.object();
-        if (const QString e = checkKeys(root, {QStringLiteral("CORSRules")}, tr("the configuration"));
+        if (const QString e = checkKeys(root, {QStringLiteral("CORSRules")}, Tr::tr("the configuration"));
             !e.isEmpty())
             return invalid(e);
         rules = root.value(QStringLiteral("CORSRules")).toArray();
     }
     QList<CorsRule> out;
     for (qsizetype i = 0; i < rules.size(); ++i) {
-        const QString where = tr("rule %1").arg(i + 1);
+        const QString where = Tr::tr("rule %1").arg(i + 1);
         const QJsonObject o = rules.at(i).toObject();
         if (const QString e = checkKeys(o,
                                         {QStringLiteral("ID"), QStringLiteral("AllowedOrigins"),
@@ -773,18 +776,18 @@ QList<PolicyIssue> validatePolicy(const QString& text, const QString& bucket)
         return issues;
     }
     if (!doc.isObject()) {
-        error(tr("A policy must be a JSON object."));
+        error(Tr::tr("A policy must be a JSON object."));
         return issues;
     }
     const QJsonObject root = doc.object();
     const QString version = root.value(QStringLiteral("Version")).toString();
     if (version.isEmpty())
-        warn(tr(
+        warn(Tr::tr(
             "No \"Version\": add \"Version\": \"2012-10-17\" (without it, policy variables do not work)."));
     else if (version != u"2012-10-17" && version != u"2008-10-17")
-        error(tr("Unknown policy version \"%1\" (use \"2012-10-17\").").arg(version));
+        error(Tr::tr("Unknown policy version \"%1\" (use \"2012-10-17\").").arg(version));
     else if (version == u"2008-10-17")
-        warn(tr("Version \"2008-10-17\" is outdated; use \"2012-10-17\"."));
+        warn(Tr::tr("Version \"2008-10-17\" is outdated; use \"2012-10-17\"."));
     const QJsonValue statementValue = root.value(QStringLiteral("Statement"));
     QJsonArray statements;
     if (statementValue.isObject())
@@ -792,42 +795,43 @@ QList<PolicyIssue> validatePolicy(const QString& text, const QString& bucket)
     else if (statementValue.isArray())
         statements = statementValue.toArray();
     else {
-        error(tr("The policy needs a \"Statement\" (an object or an array of objects)."));
+        error(Tr::tr("The policy needs a \"Statement\" (an object or an array of objects)."));
         return issues;
     }
     if (statements.isEmpty())
-        error(tr("The policy has no statements."));
+        error(Tr::tr("The policy has no statements."));
 
     const QRegularExpression::WildcardConversionOptions wildcard =
         QRegularExpression::NonPathWildcardConversion;
     QSet<QString> sids;
     for (qsizetype i = 0; i < statements.size(); ++i) {
         if (!statements.at(i).isObject()) {
-            error(tr("Statement %1 is not an object.").arg(i + 1));
+            error(Tr::tr("Statement %1 is not an object.").arg(i + 1));
             continue;
         }
         const QJsonObject s = statements.at(i).toObject();
         const QString sid = s.value(QStringLiteral("Sid")).toString();
-        const QString name = sid.isEmpty() ? tr("Statement %1").arg(i + 1) : tr("Statement \"%1\"").arg(sid);
+        const QString name =
+            sid.isEmpty() ? Tr::tr("Statement %1").arg(i + 1) : Tr::tr("Statement \"%1\"").arg(sid);
         if (!sid.isEmpty()) {
             if (sids.contains(sid))
-                error(tr("%1: the Sid is used twice.").arg(name));
+                error(Tr::tr("%1: the Sid is used twice.").arg(name));
             sids.insert(sid);
         }
         const QString effect = s.value(QStringLiteral("Effect")).toString();
         if (effect != u"Allow" && effect != u"Deny")
-            error(tr("%1: \"Effect\" must be \"Allow\" or \"Deny\".").arg(name));
+            error(Tr::tr("%1: \"Effect\" must be \"Allow\" or \"Deny\".").arg(name));
         if (!s.contains(QStringLiteral("Principal")) && !s.contains(QStringLiteral("NotPrincipal")))
-            error(tr("%1: bucket policies need a \"Principal\".").arg(name));
+            error(Tr::tr("%1: bucket policies need a \"Principal\".").arg(name));
         if (!s.contains(QStringLiteral("Action")) && !s.contains(QStringLiteral("NotAction")))
-            error(tr("%1: \"Action\" is missing.").arg(name));
+            error(Tr::tr("%1: \"Action\" is missing.").arg(name));
         if (!s.contains(QStringLiteral("Resource")) && !s.contains(QStringLiteral("NotResource")))
-            error(tr("%1: \"Resource\" is missing.").arg(name));
+            error(Tr::tr("%1: \"Resource\" is missing.").arg(name));
         const QStringList actions =
             stringsOf(s.value(QStringLiteral("Action"))) + stringsOf(s.value(QStringLiteral("NotAction")));
         for (const QString& action : actions) {
             if (action != u"*" && !action.startsWith(QStringLiteral("s3:"), Qt::CaseInsensitive))
-                warn(tr("%1: \"%2\" is not an S3 action.").arg(name, action));
+                warn(Tr::tr("%1: \"%2\" is not an S3 action.").arg(name, action));
         }
         const QStringList resources = stringsOf(s.value(QStringLiteral("Resource"))) +
                                       stringsOf(s.value(QStringLiteral("NotResource")));
@@ -836,7 +840,7 @@ QList<PolicyIssue> validatePolicy(const QString& text, const QString& bucket)
                 continue;
             const qsizetype at = resource.indexOf(QStringLiteral(":s3:::"));
             if (!resource.startsWith(QStringLiteral("arn:")) || at < 0) {
-                warn(tr("%1: \"%2\" is not an S3 resource ARN.").arg(name, resource));
+                warn(Tr::tr("%1: \"%2\" is not an S3 resource ARN.").arg(name, resource));
                 continue;
             }
             const QString path = resource.mid(at + 6);
@@ -844,11 +848,11 @@ QList<PolicyIssue> validatePolicy(const QString& text, const QString& bucket)
             const QRegularExpression re(
                 QRegularExpression::wildcardToRegularExpression(bucketPart, wildcard));
             if (!bucket.isEmpty() && !re.match(bucket).hasMatch())
-                error(tr("%1: \"%2\" is not in this bucket (%3).").arg(name, resource, bucket));
+                error(Tr::tr("%1: \"%2\" is not in this bucket (%3).").arg(name, resource, bucket));
         }
         if (effect == u"Allow" && hasPublicPrincipal(s.value(QStringLiteral("Principal"))) &&
             !s.contains(QStringLiteral("Condition")))
-            warn(tr("%1 grants access to everyone (Principal \"*\" without a condition).").arg(name));
+            warn(Tr::tr("%1 grants access to everyone (Principal \"*\" without a condition).").arg(name));
     }
     return issues;
 }
@@ -864,13 +868,13 @@ QList<QPair<QString, QString>> policyTemplates(const QString& bucket)
     const QString arn = QStringLiteral("arn:aws:s3:::") + bucket;
     const QString objects = arn + QStringLiteral("/*");
     QList<QPair<QString, QString>> out;
-    out.push_back({tr("Public read (anyone can download objects)"),
+    out.push_back({Tr::tr("Public read (anyone can download objects)"),
                    doc({QJsonObject{{QStringLiteral("Sid"), QStringLiteral("PublicRead")},
                                     {QStringLiteral("Effect"), QStringLiteral("Allow")},
                                     {QStringLiteral("Principal"), QStringLiteral("*")},
                                     {QStringLiteral("Action"), QStringLiteral("s3:GetObject")},
                                     {QStringLiteral("Resource"), objects}}})});
-    out.push_back({tr("Deny requests without TLS"),
+    out.push_back({Tr::tr("Deny requests without TLS"),
                    doc({QJsonObject{{QStringLiteral("Sid"), QStringLiteral("DenyInsecureTransport")},
                                     {QStringLiteral("Effect"), QStringLiteral("Deny")},
                                     {QStringLiteral("Principal"), QStringLiteral("*")},
@@ -880,7 +884,7 @@ QList<QPair<QString, QString>> policyTemplates(const QString& bucket)
                                      QJsonObject{{QStringLiteral("Bool"),
                                                   QJsonObject{{QStringLiteral("aws:SecureTransport"),
                                                                QStringLiteral("false")}}}}}}})});
-    out.push_back({tr("Read-only access for another AWS account"),
+    out.push_back({Tr::tr("Read-only access for another AWS account"),
                    doc({QJsonObject{{QStringLiteral("Sid"), QStringLiteral("CrossAccountRead")},
                                     {QStringLiteral("Effect"), QStringLiteral("Allow")},
                                     {QStringLiteral("Principal"),
@@ -900,21 +904,22 @@ QString WebsiteConfig::validate() const
 {
     if (!redirectHost.isEmpty()) {
         if (!indexDocument.isEmpty() || !errorDocument.isEmpty() || !routingRules.isEmpty())
-            return tr("Redirecting all requests cannot be combined with documents or routing rules.");
+            return Tr::tr("Redirecting all requests cannot be combined with documents or routing rules.");
         if (!redirectProtocol.isEmpty() && redirectProtocol != u"http" && redirectProtocol != u"https")
-            return tr("The redirect protocol must be http or https.");
+            return Tr::tr("The redirect protocol must be http or https.");
         return {};
     }
     if (indexDocument.isEmpty())
-        return tr("Website hosting needs an index document (or a redirect of all requests).");
+        return Tr::tr("Website hosting needs an index document (or a redirect of all requests).");
     if (indexDocument.contains(u'/'))
-        return tr("The index document must not contain \"/\" (it is a suffix appended to folder requests).");
+        return Tr::tr(
+            "The index document must not contain \"/\" (it is a suffix appended to folder requests).");
     for (const RoutingRule& r : routingRules) {
         if (r.hostName.isEmpty() && r.replaceKeyPrefixWith.isEmpty() && r.replaceKeyWith.isEmpty() &&
             r.httpRedirectCode.isEmpty() && r.protocol.isEmpty())
-            return tr("Each routing rule needs a redirect.");
+            return Tr::tr("Each routing rule needs a redirect.");
         if (!r.replaceKeyPrefixWith.isEmpty() && !r.replaceKeyWith.isEmpty())
-            return tr("A routing rule can replace the key or the key prefix, not both.");
+            return Tr::tr("A routing rule can replace the key or the key prefix, not both.");
     }
     return {};
 }
@@ -956,10 +961,10 @@ Result<QList<RoutingRule>> routingRulesFromJson(const QByteArray& json)
     if (const QString e = parseJson(json, doc); !e.isEmpty())
         return invalid(e);
     if (!doc.isArray())
-        return invalid(tr("Routing rules must be a JSON array."));
+        return invalid(Tr::tr("Routing rules must be a JSON array."));
     const QJsonArray rules = doc.array();
     for (qsizetype i = 0; i < rules.size(); ++i) {
-        const QString where = tr("routing rule %1").arg(i + 1);
+        const QString where = Tr::tr("routing rule %1").arg(i + 1);
         const QJsonObject o = rules.at(i).toObject();
         if (const QString e = checkKeys(o, {QStringLiteral("Condition"), QStringLiteral("Redirect")}, where);
             !e.isEmpty())
@@ -1010,20 +1015,20 @@ QString ObjectLockDefaults::validate() const
     if (mode.isEmpty())
         return {};
     if (mode != u"GOVERNANCE" && mode != u"COMPLIANCE")
-        return tr("The retention mode must be GOVERNANCE or COMPLIANCE.");
+        return Tr::tr("The retention mode must be GOVERNANCE or COMPLIANCE.");
     if (!enabled)
-        return tr("Default retention needs Object Lock to be enabled on the bucket.");
+        return Tr::tr("Default retention needs Object Lock to be enabled on the bucket.");
     if ((days > 0) == (years > 0))
-        return tr("Set the default retention period in days or in years (one of them).");
+        return Tr::tr("Set the default retention period in days or in years (one of them).");
     if (days > 36500 || years > 100)
-        return tr("The default retention period can be at most 100 years.");
+        return Tr::tr("The default retention period can be at most 100 years.");
     return {};
 }
 
 QString validateBucketTags(const QMap<QString, QString>& tags)
 {
     if (tags.size() > 50)
-        return tr("A bucket can have at most 50 tags.");
+        return Tr::tr("A bucket can have at most 50 tags.");
     QMap<QString, QString> chunk; // reuse the object tag checks without their count limit
     for (auto it = tags.cbegin(); it != tags.cend(); ++it) {
         chunk.clear();

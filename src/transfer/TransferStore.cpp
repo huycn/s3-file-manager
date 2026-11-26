@@ -8,8 +8,6 @@
 #include <QJsonDocument>
 #include <QSaveFile>
 
-#include <algorithm>
-
 namespace s3fm {
 
 namespace {

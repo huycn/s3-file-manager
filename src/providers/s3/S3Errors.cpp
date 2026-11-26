@@ -7,10 +7,12 @@
 namespace s3fm::aws {
 
 namespace {
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3Errors", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3Errors)
+};
 } // namespace
 
 Error toError(const Aws::Client::AWSError<Aws::S3::S3Errors>& error)
@@ -31,59 +33,60 @@ Error toError(const Aws::Client::AWSError<Aws::S3::S3Errors>& error)
         error.GetErrorType() == S3Errors::MISSING_AUTHENTICATION_TOKEN ||
         error.GetErrorType() == S3Errors::INVALID_CLIENT_TOKEN_ID) {
         code = ErrorCode::Authentication;
-        message = tr("Authentication failed: check the access key and secret");
+        message = Tr::tr("Authentication failed: check the access key and secret");
     } else if (name == u"RequestTimeTooSkewed" || error.GetErrorType() == S3Errors::REQUEST_TIME_TOO_SKEWED) {
         code = ErrorCode::Authentication;
-        message = tr("The computer's clock differs too much from the server's time");
+        message = Tr::tr("The computer's clock differs too much from the server's time");
     } else if (error.GetErrorType() == S3Errors::NO_SUCH_KEY || name == u"NoSuchKey") {
         code = ErrorCode::NotFound;
-        message = tr("The object does not exist");
+        message = Tr::tr("The object does not exist");
     } else if (error.GetErrorType() == S3Errors::NO_SUCH_BUCKET || name == u"NoSuchBucket") {
         code = ErrorCode::NotFound;
-        message = tr("The bucket does not exist");
+        message = Tr::tr("The bucket does not exist");
     } else if (error.GetErrorType() == S3Errors::NO_SUCH_UPLOAD || name == u"NoSuchUpload") {
         code = ErrorCode::NotFound;
-        message = tr("The multipart upload does not exist");
+        message = Tr::tr("The multipart upload does not exist");
     } else if (name == u"InvalidObjectState") { // archived (Glacier, Deep Archive): sent as 403
         code = ErrorCode::Conflict;
-        message = tr("The object is archived; request a restore (File > Restore from Archive) and wait until "
-                     "it is available");
+        message =
+            Tr::tr("The object is archived; request a restore (S3 > Restore from Archive) and wait until "
+                   "it is available");
     } else if (error.GetErrorType() == S3Errors::ACCESS_DENIED || name == u"AccessDenied" || http == 403) {
         code = ErrorCode::AccessDenied;
-        message = tr("Access denied");
+        message = Tr::tr("Access denied");
     } else if (error.GetErrorType() == S3Errors::BUCKET_ALREADY_EXISTS ||
                error.GetErrorType() == S3Errors::BUCKET_ALREADY_OWNED_BY_YOU) {
         code = ErrorCode::AlreadyExists;
-        message = tr("The bucket already exists");
+        message = Tr::tr("The bucket already exists");
     } else if (name == u"BucketNotEmpty") {
         code = ErrorCode::NotEmpty;
-        message = tr("The bucket is not empty");
+        message = Tr::tr("The bucket is not empty");
     } else if (name == u"SlowDown" || error.GetErrorType() == S3Errors::THROTTLING ||
                error.GetErrorType() == S3Errors::SLOW_DOWN || http == 503 || http == 429) {
         code = ErrorCode::Throttled;
-        message = tr("The service is throttling requests; try again later");
+        message = Tr::tr("The service is throttling requests; try again later");
     } else if (error.GetErrorType() == S3Errors::NETWORK_CONNECTION) {
         code = ErrorCode::Network;
-        message = tr("Network error: could not reach the endpoint");
+        message = Tr::tr("Network error: could not reach the endpoint");
     } else if (error.GetErrorType() == S3Errors::REQUEST_TIMEOUT || name == u"RequestTimeout") {
         code = ErrorCode::Timeout;
-        message = tr("The request timed out");
+        message = Tr::tr("The request timed out");
     } else if (name == u"PermanentRedirect" || name == u"AuthorizationHeaderMalformed" || http == 301) {
         code = ErrorCode::InvalidArgument;
-        message = tr("The bucket is in a different region than the one configured");
+        message = Tr::tr("The bucket is in a different region than the one configured");
     } else if (name == u"NotImplemented" || http == 501) {
         code = ErrorCode::Unsupported;
-        message = tr("The service does not support this operation");
+        message = Tr::tr("The service does not support this operation");
     } else if (http == 404) {
         code = ErrorCode::NotFound;
-        message = tr("Not found");
+        message = Tr::tr("Not found");
     } else if (http == 400 || error.GetErrorType() == S3Errors::INVALID_PARAMETER_VALUE ||
                error.GetErrorType() == S3Errors::INVALID_PARAMETER_COMBINATION ||
                error.GetErrorType() == S3Errors::MALFORMED_QUERY_STRING) {
         code = ErrorCode::InvalidArgument;
-        message = tr("The request was rejected as invalid");
+        message = Tr::tr("The request was rejected as invalid");
     } else {
-        message = tr("S3 request failed");
+        message = Tr::tr("S3 request failed");
     }
 
     QString detail = name.isEmpty() ? QString() : name;

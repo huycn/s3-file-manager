@@ -31,8 +31,10 @@ RestoreArchiveDialog::RestoreArchiveDialog(const QString& what, const QString& s
     m_days = new QSpinBox(this);
     m_days->setObjectName(QStringLiteral("days"));
     m_days->setRange(1, 3650);
+    const auto updateSuffix = [this](int days) { m_days->setSuffix(tr(" day(s)", nullptr, days)); };
+    connect(m_days, &QSpinBox::valueChanged, this, updateSuffix);
     m_days->setValue(7);
-    m_days->setSuffix(tr(" day(s)"));
+    updateSuffix(m_days->value());
     form->addRow(tr("Keep the copy for:"), m_days);
     m_tier = new QComboBox(this);
     m_tier->setObjectName(QStringLiteral("tier"));

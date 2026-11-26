@@ -2,14 +2,18 @@
 
 #include "core/Entry.h"
 #include "transfer/TransferTypes.h"
+#include "ui/HeaderColors.h"
 
 #include <QHash>
 #include <QList>
 #include <QMainWindow>
 #include <QPointer>
 
+#include <optional>
+
 class QMenu;
 class QSplitter;
+class QStyle;
 
 namespace s3fm {
 
@@ -57,11 +61,18 @@ Q_SIGNALS:
 protected:
     void closeEvent(QCloseEvent* event) override;
     bool eventFilter(QObject* watched, QEvent* event) override;
+    void changeEvent(QEvent* event) override;
+    void childEvent(QChildEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
 
 private:
     void createActions();
     void createMenus();
     QWidget* createFunctionKeyBar();
+    // Paints everything but the file and transfer lists (menu bar, address rows, status lines,
+    // function-key bar, Transfers dock frame and toolbar, status bar) in the title bar's colours.
+    void applyHeaderColors();
+    void applyHeaderPalette(QWidget* widget) const;
     QAction* addAction(const QString& name, const QString& text, const QList<QKeySequence>& shortcuts,
                        void (MainWindow::*slot)());
     void buildPlacesMenu(QMenu* menu, PanelWidget* panel);
@@ -124,6 +135,7 @@ private:
     void onConflictRequested(TransferJob* job, const ConflictInfo& info);
     void showNextConflict();
     void transferSettings();
+    void showSettings();
     void pauseAllTransfers();
     void resumeAllTransfers();
     void clearFinishedTransfers();
@@ -136,6 +148,9 @@ private:
     QList<QPair<QPointer<TransferJob>, ConflictInfo>> m_pendingConflicts;
     bool m_conflictOpen = false;
     TransferOptions m_lastOptions;
+    std::optional<HeaderColors> m_headerColors;
+    QWidget* m_functionKeyBar = nullptr;
+    QStyle* m_menuBarStyle = nullptr;
     QSplitter* m_splitter;
     PanelWidget* m_left;
     PanelWidget* m_right;

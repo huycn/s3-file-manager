@@ -18,7 +18,8 @@ Result<ListPage> S3RootProvider::list(const Location& dir, const QString& pageTo
     Q_UNUSED(pageToken)
     Q_UNUSED(ctx)
     if (!dir.isS3Root())
-        return Error::make(ErrorCode::InvalidArgument, QStringLiteral("not s3://"));
+        return Error::make(ErrorCode::InvalidArgument,
+                           QCoreApplication::translate("s3fm::S3RootProvider", "Not an S3 location"));
     ListPage page;
     const auto profiles = m_store->profiles();
     for (const ConnectionProfile& p : profiles) {

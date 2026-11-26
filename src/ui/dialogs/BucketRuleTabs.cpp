@@ -89,7 +89,7 @@ void BucketLifecycleTab::build()
     auto* ruleButtons = new QHBoxLayout;
     QPushButton* add = button(tr("A&dd…"), QStringLiteral("addRule"), rulesPage);
     QPushButton* edit = button(tr("&Edit…"), QStringLiteral("editRule"), rulesPage);
-    QPushButton* toggle = button(tr("Enable/&Disable"), QStringLiteral("toggleRule"), rulesPage);
+    QPushButton* toggle = button(tr("E&nable/Disable"), QStringLiteral("toggleRule"), rulesPage);
     QPushButton* remove = button(tr("&Remove"), QStringLiteral("removeRule"), rulesPage);
     for (QPushButton* b : {add, edit, toggle, remove})
         ruleButtons->addWidget(b);
@@ -565,7 +565,7 @@ void BucketWebsiteTab::build()
                                    "\"Redirect\": {\"ReplaceKeyPrefixWith\": \"documents/\"}}]"));
     hostForm->addRow(tr("&Routing rules:"), m_rules);
     box->addLayout(hostForm);
-    m_redirect = new QRadioButton(tr("Redirect &all requests to another host"), m_enabled);
+    m_redirect = new QRadioButton(tr("Redirec&t all requests to another host"), m_enabled);
     box->addWidget(m_redirect);
     auto* redirectForm = new QFormLayout;
     redirectForm->setContentsMargins(20, 0, 0, 0);

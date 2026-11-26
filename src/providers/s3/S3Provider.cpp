@@ -17,13 +17,11 @@
 #include <QSet>
 #include <QUrl>
 
-#include <aws/core/utils/stream/PreallocatedStreamBuf.h>
 #include <aws/s3/S3Client.h>
 #include <aws/s3/model/AbortMultipartUploadRequest.h>
 #include <aws/s3/model/CompleteMultipartUploadRequest.h>
 #include <aws/s3/model/CompletedMultipartUpload.h>
 #include <aws/s3/model/CompletedPart.h>
-#include <aws/s3/model/CopyObjectRequest.h>
 #include <aws/s3/model/CreateMultipartUploadRequest.h>
 #include <aws/s3/model/Delete.h>
 #include <aws/s3/model/DeleteObjectsRequest.h>
@@ -36,7 +34,6 @@
 #include <aws/s3/model/ListPartsRequest.h>
 #include <aws/s3/model/ObjectIdentifier.h>
 #include <aws/s3/model/PutObjectRequest.h>
-#include <aws/s3/model/UploadPartCopyRequest.h>
 #include <aws/s3/model/UploadPartRequest.h>
 
 #include <algorithm>
@@ -62,10 +59,12 @@ constexpr int kMaxDeleteBatch = 1000;
 constexpr qint64 kMiB = qint64{1024} * 1024;
 constexpr QLatin1StringView kMtimeKey("mtime"); // x-amz-meta-mtime, seconds since epoch (rclone-compatible)
 
-QString tr(const char* text)
+// Translation context for this file. Q_DECLARE_TR_FUNCTIONS (not a plain helper)
+// lets lupdate file every Tr::tr() call under this context, wherever it is called from.
+struct Tr
 {
-    return QCoreApplication::translate("s3fm::S3Provider", text);
-}
+    Q_DECLARE_TR_FUNCTIONS(s3fm::S3Provider)
+};
 
 std::filesystem::path toFsPath(const QString& path)
 {
@@ -174,7 +173,7 @@ Capabilities S3Provider::capabilities(const Location& location) const
 Result<ListPage> S3Provider::list(const Location& dir, const QString& pageToken, OperationContext& ctx)
 {
     if (!dir.isS3() || dir.connectionId().isEmpty())
-        return Error::make(ErrorCode::InvalidArgument, tr("Not an S3 location"));
+        return Error::make(ErrorCode::InvalidArgument, Tr::tr("Not an S3 location"));
     if (dir.bucket().isEmpty())
         return listBuckets(dir);
 
@@ -684,7 +683,7 @@ Result<Entry> S3Provider::stat(const Location& location, OperationContext& ctx)
         return exists.error();
     if (!exists.value())
         return Error::make(ErrorCode::NotFound,
-                           tr("No such object or folder: %1").arg(location.displayString()));
+                           Tr::tr("No such object or folder: %1").arg(location.displayString()));
     e.type = Entry::Type::Directory;
     e.location = location.asDirectory();
     return e;
@@ -719,13 +718,14 @@ void S3Provider::invalidateCache(const Location& location)
 VoidResult S3Provider::makeDirectory(const Location& dir, OperationContext& ctx)
 {
     if (dir.bucket().isEmpty())
-        return Error::make(ErrorCode::Unsupported, tr("Creating buckets is not supported here"));
+        return Error::make(ErrorCode::Unsupported, Tr::tr("Creating buckets is not supported here"));
     if (dir.key().isEmpty())
-        return Error::make(ErrorCode::AlreadyExists, tr("The bucket already exists"));
+        return Error::make(ErrorCode::AlreadyExists, Tr::tr("The bucket already exists"));
     const Location target = dir.asDirectory();
     auto existing = stat(target, ctx);
     if (existing)
-        return Error::make(ErrorCode::AlreadyExists, tr("Already exists: %1").arg(target.displayString()));
+        return Error::make(ErrorCode::AlreadyExists,
+                           Tr::tr("Already exists: %1").arg(target.displayString()));
     if (existing.error().code != ErrorCode::NotFound)
         return existing.error();
     dropBucketCache(dir.bucket());
@@ -789,7 +789,7 @@ VoidResult S3Provider::remove(const EntryList& items, OperationContext& ctx)
     for (const Entry& item : items) {
         const Location& l = item.location;
         if (l.bucket().isEmpty() || l.key().isEmpty())
-            return Error::make(ErrorCode::Unsupported, tr("Deleting buckets is not supported here"));
+            return Error::make(ErrorCode::Unsupported, Tr::tr("Deleting buckets is not supported here"));
         QStringList& keys = keysByBucket[l.bucket()];
         if (item.isDirectory() || l.key().endsWith(u'/')) {
             const QString prefix = l.asDirectory().key();
@@ -827,7 +827,7 @@ VoidResult S3Provider::rename(const Location& from, const Location& to, Operatio
     Q_UNUSED(from)
     Q_UNUSED(to)
     Q_UNUSED(ctx)
-    return Error::make(ErrorCode::Unsupported, tr("S3 has no rename; use copy and delete"));
+    return Error::make(ErrorCode::Unsupported, Tr::tr("S3 has no rename; use copy and delete"));
 }
 
 // ---------------------------------------------------------------------------
@@ -1028,8 +1028,8 @@ bool opaqueEtag(Model::ServerSideEncryption sse, const Aws::String& customerAlgo
 
 Error integrityError(const Location& location, const QString& detail)
 {
-    Error e =
-        Error::make(ErrorCode::Io, tr("Integrity check failed for %1").arg(location.displayString()), detail);
+    Error e = Error::make(ErrorCode::Io,
+                          Tr::tr("Integrity check failed for %1").arg(location.displayString()), detail);
     e.retryable = true;
     return e;
 }
@@ -1157,14 +1157,14 @@ VoidResult S3Provider::copyWith(const Location& from, const Location& to, const 
         sourceKey = m_session->sseCustomerKey(from.bucket());
         if (!sourceKey)
             return Error::make(ErrorCode::InvalidArgument,
-                               tr("No SSE-C key is configured for bucket %1").arg(from.bucket()));
+                               Tr::tr("No SSE-C key is configured for bucket %1").arg(from.bucket()));
     }
     std::optional<SseCustomerKey> destKey;
     if (plan.encryption.mode == ObjectEncryption::Mode::Customer) {
         destKey = m_session->sseCustomerKey(to.bucket());
         if (!destKey)
             return Error::make(ErrorCode::InvalidArgument,
-                               tr("No SSE-C key is configured for bucket %1").arg(to.bucket()));
+                               Tr::tr("No SSE-C key is configured for bucket %1").arg(to.bucket()));
     }
     const SseCustomerKey* srcKey = sourceKey ? &*sourceKey : nullptr;
     const SseCustomerKey* dstKey = destKey ? &*destKey : nullptr;
@@ -1190,7 +1190,7 @@ VoidResult S3Provider::copyWith(const Location& from, const Location& to, const 
             ObjectEncryption::fromEntry(*source).mode == ObjectEncryption::Mode::None &&
             plan.encryption.mode == ObjectEncryption::Mode::None;
         if (params.verify && comparable && etag.compare(source->etag, Qt::CaseInsensitive) != 0)
-            return integrityError(to, tr("ETag %1 differs from the source's %2").arg(etag, source->etag));
+            return integrityError(to, Tr::tr("ETag %1 differs from the source's %2").arg(etag, source->etag));
         return true;
     });
     if (!r)
@@ -1317,7 +1317,7 @@ VoidResult S3Provider::multipartCopy(const Location& from, const Entry& source, 
         if (!copied)
             return copied.error();
         if (copied->size != size)
-            return integrityError(to, tr("%1 bytes stored, %2 expected").arg(copied->size).arg(size));
+            return integrityError(to, Tr::tr("%1 bytes stored, %2 expected").arg(copied->size).arg(size));
     }
     return {};
 }
@@ -1447,7 +1447,7 @@ VoidResult S3Provider::download(const Location& from, const QString& localFile, 
     if (total >= 0 && written != total) {
         discard();
         Error e =
-            Error::make(ErrorCode::Io, tr("Download incomplete: %1 of %2 bytes").arg(written).arg(total));
+            Error::make(ErrorCode::Io, Tr::tr("Download incomplete: %1 of %2 bytes").arg(written).arg(total));
         e.retryable = true;
         return e;
     }
@@ -1457,17 +1457,17 @@ VoidResult S3Provider::download(const Location& from, const QString& localFile, 
             return Error::cancelled();
         if (md5.compare(etag, Qt::CaseInsensitive) != 0) {
             discard();
-            return integrityError(from, tr("MD5 %1 differs from the ETag %2").arg(md5, etag));
+            return integrityError(from, Tr::tr("MD5 %1 differs from the ETag %2").arg(md5, etag));
         }
     }
     if (QFileInfo::exists(localFile) && !QFile::remove(localFile)) {
         discard();
         return Error::make(ErrorCode::AccessDenied,
-                           tr("Cannot replace %1").arg(QDir::toNativeSeparators(localFile)));
+                           Tr::tr("Cannot replace %1").arg(QDir::toNativeSeparators(localFile)));
     }
     if (!QFile::rename(partFile, localFile)) {
         discard();
-        return Error::make(ErrorCode::Io, tr("Cannot write %1").arg(QDir::toNativeSeparators(localFile)));
+        return Error::make(ErrorCode::Io, Tr::tr("Cannot write %1").arg(QDir::toNativeSeparators(localFile)));
     }
     checkpoint.update([](TransferCheckpoint& cp) { cp.downloadEtag.clear(); });
     if (params.preserveMtime && mtime.isValid()) {
@@ -1487,18 +1487,19 @@ VoidResult S3Provider::upload(const QString& localFile, const Location& to, Oper
     const QFileInfo info(localFile);
     if (!info.exists())
         return Error::make(ErrorCode::NotFound,
-                           tr("No such file: %1").arg(QDir::toNativeSeparators(localFile)));
+                           Tr::tr("No such file: %1").arg(QDir::toNativeSeparators(localFile)));
     if (info.isDir())
         return Error::make(ErrorCode::InvalidArgument,
-                           tr("Is a directory: %1").arg(QDir::toNativeSeparators(localFile)));
+                           Tr::tr("Is a directory: %1").arg(QDir::toNativeSeparators(localFile)));
     if (to.bucket().isEmpty() || to.key().isEmpty() || to.key().endsWith(u'/'))
-        return Error::make(ErrorCode::InvalidArgument, tr("Invalid destination: %1").arg(to.displayString()));
+        return Error::make(ErrorCode::InvalidArgument,
+                           Tr::tr("Invalid destination: %1").arg(to.displayString()));
     dropBucketCache(to.bucket());
     const TransferParams& params = paramsOf(ctx);
     if (encryptionFromParams(params).mode == ObjectEncryption::Mode::Customer &&
         !m_session->sseCustomerKey(to.bucket()))
         return Error::make(ErrorCode::InvalidArgument,
-                           tr("No SSE-C key is configured for bucket %1").arg(to.bucket()));
+                           Tr::tr("No SSE-C key is configured for bucket %1").arg(to.bucket()));
     const qint64 threshold = params.multipartThreshold > 0 ? params.multipartThreshold : m_multipartThreshold;
     const qint64 size = info.size();
     if (size > threshold)
@@ -1520,13 +1521,13 @@ VoidResult S3Provider::putObject(const QString& localFile, const Location& to, q
         return Error::cancelled();
     if (md5.isEmpty() && size > 0)
         return Error::make(ErrorCode::AccessDenied,
-                           tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
+                           Tr::tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
     auto r = withClient<bool>(to.bucket(), [&](Client& client) -> Result<bool> {
         auto body = Aws::MakeShared<Aws::FStream>(kTag, toFsPath(localFile),
                                                   std::ios_base::in | std::ios_base::binary);
         if (!body->good())
             return Error::make(ErrorCode::AccessDenied,
-                               tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
+                               Tr::tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
         Model::PutObjectRequest req;
         req.SetBucket(toAws(to.bucket()));
         payer(req, *m_session, to.bucket());
@@ -1554,7 +1555,7 @@ VoidResult S3Provider::putObject(const QString& localFile, const Location& to, q
             encryptionFromParams(params).mode == ObjectEncryption::Mode::None &&
             !opaqueEtag(result.GetServerSideEncryption(), result.GetSSECustomerAlgorithm()) &&
             etag.compare(expected, Qt::CaseInsensitive) != 0)
-            return integrityError(to, tr("ETag %1 differs from the local MD5 %2").arg(etag, expected));
+            return integrityError(to, Tr::tr("ETag %1 differs from the local MD5 %2").arg(etag, expected));
         ctx.reportProgress(size, size);
         return true;
     });
@@ -1580,7 +1581,7 @@ VoidResult S3Provider::multipartUpload(const QString& localFile, const Location&
         customerKey ? m_session->sseCustomerKey(to.bucket()) : std::nullopt;
     if (!QFileInfo(localFile).isReadable())
         return Error::make(ErrorCode::AccessDenied,
-                           tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
+                           Tr::tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
 
     auto r = withClient<bool>(to.bucket(), [&](Client& client) -> Result<bool> {
         Aws::String uploadId;
@@ -1635,7 +1636,7 @@ VoidResult S3Provider::multipartUpload(const QString& localFile, const Location&
                     return Error::cancelled();
                 if (md5.isEmpty())
                     return Error::make(ErrorCode::Io,
-                                       tr("Error reading %1").arg(QDir::toNativeSeparators(localFile)));
+                                       Tr::tr("Error reading %1").arg(QDir::toNativeSeparators(localFile)));
                 if (auto it = existing.constFind(number); it != existing.cend() && it->size == length) {
                     const QString stored = unquote(it->etag);
                     if (encrypted || !isMd5Etag(stored) ||
@@ -1650,7 +1651,7 @@ VoidResult S3Provider::multipartUpload(const QString& localFile, const Location&
                 auto buf = std::make_unique<FileRangeBuf>(path, offset, length);
                 if (!buf->ok())
                     return Error::make(ErrorCode::AccessDenied,
-                                       tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
+                                       Tr::tr("Cannot read %1").arg(QDir::toNativeSeparators(localFile)));
                 auto body = Aws::MakeShared<Aws::IOStream>(kTag, buf.get());
                 Model::UploadPartRequest part;
                 part.SetBucket(toAws(to.bucket()));
@@ -1729,7 +1730,7 @@ VoidResult S3Provider::multipartUpload(const QString& localFile, const Location&
         if (params.verify && !encrypted && isMd5Etag(etag) && etag.contains(u'-') &&
             !opaqueEtag(result.GetServerSideEncryption(), {}) &&
             etag.compare(expected, Qt::CaseInsensitive) != 0)
-            return integrityError(to, tr("ETag %1 differs from the expected %2").arg(etag, expected));
+            return integrityError(to, Tr::tr("ETag %1 differs from the expected %2").arg(etag, expected));
         return true;
     });
     if (!r)

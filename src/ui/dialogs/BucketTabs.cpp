@@ -481,12 +481,14 @@ void BucketObjectLockTab::build()
             else
                 d.years = m_period->value();
         }
+        const int amount = m_period->value();
+        const QString period = m_unit->currentIndex() == 0 ? tr("%n day(s)", nullptr, amount)
+                                                           : tr("%n year(s)", nullptr, amount);
         if (d.mode == u"COMPLIANCE" &&
             QMessageBox::warning(this, tr("Object Lock"),
                                  tr("Compliance-mode retention cannot be shortened or removed by anyone. New "
-                                    "versions will be undeletable for %1 %2. Continue?")
-                                     .arg(m_period->value())
-                                     .arg(m_unit->currentText()),
+                                    "versions will be undeletable for %1. Continue?")
+                                     .arg(period),
                                  QMessageBox::Yes | QMessageBox::Cancel,
                                  QMessageBox::Cancel) != QMessageBox::Yes)
             return;

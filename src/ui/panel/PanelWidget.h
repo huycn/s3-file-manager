@@ -75,6 +75,9 @@ public:
     bool isActive() const { return m_active; }
     void setActive(bool active);
     void focusView();
+    // Widgets that sit on the window background around the file list (address row, status
+    // line), for giving them the window header's palette.
+    QList<QWidget*> chromeWidgets() const;
 
     PanelView* view() const { return m_view; }
     EntryListModel* model() const { return m_model; }
@@ -108,6 +111,7 @@ private:
     EntrySortProxy* m_proxy;
     PanelView* m_view;
     AddressBar* m_address;
+    QWidget* m_header;
     QToolButton* m_placesButton;
     QLabel* m_status;
     QFrame* m_errorFrame;

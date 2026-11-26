@@ -1,5 +1,6 @@
 #include "core/Provider.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QJsonValue>
 
@@ -66,7 +67,9 @@ Result<ListPage> Provider::listWithOptions(const Location& dir, const QString& p
                                            const ListOptions& options, OperationContext& ctx)
 {
     if (!options.isDefault())
-        return Error::make(ErrorCode::Unsupported, QStringLiteral("Version listings are not supported here"));
+        return Error::make(
+            ErrorCode::Unsupported,
+            QCoreApplication::translate("s3fm::Provider", "Version listings are not supported here"));
     return list(dir, pageToken, ctx);
 }
 
