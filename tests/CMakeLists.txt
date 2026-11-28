@@ -9,7 +9,9 @@ function(s3fm_add_test name)
     add_test(NAME ${name} COMMAND ${name})
     set_tests_properties(${name} PROPERTIES
         LABELS "${ARG_LABELS}"
-        ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+        # QT_FORCE_STDERR_LOGGING: without a console (CI runners), Qt Test on Windows writes
+        # its output to OutputDebugString instead of stdout, so failures show nothing.
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_FORCE_STDERR_LOGGING=1")
 endfunction()
 
 add_subdirectory(unit)

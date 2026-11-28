@@ -73,12 +73,15 @@ jobs:
         run: cmake --build --preset windows-vcpkg
       - name: Test
         run: ctest --preset windows-vcpkg -LE integration
-      # ctest sometimes shows no output for a failed test; run each one directly instead.
+      # Runs each failed test again on its own, with the exit code (crashes show as 0xC...).
+      # QT_FORCE_STDERR_LOGGING: without a console, Qt Test on Windows writes to
+      # OutputDebugString instead of stdout (tests/CMakeLists.txt sets it for ctest too).
       - name: Show failed tests
         if: failure()
         shell: pwsh
         env:
           QT_QPA_PLATFORM: offscreen
+          QT_FORCE_STDERR_LOGGING: "1"
         run: |
           $failed = "build/windows-vcpkg/Testing/Temporary/LastTestsFailed.log"
           if (-not (Test-Path $failed)) { exit 0 }
