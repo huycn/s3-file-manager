@@ -711,6 +711,158 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>仅此处</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>较新</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>较旧</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>不同</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>相同</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>大小和时间相同</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>文件/文件夹</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>另一面板中没有。</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>与另一面板不同，且较新。</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>与另一面板不同，且较旧。</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>与另一面板不同。</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>内容与另一面板相同。</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>大小和时间与另一面板相同。</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>这里是文件夹而另一面板中是文件，或者相反。</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>内容不同。</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>无法检查内容。</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>仅此处 %n 项</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>较新 %n 项</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>较旧 %n 项</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>不同 %n 项</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>相同 %n 项</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>未验证 %n 项</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>没有可比较的项目</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>，</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>比较面板</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>比较修改时间(&amp;T)</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>容差(&amp;O)：</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>比较大小相同的文件的内容(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;将读取本地文件。S3 对象按 ETag（单部分上传的 MD5 值）和已存储的校验和进行比较；仅凭 ETag 无法判断时，每个对象需要一到两个请求。&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>标记仅存在于一侧的文件夹(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;只比较显示的列表，不比较文件夹中的内容。另一侧缺少的、较新的或不同的项目会在两个面板中被选中，可直接按 F5 复制。S3 的时间是上传时间。&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>比较</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1155,6 +1307,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>读取 %1 时出错</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>该对象没有可用于比较的校验和（使用 SSE-KMS 或 SSE-C 加密，且没有存储的校验和）。</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>这些对象以不同的分段上传，或使用 SSE-KMS 或 SSE-C 加密；无法通过 ETag 判断内容是否相同。</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1354,6 +1521,10 @@
     <message>
         <source>Version</source>
         <translation>版本</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>比较</translation>
     </message>
 </context>
 <context>
@@ -1738,6 +1909,10 @@
         <translation>查找文件(&amp;I)…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>比较面板(&amp;C)…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>转到所在文件夹(&amp;C)</translation>
     </message>
@@ -1881,6 +2056,44 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>请打开一个驱动器以在其中搜索。</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>比较面板</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>两个面板都需要显示文件夹。</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>请先退出版本视图再比较面板。</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>两个面板显示的是同一个文件夹。</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>正在比较内容…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>已取消比较</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>比较期间面板发生了变化；请重新比较。</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n 项内容检查失败；请查看比较列中的工具提示。</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>仅比较了目前已加载的项目（向下滚动以加载更多）。</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2690,6 +2903,10 @@ Started by: %2</source>
     <message>
         <source> — %1 scanned</source>
         <translation> — 已扫描 %1 项</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — 比较结果：%1</translation>
     </message>
     <message>
         <source> — loading…</source>

@@ -33,6 +33,9 @@ A dual-panel (Commander-style) file manager for Amazon S3 and S3-compatible stor
 - Find Files (Alt+F7): recursive search by name (wildcards or regular expression), path,
   size, date and storage class; on S3 a path prefix is filtered by the server. Results open
   in the panel, where every operation works on them (Ctrl+G goes to a file's folder)
+- Compare Panels (Shift+F2): marks what is only on one side, newer, older, different or
+  identical, and selects what is missing or newer on each side, ready for F5. Content is
+  checked by bytes (local), ETag/MD5 and stored checksums (S3), never by downloading
 
 ## Using it
 

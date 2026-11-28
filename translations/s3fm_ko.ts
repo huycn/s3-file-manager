@@ -711,6 +711,158 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>여기만</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>최신</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>이전</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>다름</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>동일</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>크기와 시간 같음</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>파일/폴더</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>다른 패널에 없습니다.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>다른 패널과 다르며 더 최신입니다.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>다른 패널과 다르며 더 오래되었습니다.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>다른 패널과 다릅니다.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>다른 패널과 내용이 같습니다.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>다른 패널과 크기와 시간이 같습니다.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>한쪽은 파일이고 다른 쪽은 폴더입니다.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>내용이 다릅니다.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>내용을 확인할 수 없습니다.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>여기만 %n개</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>최신 %n개</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>이전 %n개</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>다름 %n개</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>동일 %n개</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>미확인 %n개</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>비교할 항목 없음</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>패널 비교</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>수정 시간 비교(&amp;T)</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation>초</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>허용 오차(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>크기가 같은 파일의 내용 비교(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;로컬 파일을 읽습니다. S3 객체는 ETag(단일 파트 업로드의 MD5 합계)와 저장된 체크섬으로 비교합니다. ETag만으로 판단할 수 없으면 객체마다 요청이 한두 번 필요합니다.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>한쪽에만 있는 폴더 표시(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;표시된 목록만 비교하며 폴더 내용은 비교하지 않습니다. 다른 쪽에 없거나, 더 최신이거나, 다른 항목은 두 패널 모두에서 선택되어 F5로 바로 복사할 수 있습니다. S3 시간은 업로드 시간입니다.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>비교</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1155,6 +1307,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>%1을(를) 읽는 중 오류가 발생했습니다</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>비교할 체크섬이 없습니다(SSE-KMS 또는 SSE-C로 암호화되었고 저장된 체크섬이 없음).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>객체가 서로 다른 파트로 업로드되었거나 SSE-KMS 또는 SSE-C로 암호화되어 있어 ETag만으로는 내용이 같은지 알 수 없습니다.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1354,6 +1521,10 @@
     <message>
         <source>Version</source>
         <translation>버전</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>비교</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1918,10 @@
         <translation>파일 찾기(&amp;I)…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>패널 비교(&amp;C)…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>포함된 폴더로 이동(&amp;C)</translation>
     </message>
@@ -1890,6 +2065,44 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>검색하려면 드라이브를 여세요.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>패널 비교</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>두 패널 모두 폴더를 표시해야 합니다.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>패널을 비교하려면 버전 보기를 종료하세요.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>두 패널이 같은 폴더를 표시하고 있습니다.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>내용 비교 중…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>비교가 취소됨</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>비교 중에 패널이 변경되었습니다. 다시 비교하세요.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>내용 확인 %n개가 실패했습니다. 비교 열의 도구 설명을 확인하세요.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>지금까지 불러온 항목만 비교했습니다(더 불러오려면 아래로 스크롤하세요).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2690,6 +2903,10 @@ Started by: %2</source>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1개 검사함</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — 비교: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/Compare.h"
 #include "core/Entry.h"
 #include "core/Search.h"
 #include "transfer/TransferTypes.h"
@@ -54,10 +55,15 @@ public:
 
     // Parses the text of a copy/move target prompt. Relative text is resolved against
     // `base`; a trailing separator marks a directory.
+    // Compares the two panels with `options` (no dialog); emits compareFinished() when the
+    // marks are shown or the comparison was given up. Exposed for tests.
+    void comparePanelsWith(const CompareOptions& options);
+
     static Location resolveTarget(const QString& text, const Location& base, bool* isDirectory);
 
 Q_SIGNALS:
     void transferFinished(s3fm::TransferJob* job);
+    void compareFinished();
 
 protected:
     void closeEvent(QCloseEvent* event) override;
@@ -102,6 +108,7 @@ private:
     void editAddress();
     void quickFilter();
     void findFiles();
+    void comparePanels();
     void goToContainingFolder();
     // After a delete/move job: drops the results it removed from search result panels.
     void pruneSearchResults(const TransferJob* job);

@@ -10,3 +10,4 @@ s3fm_add_test(tst_transferdock SOURCES tst_transferdock.cpp LABELS ui LIBS s3fm_
 s3fm_add_test(tst_objectdialogs SOURCES tst_objectdialogs.cpp LABELS ui LIBS s3fm_ui)
 s3fm_add_test(tst_bucketdialogs SOURCES tst_bucketdialogs.cpp LABELS ui LIBS s3fm_ui)
 s3fm_add_test(tst_searchpanel SOURCES tst_searchpanel.cpp LABELS ui LIBS s3fm_ui)
+s3fm_add_test(tst_comparepanel SOURCES tst_comparepanel.cpp LABELS ui LIBS s3fm_ui)

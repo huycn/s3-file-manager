@@ -182,10 +182,14 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     m_view->setColumnHidden(EntryListModel::StorageClassColumn, true);
     m_view->setColumnHidden(EntryListModel::EtagColumn, true);
     m_view->setColumnHidden(EntryListModel::VersionColumn, true);
+    m_view->setColumnHidden(EntryListModel::CompareColumn, true);
+    header->resizeSection(EntryListModel::CompareColumn, 130);
     header->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header, &QHeaderView::customContextMenuRequested, this, [this, header](const QPoint& pos) {
         QMenu menu;
         for (int c = EntryListModel::SizeColumn; c < EntryListModel::ColumnCount; ++c) {
+            if (c == EntryListModel::CompareColumn && !m_model->hasCompareMarks())
+                continue;
             QAction* a = menu.addAction(m_model->headerData(c, Qt::Horizontal).toString());
             a->setCheckable(true);
             a->setChecked(!m_view->isColumnHidden(c));
@@ -218,6 +222,12 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     connect(m_model, &EntryListModel::loadingChanged, this, &PanelWidget::updateStatus);
     connect(m_model, &QAbstractItemModel::rowsInserted, this, &PanelWidget::updateStatus);
     connect(m_model, &QAbstractItemModel::rowsRemoved, this, &PanelWidget::updateStatus);
+    connect(m_model, &EntryListModel::compareMarksCleared, this, [this] {
+        m_compareSummary.clear();
+        m_view->setColumnHidden(EntryListModel::CompareColumn, true);
+        updateStatus();
+        Q_EMIT compareMarksCleared();
+    });
     connect(m_view->selectionModel(), &QItemSelectionModel::selectionChanged, this,
             [this](const QItemSelection& selected) {
                 // ".." can never be part of the selection.
@@ -674,6 +684,52 @@ EntryList PanelWidget::targetEntries() const
     return {};
 }
 
+CompareItems PanelWidget::compareItems() const
+{
+    CompareItems items;
+    const int rows = m_proxy->rowCount();
+    items.reserve(rows);
+    for (int r = 0; r < rows; ++r) {
+        const QModelIndex src = m_proxy->mapToSource(m_proxy->index(r, 0));
+        if (m_model->isParentRow(src.row()))
+            continue;
+        items.push_back(CompareItem{m_model->displayPath(src.row()), m_model->entryAt(src.row())});
+    }
+    return items;
+}
+
+void PanelWidget::showCompareMarks(QHash<QString, CompareMark> marks, const CompareSummary& summary)
+{
+    m_model->setCompareMarks(std::move(marks));
+    m_compareSummary = summary.toString();
+    m_view->setColumnHidden(EntryListModel::CompareColumn, false);
+    QItemSelection selection;
+    QModelIndex first;
+    const int rows = m_proxy->rowCount();
+    for (int r = 0; r < rows; ++r) {
+        const QModelIndex idx = m_proxy->index(r, 0);
+        if (!m_model->compareMark(m_proxy->mapToSource(idx).row()).isSelectable())
+            continue;
+        selection.select(idx, idx);
+        if (!first.isValid())
+            first = idx;
+    }
+    m_view->selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    if (first.isValid())
+        m_view->scrollTo(first);
+    updateStatus();
+}
+
+void PanelWidget::clearCompareMarks()
+{
+    m_model->clearCompareMarks();
+}
+
+bool PanelWidget::hasCompareMarks() const
+{
+    return m_model->hasCompareMarks();
+}
+
 void PanelWidget::selectAll()
 {
     m_view->selectAll();
@@ -810,6 +866,8 @@ void PanelWidget::updateStatus()
         else
             text += tr(" — %1 scanned").arg(scanned);
     }
+    if (!m_compareSummary.isEmpty())
+        text += tr(" — compared: %1").arg(m_compareSummary);
     if (m_model->isLoading())
         text += tr(" — loading…");
     else if (m_model->canFetchMore({}))
@@ -828,6 +886,7 @@ void PanelWidget::restoreState(QSettings& settings)
     const QByteArray header = settings.value(QStringLiteral("header")).toByteArray();
     if (!header.isEmpty())
         m_view->header()->restoreState(header);
+    m_view->setColumnHidden(EntryListModel::CompareColumn, true);
     const Location saved = Location::fromString(settings.value(QStringLiteral("location")).toString());
     if (saved.isValid())
         navigate(saved, {}, false);

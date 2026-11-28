@@ -713,6 +713,164 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>só aqui</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>mais recente</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>mais antigo</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>diferente</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>idêntico</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>mesmo tamanho e data</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>arquivo/pasta</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>Ausente no outro painel.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>Difere do outro painel e é mais recente.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>Difere do outro painel e é mais antigo.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>Difere do outro painel.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>Mesmo conteúdo do outro painel.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>Mesmo tamanho e data do outro painel.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>O outro painel tem um arquivo onde aqui há uma pasta, ou vice-versa.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>O conteúdo é diferente.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>Não foi possível verificar o conteúdo.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>%n só aqui</numerusform>
+            <numerusform>%n só aqui</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>%n mais recente</numerusform>
+            <numerusform>%n mais recentes</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>%n mais antigo</numerusform>
+            <numerusform>%n mais antigos</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>%n diferente</numerusform>
+            <numerusform>%n diferentes</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>%n idêntico</numerusform>
+            <numerusform>%n idênticos</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>%n não verificado</numerusform>
+            <numerusform>%n não verificados</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>nada a comparar</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Comparar painéis</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>Comparar as datas de &amp;modificação</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> s</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>T&amp;olerância:</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>Comparar o &amp;conteúdo de arquivos do mesmo tamanho</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Os arquivos locais são lidos. Os objetos S3 são comparados pelo ETag (a soma MD5 de envios em uma única parte) e pelas somas de verificação armazenadas; quando só o ETag não basta, são necessárias uma ou duas solicitações por objeto.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>Marcar &amp;pastas que existem só de um lado</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Só as listagens exibidas são comparadas, não o conteúdo das pastas. Itens ausentes do outro lado, mais recentes ou diferentes são selecionados nos dois painéis, prontos para copiar com F5. As datas do S3 são as datas de envio.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>Comparar</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1157,6 +1315,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>Erro ao ler %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>O objeto não tem soma de verificação para comparar (criptografado com SSE-KMS ou SSE-C e sem soma de verificação armazenada).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>Os objetos foram enviados em partes diferentes ou estão criptografados com SSE-KMS ou SSE-C; os ETags não indicam se o conteúdo é o mesmo.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1356,6 +1529,10 @@
     <message>
         <source>Version</source>
         <translation>Versão</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>Comparação</translation>
     </message>
 </context>
 <context>
@@ -1750,6 +1927,10 @@
         <translation>&amp;Buscar arquivos…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>&amp;Comparar painéis…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>Ir para a &amp;pasta que contém</translation>
     </message>
@@ -1893,6 +2074,45 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>Abra uma unidade para buscar nela.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Comparar painéis</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>Os dois painéis precisam mostrar uma pasta.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>Saia da visualização de versões para comparar os painéis.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>Os dois painéis mostram a mesma pasta.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>Comparando conteúdos…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>Comparação cancelada</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>Um painel mudou durante a comparação; compare novamente.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n verificação de conteúdo falhou; veja as dicas na coluna Comparação.</numerusform>
+            <numerusform>%n verificações de conteúdo falharam; veja as dicas na coluna Comparação.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>Somente os itens carregados até agora foram comparados (role para baixo para carregar mais).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2724,6 +2944,10 @@ Iniciado por: %2</translation>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1 verificados</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — comparado: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

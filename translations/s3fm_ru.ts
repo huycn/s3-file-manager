@@ -715,6 +715,170 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>только здесь</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>новее</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>старее</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>отличается</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>идентичен</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>тот же размер и время</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>файл/папка</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>Отсутствует в другой панели.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>Отличается от другой панели и новее.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>Отличается от другой панели и старее.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>Отличается от другой панели.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>То же содержимое, что и в другой панели.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>Тот же размер и время, что и в другой панели.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>В другой панели на этом месте файл, а здесь папка, или наоборот.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>Содержимое отличается.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>Не удалось проверить содержимое.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>только здесь: %n</numerusform>
+            <numerusform>только здесь: %n</numerusform>
+            <numerusform>только здесь: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>новее: %n</numerusform>
+            <numerusform>новее: %n</numerusform>
+            <numerusform>новее: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>старее: %n</numerusform>
+            <numerusform>старее: %n</numerusform>
+            <numerusform>старее: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>отличаются: %n</numerusform>
+            <numerusform>отличаются: %n</numerusform>
+            <numerusform>отличаются: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>идентичны: %n</numerusform>
+            <numerusform>идентичны: %n</numerusform>
+            <numerusform>идентичны: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>не проверено: %n</numerusform>
+            <numerusform>не проверено: %n</numerusform>
+            <numerusform>не проверено: %n</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>нечего сравнивать</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Сравнение панелей</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>Сравнивать &amp;время изменения</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> с</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>&amp;Допуск:</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>Сравнивать &amp;содержимое файлов одинакового размера</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Локальные файлы читаются. Объекты S3 сравниваются по ETag (сумме MD5 для загрузок одной частью) и сохранённым контрольным суммам; если одного ETag недостаточно, нужны один-два запроса на объект.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>Отмечать &amp;папки, которые есть только с одной стороны</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Сравниваются только показанные списки, а не содержимое папок. Элементы, которых нет на другой стороне, более новые или отличающиеся, выделяются в обеих панелях — их можно скопировать клавишей F5. Время в S3 — это время загрузки.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>Сравнить</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1159,6 +1323,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>Ошибка чтения %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>У объекта нет контрольной суммы для сравнения (зашифрован SSE-KMS или SSE-C, сохранённой контрольной суммы нет).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>Объекты загружены разными частями или зашифрованы SSE-KMS или SSE-C; по их ETag нельзя понять, одинаково ли содержимое.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1358,6 +1537,10 @@
     <message>
         <source>Version</source>
         <translation>Версия</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>Сравнение</translation>
     </message>
 </context>
 <context>
@@ -1753,6 +1936,10 @@
         <translation>Поиск &amp;файлов…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>Сравнить &amp;панели…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>Перейти в папку с &amp;файлом</translation>
     </message>
@@ -1896,6 +2083,46 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>Откройте диск, чтобы искать на нём.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Сравнение панелей</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>Обе панели должны показывать папку.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>Выйдите из просмотра версий, чтобы сравнить панели.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>Обе панели показывают одну и ту же папку.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>Сравнение содержимого…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>Сравнение отменено</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>Панель изменилась во время сравнения; сравните ещё раз.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>Не удалась %n проверка содержимого; см. подсказки в столбце «Сравнение».</numerusform>
+            <numerusform>Не удались %n проверки содержимого; см. подсказки в столбце «Сравнение».</numerusform>
+            <numerusform>Не удались %n проверок содержимого; см. подсказки в столбце «Сравнение».</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>Сравнены только загруженные элементы (прокрутите вниз, чтобы загрузить ещё).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2758,6 +2985,10 @@ Started by: %2</source>
     <message>
         <source> — %1 scanned</source>
         <translation> — просмотрено: %1</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — сравнено: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

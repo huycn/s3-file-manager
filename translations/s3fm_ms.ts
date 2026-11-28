@@ -711,6 +711,158 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>di sini sahaja</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>lebih baharu</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>lebih lama</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>berbeza</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>serupa</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>saiz dan masa sama</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>fail/folder</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>Tiada dalam panel lain.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>Berbeza daripada panel lain dan lebih baharu.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>Berbeza daripada panel lain dan lebih lama.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>Berbeza daripada panel lain.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>Kandungan sama seperti dalam panel lain.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>Saiz dan masa sama seperti dalam panel lain.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>Panel lain mempunyai fail di tempat folder ini, atau sebaliknya.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>Kandungan berbeza.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>Kandungan tidak dapat diperiksa.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>%n di sini sahaja</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>%n lebih baharu</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>%n lebih lama</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>%n berbeza</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>%n serupa</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>%n tidak disahkan</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>tiada apa untuk dibandingkan</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Bandingkan Panel</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>Bandingkan &amp;masa pengubahsuaian</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> s</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>T&amp;oleransi:</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>Bandingkan &amp;kandungan fail yang sama saiz</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Fail tempatan akan dibaca. Objek S3 dibandingkan melalui ETag (jumlah MD5 bagi muat naik satu bahagian) dan checksum yang disimpan; jika ETag sahaja tidak mencukupi, satu atau dua permintaan bagi setiap objek diperlukan.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>Tandakan &amp;folder yang wujud di satu pihak sahaja</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Hanya senarai yang dipaparkan dibandingkan, bukan kandungan folder. Item yang tiada di pihak lain, lebih baharu atau berbeza dipilih dalam kedua-dua panel, sedia untuk disalin dengan F5. Masa S3 ialah masa muat naik.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>Bandingkan</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1155,6 +1307,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>Ralat semasa membaca %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>Objek tiada checksum untuk dibandingkan (disulitkan dengan SSE-KMS atau SSE-C, dan tiada checksum disimpan).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>Objek dimuat naik dalam bahagian yang berbeza atau disulitkan dengan SSE-KMS atau SSE-C; ETag tidak menunjukkan sama ada kandungannya sama.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1354,6 +1521,10 @@
     <message>
         <source>Version</source>
         <translation>Versi</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>Perbandingan</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1918,10 @@
         <translation>&amp;Cari Fail…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>Ban&amp;dingkan Panel…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>Pergi ke &amp;Folder Mengandungi</translation>
     </message>
@@ -1890,6 +2065,44 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>Buka pemacu untuk mencari di dalamnya.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Bandingkan Panel</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>Kedua-dua panel perlu memaparkan folder.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>Keluar daripada paparan versi untuk membandingkan panel.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>Kedua-dua panel memaparkan folder yang sama.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>Membandingkan kandungan…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>Perbandingan dibatalkan</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>Panel berubah semasa perbandingan; bandingkan semula.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n semakan kandungan gagal; lihat petua alat dalam lajur Perbandingan.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>Hanya item yang telah dimuatkan setakat ini dibandingkan (tatal ke bawah untuk memuatkan lagi).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2690,6 +2903,10 @@ Dimulakan oleh: %2</translation>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1 diimbas</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — dibandingkan: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

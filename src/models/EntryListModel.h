@@ -1,11 +1,13 @@
 #pragma once
 
+#include "core/Compare.h"
 #include "core/Entry.h"
 #include "core/Error.h"
 #include "core/Location.h"
 #include "core/Provider.h"
 
 #include <QAbstractTableModel>
+#include <QColor>
 #include <QTimer>
 
 #include <functional>
@@ -44,6 +46,7 @@ public:
         StorageClassColumn,
         EtagColumn,
         VersionColumn, // versions / "as of" views
+        CompareColumn, // panel comparison marks
         ColumnCount
     };
     enum Role
@@ -80,6 +83,15 @@ public:
     // Path of a result row relative to location() (the name outside results mode).
     QString displayPath(int row) const;
 
+    // Panel comparison marks, by row key (displayPath()). Cleared when the listing changes
+    // (navigation, search results, a refresh that finds changes); compareMarksCleared() then.
+    void setCompareMarks(QHash<QString, CompareMark> marks);
+    void clearCompareMarks();
+    bool hasCompareMarks() const { return !m_compareMarks.isEmpty(); }
+    CompareMark compareMark(int row) const;
+    // Text colour of a compare mark (invalid: default).
+    static QColor compareColor(CompareState state);
+
     bool hasParentRow() const { return m_hasParentRow; }
     bool isParentRow(int row) const { return m_hasParentRow && row == 0; }
     const Entry& entryAt(int row) const;
@@ -105,6 +117,7 @@ Q_SIGNALS:
     void locationChanged(const s3fm::Location& location);
     // All automatically loaded pages are in (more may be available via fetchMore).
     void loadFinished();
+    void compareMarksCleared();
 
 private:
     enum class LoadMode
@@ -141,6 +154,7 @@ private:
     QFileSystemWatcher* m_watcher = nullptr;
     QTimer m_refreshDebounce;
     mutable QHash<QString, QString> m_typeNames;
+    QHash<QString, CompareMark> m_compareMarks;
 };
 
 } // namespace s3fm

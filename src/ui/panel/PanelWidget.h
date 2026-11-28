@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/Compare.h"
 #include "core/Entry.h"
 #include "core/Error.h"
 #include "core/Location.h"
@@ -80,6 +81,16 @@ public:
     // after they were deleted.
     void removeResults(const std::function<bool(const Entry&)>& remove);
 
+    // Panel comparison: the rows shown (quick filter and hidden files respected), keyed by
+    // name or, in search results, relative path.
+    CompareItems compareItems() const;
+    // Shows the marks in the comparison column and selects the rows that are missing or
+    // out of date on the other side (CompareMark::isSelectable()). The marks stay until the
+    // listing changes or clearCompareMarks().
+    void showCompareMarks(QHash<QString, CompareMark> marks, const CompareSummary& summary);
+    void clearCompareMarks();
+    bool hasCompareMarks() const;
+
     void selectAll();
     void deselectAll();
     void invertSelection();
@@ -115,6 +126,8 @@ Q_SIGNALS:
     void contextMenuRequested(const QPoint& globalPos);
     // "New Search…" on the results bar.
     void searchRequested();
+    // Comparison marks were dropped (listing changed or cleared).
+    void compareMarksCleared();
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;
@@ -190,6 +203,7 @@ private:
     Location m_pendingSelect;
     Location m_lastFailed;
     bool m_active = false;
+    QString m_compareSummary;
 };
 
 } // namespace s3fm

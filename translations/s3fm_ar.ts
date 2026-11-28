@@ -721,6 +721,188 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>هنا فقط</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>أحدث</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>أقدم</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>مختلف</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>متطابق</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>الحجم والوقت نفسهما</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>ملف/مجلد</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>غير موجود في اللوحة الأخرى.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>يختلف عن اللوحة الأخرى وهو أحدث.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>يختلف عن اللوحة الأخرى وهو أقدم.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>يختلف عن اللوحة الأخرى.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>المحتوى مطابق لما في اللوحة الأخرى.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>الحجم والوقت مطابقان لما في اللوحة الأخرى.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>أحد الجانبين ملف والآخر مجلد.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>المحتوى مختلف.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>تعذّر التحقق من المحتوى.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>هنا فقط: %n</numerusform>
+            <numerusform>هنا فقط: %n</numerusform>
+            <numerusform>هنا فقط: %n</numerusform>
+            <numerusform>هنا فقط: %n</numerusform>
+            <numerusform>هنا فقط: %n</numerusform>
+            <numerusform>هنا فقط: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>أحدث: %n</numerusform>
+            <numerusform>أحدث: %n</numerusform>
+            <numerusform>أحدث: %n</numerusform>
+            <numerusform>أحدث: %n</numerusform>
+            <numerusform>أحدث: %n</numerusform>
+            <numerusform>أحدث: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>أقدم: %n</numerusform>
+            <numerusform>أقدم: %n</numerusform>
+            <numerusform>أقدم: %n</numerusform>
+            <numerusform>أقدم: %n</numerusform>
+            <numerusform>أقدم: %n</numerusform>
+            <numerusform>أقدم: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>مختلفة: %n</numerusform>
+            <numerusform>مختلفة: %n</numerusform>
+            <numerusform>مختلفة: %n</numerusform>
+            <numerusform>مختلفة: %n</numerusform>
+            <numerusform>مختلفة: %n</numerusform>
+            <numerusform>مختلفة: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>متطابقة: %n</numerusform>
+            <numerusform>متطابقة: %n</numerusform>
+            <numerusform>متطابقة: %n</numerusform>
+            <numerusform>متطابقة: %n</numerusform>
+            <numerusform>متطابقة: %n</numerusform>
+            <numerusform>متطابقة: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>لم يُتحقق منها: %n</numerusform>
+            <numerusform>لم يُتحقق منها: %n</numerusform>
+            <numerusform>لم يُتحقق منها: %n</numerusform>
+            <numerusform>لم يُتحقق منها: %n</numerusform>
+            <numerusform>لم يُتحقق منها: %n</numerusform>
+            <numerusform>لم يُتحقق منها: %n</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>لا شيء للمقارنة</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>، </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>مقارنة اللوحتين</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>مقارنة أوقات التعديل(&amp;T)</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> ث</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>هامش التسامح(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>مقارنة محتوى الملفات المتساوية في الحجم(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;تتم قراءة الملفات المحلية. تُقارن كائنات S3 بواسطة ETag (مجموع MD5 لعمليات الرفع ذات الجزء الواحد) ومجاميع التحقق المخزنة؛ وعندما لا يكفي ETag وحده يلزم طلب أو طلبان لكل كائن.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>تمييز المجلدات الموجودة في جانب واحد فقط(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;تُقارن القوائم المعروضة فقط، وليس محتوى المجلدات. تُحدَّد العناصر المفقودة في الجانب الآخر أو الأحدث أو المختلفة في اللوحتين، جاهزةً للنسخ باستخدام F5. أوقات S3 هي أوقات الرفع.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>مقارنة</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1165,6 +1347,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>خطأ في قراءة %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>لا يحتوي الكائن على مجموع تحقق للمقارنة (مشفّر باستخدام SSE-KMS أو SSE-C، ولا يوجد مجموع تحقق مخزن).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>رُفعت الكائنات بأجزاء مختلفة أو شُفّرت باستخدام SSE-KMS أو SSE-C؛ ولا تبيّن قيم ETag ما إذا كان المحتوى متطابقًا.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1364,6 +1561,10 @@
     <message>
         <source>Version</source>
         <translation>الإصدار</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>المقارنة</translation>
     </message>
 </context>
 <context>
@@ -1753,6 +1954,10 @@
         <translation>البحث عن ملفات(&amp;I)…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>مقارنة اللوحتين(&amp;C)…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>الانتقال إلى المجلد الحاوي(&amp;C)</translation>
     </message>
@@ -1896,6 +2101,49 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>افتح محرك أقراص للبحث فيه.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>مقارنة اللوحتين</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>يجب أن تعرض كلتا اللوحتين مجلدًا.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>اخرج من عرض الإصدارات لمقارنة اللوحتين.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>تعرض اللوحتان المجلد نفسه.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>جارٍ مقارنة المحتوى…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>أُلغيت المقارنة</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>تغيّرت إحدى اللوحتين أثناء المقارنة؛ أعد المقارنة.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>عمليات التحقق من المحتوى التي فشلت: %n؛ راجع التلميحات في عمود المقارنة.</numerusform>
+            <numerusform>عمليات التحقق من المحتوى التي فشلت: %n؛ راجع التلميحات في عمود المقارنة.</numerusform>
+            <numerusform>عمليات التحقق من المحتوى التي فشلت: %n؛ راجع التلميحات في عمود المقارنة.</numerusform>
+            <numerusform>عمليات التحقق من المحتوى التي فشلت: %n؛ راجع التلميحات في عمود المقارنة.</numerusform>
+            <numerusform>عمليات التحقق من المحتوى التي فشلت: %n؛ راجع التلميحات في عمود المقارنة.</numerusform>
+            <numerusform>عمليات التحقق من المحتوى التي فشلت: %n؛ راجع التلميحات في عمود المقارنة.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>قورنت العناصر المحمّلة حتى الآن فقط (مرّر لأسفل لتحميل المزيد).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2860,6 +3108,10 @@ Started by: %2</source>
     <message>
         <source> — %1 scanned</source>
         <translation> — تم فحص %1</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — المقارنة: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

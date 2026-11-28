@@ -713,6 +713,164 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>केवल यहाँ</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>नया</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>पुराना</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>भिन्न</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>समान</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>समान आकार और समय</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>फ़ाइल/फ़ोल्डर</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>दूसरे पैनल में मौजूद नहीं है।</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>दूसरे पैनल से भिन्न है और नया है।</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>दूसरे पैनल से भिन्न है और पुराना है।</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>दूसरे पैनल से भिन्न है।</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>सामग्री दूसरे पैनल के समान है।</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>आकार और समय दूसरे पैनल के समान हैं।</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>एक ओर फ़ाइल है और दूसरी ओर फ़ोल्डर।</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>सामग्री भिन्न है।</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>सामग्री की जाँच नहीं हो सकी।</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>केवल यहाँ: %n</numerusform>
+            <numerusform>केवल यहाँ: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>नए: %n</numerusform>
+            <numerusform>नए: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>पुराने: %n</numerusform>
+            <numerusform>पुराने: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>भिन्न: %n</numerusform>
+            <numerusform>भिन्न: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>समान: %n</numerusform>
+            <numerusform>समान: %n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>असत्यापित: %n</numerusform>
+            <numerusform>असत्यापित: %n</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>तुलना के लिए कुछ नहीं</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>पैनलों की तुलना</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>संशोधन समय की तुलना करें(&amp;T)</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> से.</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>सहनशीलता(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>समान आकार वाली फ़ाइलों की सामग्री की तुलना करें(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;स्थानीय फ़ाइलें पढ़ी जाती हैं। S3 ऑब्जेक्ट की तुलना ETag (एकल-भाग अपलोड का MD5 योग) और संग्रहीत चेकसम से की जाती है; जब केवल ETag से पता न चले, तो प्रति ऑब्जेक्ट एक या दो अनुरोध आवश्यक होते हैं।&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>केवल एक ओर मौजूद फ़ोल्डरों को चिह्नित करें(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;केवल दिखाई गई सूचियों की तुलना होती है, फ़ोल्डरों की सामग्री की नहीं। दूसरी ओर अनुपस्थित, नए या भिन्न आइटम दोनों पैनलों में चुने जाते हैं, F5 से कॉपी करने के लिए तैयार। S3 के समय अपलोड के समय हैं।&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>तुलना करें</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1157,6 +1315,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>%1 पढ़ने में त्रुटि</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>ऑब्जेक्ट के पास तुलना के लिए कोई चेकसम नहीं है (SSE-KMS या SSE-C से एन्क्रिप्टेड, और कोई संग्रहीत चेकसम नहीं)।</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>ऑब्जेक्ट अलग-अलग भागों में अपलोड किए गए थे या SSE-KMS या SSE-C से एन्क्रिप्टेड हैं; उनके ETag से पता नहीं चलता कि सामग्री समान है या नहीं।</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1356,6 +1529,10 @@
     <message>
         <source>Version</source>
         <translation>संस्करण</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>तुलना</translation>
     </message>
 </context>
 <context>
@@ -1741,6 +1918,10 @@
         <translation>फ़ाइलें खोजें(&amp;I)…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>पैनलों की तुलना करें(&amp;C)…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>संबंधित फ़ोल्डर पर जाएँ(&amp;C)</translation>
     </message>
@@ -1884,6 +2065,45 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>इसमें खोजने के लिए कोई ड्राइव खोलें।</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>पैनलों की तुलना</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>दोनों पैनलों में एक फ़ोल्डर दिखना चाहिए।</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>पैनलों की तुलना करने के लिए संस्करण दृश्य से बाहर निकलें।</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>दोनों पैनल एक ही फ़ोल्डर दिखा रहे हैं।</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>सामग्री की तुलना हो रही है…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>तुलना रद्द की गई</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>तुलना के दौरान एक पैनल बदल गया; फिर से तुलना करें।</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n सामग्री जाँच विफल रही; तुलना कॉलम में टूलटिप देखें।</numerusform>
+            <numerusform>%n सामग्री जाँचें विफल रहीं; तुलना कॉलम में टूलटिप देखें।</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>केवल अब तक लोड किए गए आइटमों की तुलना की गई (और लोड करने के लिए नीचे स्क्रॉल करें)।</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2724,6 +2944,10 @@ Started by: %2</source>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1 जाँचे गए</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — तुलना: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

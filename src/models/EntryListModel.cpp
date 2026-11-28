@@ -76,6 +76,7 @@ void EntryListModel::showResults(const Location& root)
         m_ctx->cancel();
     ++m_generation;
     m_refreshBuffer.clear();
+    clearCompareMarks();
     beginResetModel();
     m_results = true;
     m_location = root;
@@ -191,6 +192,7 @@ void EntryListModel::handlePage(quint64 generation, LoadMode mode, const Locatio
 
     switch (mode) {
     case LoadMode::Navigate: {
+        clearCompareMarks();
         beginResetModel();
         m_results = false;
         m_resultPaths.clear();
@@ -245,9 +247,11 @@ void EntryListModel::applyRefresh(EntryList fresh)
     for (qsizetype i = 0; i < fresh.size(); ++i)
         freshByName.insert(rowKey(fresh[i]), i);
 
+    bool changed = false;
     // 1. Remove rows that disappeared (from the bottom so indexes stay valid).
     for (qsizetype i = m_entries.size() - 1; i >= 0; --i) {
         if (!freshByName.contains(rowKey(m_entries[i]))) {
+            changed = true;
             const int row = rowOffset() + int(i);
             beginRemoveRows({}, row, row);
             m_entries.removeAt(i);
@@ -265,6 +269,7 @@ void EntryListModel::applyRefresh(EntryList fresh)
             updated.type != current.type || updated.etag != current.etag ||
             updated.storageClass != current.storageClass || updated.isLatest != current.isLatest) {
             current = updated;
+            changed = true;
             const int row = rowOffset() + int(i);
             Q_EMIT dataChanged(index(row, 0), index(row, ColumnCount - 1));
         }
@@ -276,12 +281,40 @@ void EntryListModel::applyRefresh(EntryList fresh)
             added.push_back(std::move(e));
     }
     if (!added.isEmpty()) {
+        changed = true;
         const int first = rowOffset() + int(m_entries.size());
         beginInsertRows({}, first, first + int(added.size()) - 1);
         m_entries.append(std::move(added));
         endInsertRows();
     }
+    if (changed)
+        clearCompareMarks();
 }
+
+void EntryListModel::setCompareMarks(QHash<QString, CompareMark> marks)
+{
+    m_compareMarks = std::move(marks);
+    if (rowCount() > 0)
+        Q_EMIT dataChanged(index(0, 0), index(rowCount() - 1, ColumnCount - 1));
+}
+
+void EntryListModel::clearCompareMarks()
+{
+    if (m_compareMarks.isEmpty())
+        return;
+    m_compareMarks.clear();
+    if (rowCount() > 0)
+        Q_EMIT dataChanged(index(0, 0), index(rowCount() - 1, ColumnCount - 1));
+    Q_EMIT compareMarksCleared();
+}
+
+CompareMark EntryListModel::compareMark(int row) const
+{
+    if (m_compareMarks.isEmpty() || isParentRow(row) || row < 0 || row >= rowCount())
+        return {};
+    return m_compareMarks.value(displayPath(row));
+}
+
 
 void EntryListModel::setWatchLocalChanges(bool watch)
 {
@@ -356,6 +389,27 @@ QString EntryListModel::typeName(const Entry& entry) const
     return name;
 }
 
+QColor EntryListModel::compareColor(CompareState state)
+{
+    // Mid tones that read on light and dark backgrounds.
+    switch (state) {
+    case CompareState::Unique:
+        return QColor(0x3d, 0x8e, 0xda);
+    case CompareState::Newer:
+        return QColor(0x3a, 0xa6, 0x55);
+    case CompareState::Older:
+        return QColor(0xd0, 0x8a, 0x1e);
+    case CompareState::Different:
+    case CompareState::Conflict:
+        return QColor(0xd9, 0x53, 0x4f);
+    case CompareState::Same:
+        return QGuiApplication::palette().color(QPalette::Disabled, QPalette::Text);
+    case CompareState::None:
+        break;
+    }
+    return {};
+}
+
 QVariant EntryListModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid() || index.row() >= rowCount())
@@ -395,6 +449,8 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
             return e.storageClass;
         case EtagColumn:
             return e.etag;
+        case CompareColumn:
+            return compareMark(row).label();
         case VersionColumn:
             if (e.versionId.isEmpty() || parentRow)
                 return {};
@@ -413,6 +469,8 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
             return e.size;
         case ModifiedColumn:
             return e.modified;
+        case CompareColumn:
+            return int(compareMark(row).state);
         default:
             return data(index, Qt::DisplayRole);
         }
@@ -425,6 +483,11 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
             return QVariant::fromValue(Qt::AlignRight | Qt::AlignVCenter);
         return {};
     case Qt::ForegroundRole:
+        if (index.column() == CompareColumn) {
+            const QColor color = compareColor(compareMark(row).state);
+            if (color.isValid())
+                return color;
+        }
         if (e.hidden || (!e.versionId.isEmpty() && (!e.isLatest || e.isDeleteMarker)))
             return QGuiApplication::palette().brush(QPalette::Disabled, QPalette::Text);
         return {};
@@ -437,6 +500,10 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
         }
         return {};
     case Qt::ToolTipRole:
+        if (index.column() == CompareColumn) {
+            const QString text = compareMark(row).description();
+            return text.isEmpty() ? QVariant() : QVariant(text);
+        }
         if (parentRow || index.column() != NameColumn)
             return {};
         if (e.isSymlink)
@@ -470,6 +537,8 @@ QVariant EntryListModel::headerData(int section, Qt::Orientation orientation, in
         return tr("ETag");
     case VersionColumn:
         return tr("Version");
+    case CompareColumn:
+        return tr("Comparison");
     default:
         break;
     }

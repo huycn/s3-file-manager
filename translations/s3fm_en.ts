@@ -19,6 +19,51 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>%n only here</numerusform>
+            <numerusform>%n only here</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>%n newer</numerusform>
+            <numerusform>%n newer</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>%n older</numerusform>
+            <numerusform>%n older</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>%n different</numerusform>
+            <numerusform>%n different</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>%n identical</numerusform>
+            <numerusform>%n identical</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>%n not verified</numerusform>
+            <numerusform>%n not verified</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>s3fm::LocalProvider</name>
     <message numerus="yes">
         <source>%n item(s) could not be deleted</source>
@@ -30,6 +75,13 @@
 </context>
 <context>
     <name>s3fm::MainWindow</name>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n content check failed; see the tooltips in the comparison column.</numerusform>
+            <numerusform>%n content checks failed; see the tooltips in the comparison column.</numerusform>
+        </translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>

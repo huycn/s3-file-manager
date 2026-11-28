@@ -4,9 +4,11 @@
 #include "connections/ConnectionStore.h"
 #include "connections/S3Urls.h"
 #include "core/Async.h"
+#include "core/OperationContext.h"
 #include "core/Provider.h"
 #include "core/ProviderRegistry.h"
 #include "models/EntryListModel.h"
+#include "providers/ContentCompare.h"
 #include "providers/s3/S3BucketService.h"
 #include "providers/s3/S3ObjectService.h"
 #include "providers/s3/S3Provider.h"
@@ -17,6 +19,7 @@
 #include "ui/I18n.h"
 #include "ui/RemoteFiles.h"
 #include "ui/dialogs/BucketPropertiesDialog.h"
+#include "ui/dialogs/CompareDialog.h"
 #include "ui/dialogs/ConflictDialog.h"
 #include "ui/dialogs/ConnectionDialog.h"
 #include "ui/dialogs/CreateBucketDialog.h"
@@ -153,6 +156,10 @@ MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections,
             setActivePanel(panel);
             findFiles();
         });
+        // Marks describe both panels together: when one side's listing changes, both go.
+        connect(panel, &PanelWidget::compareMarksCleared, this, [this, panel] {
+            (panel == m_left ? m_right : m_left)->clearCompareMarks();
+        });
         connect(panel, &PanelWidget::contextMenuRequested, this,
                 [this, panel](const QPoint& pos) { showContextMenu(panel, pos); });
     }
@@ -260,6 +267,8 @@ void MainWindow::createActions()
               &MainWindow::quickFilter);
     addAction(QStringLiteral("findFiles"), tr("F&ind Files…"),
               {K(Qt::ALT | Qt::Key_F7), K(Qt::CTRL | Qt::SHIFT | Qt::Key_F)}, &MainWindow::findFiles);
+    addAction(QStringLiteral("comparePanels"), tr("&Compare Panels…"), {K(Qt::SHIFT | Qt::Key_F2)},
+              &MainWindow::comparePanels);
     addAction(QStringLiteral("containingFolder"), tr("Go to &Containing Folder"), {K(Qt::CTRL | Qt::Key_G)},
               &MainWindow::goToContainingFolder);
 
@@ -329,7 +338,8 @@ void MainWindow::createMenus()
                                             QStringLiteral("deselectAll"),
                                             QStringLiteral("invertSelection"),
                                             {},
-                                            QStringLiteral("quickFilter")});
+                                            QStringLiteral("quickFilter"),
+                                            QStringLiteral("comparePanels")});
     add(menuBar()->addMenu(tr("&View", "menu")), {QStringLiteral("refresh"),
                                                   QStringLiteral("showHidden"),
                                                   {},
@@ -641,6 +651,91 @@ void MainWindow::findFiles()
     m_lastSearch = dialog.criteria();
     panel->startSearch(root, *m_lastSearch);
     panel->focusView();
+}
+
+void MainWindow::comparePanels()
+{
+    QSettings settings;
+    CompareDialog dialog(CompareDialog::load(settings), this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+    CompareDialog::save(settings, dialog.options());
+    comparePanelsWith(dialog.options());
+}
+
+void MainWindow::comparePanelsWith(const CompareOptions& requested)
+{
+    const Location left = m_left->location();
+    const Location right = m_right->location();
+    auto refuse = [this](const QString& text) {
+        QMessageBox::information(this, tr("Compare Panels"), text);
+        Q_EMIT compareFinished();
+    };
+    if (!left.isValid() || !right.isValid())
+        return refuse(tr("Both panels need to show a folder."));
+    if (m_left->showsVersions() || m_right->showsVersions())
+        return refuse(tr("Leave the versions view to compare the panels."));
+    if (left == right && m_left->isSearchResults() == m_right->isSearchResults())
+        return refuse(tr("Both panels show the same folder."));
+
+    CompareOptions options = requested;
+#ifdef Q_OS_WIN
+    if (left.isLocal() && right.isLocal())
+        options.caseSensitivity = Qt::CaseInsensitive;
+#endif
+    const CompareItems leftItems = m_left->compareItems();
+    const CompareItems rightItems = m_right->compareItems();
+    const bool partial = m_left->model()->canFetchMore({}) || m_right->model()->canFetchMore({});
+    m_left->clearCompareMarks();
+    m_right->clearCompareMarks();
+
+    auto* progress = new QProgressDialog(tr("Comparing contents…"), tr("Cancel"), 0, 0, this);
+    progress->setWindowModality(Qt::WindowModal);
+    progress->setMinimumDuration(500);
+    auto ctx = std::make_shared<OperationContext>();
+    QPointer<QProgressDialog> guard(progress);
+    ctx->setProgressHandler([guard](qint64 done, qint64 total) {
+        QMetaObject::invokeMethod(
+            guard.data(),
+            [guard, done, total] {
+                if (!guard)
+                    return;
+                guard->setMaximum(int(total));
+                guard->setValue(int(done));
+            },
+            Qt::QueuedConnection);
+    });
+    connect(progress, &QProgressDialog::canceled, this, [ctx] { ctx->cancel(); });
+    runIo([leftItems, rightItems, options, ctx, comparer = makeContentComparer(m_registry)] {
+        return compareListings(leftItems, rightItems, options, comparer, *ctx);
+    }).then(this, [this, progress, left, right, partial](const Result<CompareResult>& result) {
+        progress->reset();
+        progress->deleteLater();
+        if (!result) {
+            statusBar()->showMessage(result.error().isCancelled() ? tr("Comparison cancelled")
+                                                                  : result.error().toString(),
+                                     5000);
+            Q_EMIT compareFinished();
+            return;
+        }
+        if (m_left->location() != left || m_right->location() != right) {
+            statusBar()->showMessage(tr("A panel changed during the comparison; compare again."), 5000);
+            Q_EMIT compareFinished();
+            return;
+        }
+        const CompareResult& r = result.value();
+        m_left->showCompareMarks(r.left, r.leftSummary);
+        m_right->showCompareMarks(r.right, r.rightSummary);
+        QStringList notes;
+        if (r.leftSummary.errors > 0)
+            notes.push_back(tr("%n content check(s) failed; see the tooltips in the comparison column.", nullptr,
+                               r.leftSummary.errors));
+        if (partial)
+            notes.push_back(tr("Only the items loaded so far were compared (scroll down to load more)."));
+        if (!notes.isEmpty())
+            statusBar()->showMessage(notes.join(u' '), 10000);
+        Q_EMIT compareFinished();
+    });
 }
 
 void MainWindow::goToContainingFolder()

@@ -713,6 +713,164 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>alleen hier</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>nieuwer</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>ouder</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>verschillend</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>identiek</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>zelfde grootte en tijd</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>bestand/map</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>Ontbreekt in het andere paneel.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>Verschilt van het andere paneel en is nieuwer.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>Verschilt van het andere paneel en is ouder.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>Verschilt van het andere paneel.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>Zelfde inhoud als in het andere paneel.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>Zelfde grootte en tijd als in het andere paneel.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>Het andere paneel heeft een bestand waar dit een map is, of omgekeerd.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>De inhoud verschilt.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>De inhoud kon niet worden gecontroleerd.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>%n alleen hier</numerusform>
+            <numerusform>%n alleen hier</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>%n nieuwer</numerusform>
+            <numerusform>%n nieuwer</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>%n ouder</numerusform>
+            <numerusform>%n ouder</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>%n verschillend</numerusform>
+            <numerusform>%n verschillend</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>%n identiek</numerusform>
+            <numerusform>%n identiek</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>%n niet gecontroleerd</numerusform>
+            <numerusform>%n niet gecontroleerd</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>niets te vergelijken</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Panelen vergelijken</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>Wijzigings&amp;tijden vergelijken</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> s</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>T&amp;olerantie:</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>&amp;Inhoud van bestanden met dezelfde grootte vergelijken</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Lokale bestanden worden gelezen. S3-objecten worden vergeleken op ETag (de MD5-som van uploads in één deel) en opgeslagen controlesommen; als de ETag alleen geen uitsluitsel geeft, zijn één of twee verzoeken per object nodig.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>&amp;Mappen markeren die maar aan één kant bestaan</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Alleen de getoonde lijsten worden vergeleken, niet de inhoud van mappen. Items die aan de andere kant ontbreken, nieuwer of verschillend zijn, worden in beide panelen geselecteerd, klaar om te kopiëren met F5. S3-tijden zijn uploadtijden.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>Vergelijken</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1157,6 +1315,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>Fout bij lezen van %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>Het object heeft geen controlesom om mee te vergelijken (versleuteld met SSE-KMS of SSE-C en geen opgeslagen controlesom).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>De objecten zijn in verschillende delen geüpload of zijn versleuteld met SSE-KMS of SSE-C; hun ETags vertellen niet of de inhoud gelijk is.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1356,6 +1529,10 @@
     <message>
         <source>Version</source>
         <translation>Versie</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>Vergelijking</translation>
     </message>
 </context>
 <context>
@@ -1750,6 +1927,10 @@
         <translation>Bestanden &amp;zoeken…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>Panelen &amp;vergelijken…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>Naar &amp;map met bestand</translation>
     </message>
@@ -1893,6 +2074,45 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>Open een station om erin te zoeken.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Panelen vergelijken</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>Beide panelen moeten een map tonen.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>Verlaat de versieweergave om de panelen te vergelijken.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>Beide panelen tonen dezelfde map.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>Inhoud vergelijken…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>Vergelijking geannuleerd</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>Een paneel is tijdens de vergelijking gewijzigd; vergelijk opnieuw.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n inhoudscontrole mislukt; zie de tooltips in de kolom Vergelijking.</numerusform>
+            <numerusform>%n inhoudscontroles mislukt; zie de tooltips in de kolom Vergelijking.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>Alleen de tot nu toe geladen items zijn vergeleken (scroll omlaag om meer te laden).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2724,6 +2944,10 @@ Gestart door: %2</translation>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1 doorzocht</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — vergeleken: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

@@ -12,3 +12,4 @@ s3fm_add_test(tst_s3objects SOURCES tst_s3objects.cpp LABELS unit LIBS s3fm_core
 s3fm_add_test(tst_buckettypes SOURCES tst_buckettypes.cpp LABELS unit LIBS s3fm_core)
 s3fm_add_test(tst_s3credentials SOURCES tst_s3credentials.cpp LABELS unit LIBS s3fm_core)
 s3fm_add_test(tst_search SOURCES tst_search.cpp LABELS unit LIBS s3fm_core)
+s3fm_add_test(tst_compare SOURCES tst_compare.cpp LABELS unit LIBS s3fm_core)

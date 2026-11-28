@@ -711,6 +711,158 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>こちらのみ</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>新しい</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>古い</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>異なる</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>同一</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>サイズと日時が同じ</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>ファイル/フォルダー</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>反対側のパネルにありません。</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>反対側のパネルと異なり、こちらが新しいです。</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>反対側のパネルと異なり、こちらが古いです。</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>反対側のパネルと異なります。</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>反対側のパネルと内容が同じです。</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>反対側のパネルとサイズと日時が同じです。</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>一方がファイルで、もう一方がフォルダーです。</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>内容が異なります。</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>内容を確認できませんでした。</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>こちらのみ %n 件</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>新しい %n 件</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>古い %n 件</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>異なる %n 件</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>同一 %n 件</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>未確認 %n 件</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>比較する項目がありません</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>、</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>パネルの比較</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>更新日時を比較(&amp;T)</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>許容差(&amp;O)：</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>サイズが同じファイルの内容を比較(&amp;C)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;ローカルファイルは読み取られます。S3 オブジェクトは ETag（単一パートでアップロードされた場合の MD5）と保存されたチェックサムで比較します。ETag だけで判断できない場合は、オブジェクトごとに 1～2 回のリクエストが必要です。&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>片側にしかないフォルダーをマーク(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;比較するのは表示中の一覧だけで、フォルダーの中身は比較しません。反対側にないもの、新しいもの、異なるものが両方のパネルで選択され、そのまま F5 でコピーできます。S3 の日時はアップロード日時です。&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>比較</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1155,6 +1307,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>%1 の読み取り中にエラーが発生しました</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>比較に使えるチェックサムがありません（SSE-KMS または SSE-C で暗号化されており、保存されたチェックサムもありません）。</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>オブジェクトが異なるパート構成でアップロードされたか、SSE-KMS または SSE-C で暗号化されているため、ETag から内容が同じかどうかは判断できません。</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1354,6 +1521,10 @@
     <message>
         <source>Version</source>
         <translation>バージョン</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>比較</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1918,10 @@
         <translation>ファイルを検索(&amp;I)…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>パネルを比較(&amp;C)…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>含まれるフォルダーへ移動(&amp;C)</translation>
     </message>
@@ -1890,6 +2065,44 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>検索するにはドライブを開いてください。</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>パネルの比較</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>両方のパネルにフォルダーを表示してください。</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>パネルを比較するには、バージョン表示を終了してください。</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>両方のパネルが同じフォルダーを表示しています。</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>内容を比較しています…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>比較をキャンセルしました</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>比較中にパネルが変更されました。もう一度比較してください。</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n 件の内容チェックに失敗しました。比較列のツールチップを参照してください。</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>これまでに読み込まれた項目だけを比較しました（さらに読み込むには下へスクロールしてください）。</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2690,6 +2903,10 @@ Started by: %2</source>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1 件を走査</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — 比較: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

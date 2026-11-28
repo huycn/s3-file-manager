@@ -713,6 +713,164 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>solo qui</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>più recente</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>meno recente</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>diverso</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>identico</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>stesse dimensioni e data</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>file/cartella</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>Manca nell&apos;altro pannello.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>Diverso dall&apos;altro pannello e più recente.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>Diverso dall&apos;altro pannello e meno recente.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>Diverso dall&apos;altro pannello.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>Stesso contenuto dell&apos;altro pannello.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>Stesse dimensioni e data dell&apos;altro pannello.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>L&apos;altro pannello ha un file dove qui c&apos;è una cartella, o viceversa.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>Il contenuto è diverso.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>Impossibile verificare il contenuto.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>%n solo qui</numerusform>
+            <numerusform>%n solo qui</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>%n più recente</numerusform>
+            <numerusform>%n più recenti</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>%n meno recente</numerusform>
+            <numerusform>%n meno recenti</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>%n diverso</numerusform>
+            <numerusform>%n diversi</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>%n identico</numerusform>
+            <numerusform>%n identici</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>%n non verificato</numerusform>
+            <numerusform>%n non verificati</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>niente da confrontare</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Confronta pannelli</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>Confronta le date di &amp;modifica</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> s</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>T&amp;olleranza:</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>Confronta il &amp;contenuto dei file con le stesse dimensioni</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;I file locali vengono letti. Gli oggetti S3 vengono confrontati tramite ETag (la somma MD5 dei caricamenti in una sola parte) e i checksum memorizzati; quando l&apos;ETag da solo non basta, servono una o due richieste per oggetto.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>Segna le c&amp;artelle presenti su un solo lato</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Vengono confrontati solo gli elenchi visualizzati, non il contenuto delle cartelle. Gli elementi mancanti dall&apos;altro lato, più recenti o diversi vengono selezionati in entrambi i pannelli, pronti per la copia con F5. Le date S3 sono le date di caricamento.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>Confronta</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1157,6 +1315,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>Errore durante la lettura di %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>L&apos;oggetto non ha alcun checksum da confrontare (cifrato con SSE-KMS o SSE-C e senza checksum memorizzato).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>Gli oggetti sono stati caricati in parti diverse o sono cifrati con SSE-KMS o SSE-C; i loro ETag non dicono se il contenuto è lo stesso.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1356,6 +1529,10 @@
     <message>
         <source>Version</source>
         <translation>Versione</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>Confronto</translation>
     </message>
 </context>
 <context>
@@ -1750,6 +1927,10 @@
         <translation>Cerca &amp;file…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>&amp;Confronta pannelli…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>Vai alla &amp;cartella contenitore</translation>
     </message>
@@ -1893,6 +2074,45 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>Apri un&apos;unità per cercarvi.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>Confronta pannelli</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>Entrambi i pannelli devono mostrare una cartella.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>Esci dalla vista delle versioni per confrontare i pannelli.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>Entrambi i pannelli mostrano la stessa cartella.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>Confronto dei contenuti…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>Confronto annullato</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>Un pannello è cambiato durante il confronto; ripeti il confronto.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n verifica del contenuto non riuscita; vedi i suggerimenti nella colonna Confronto.</numerusform>
+            <numerusform>%n verifiche del contenuto non riuscite; vedi i suggerimenti nella colonna Confronto.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>Sono stati confrontati solo gli elementi caricati finora (scorri in basso per caricarne altri).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2724,6 +2944,10 @@ Avviato da: %2</translation>
     <message>
         <source> — %1 scanned</source>
         <translation> — %1 esaminati</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — confronto: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

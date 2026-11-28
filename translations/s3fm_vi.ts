@@ -711,6 +711,158 @@
     </message>
 </context>
 <context>
+    <name>s3fm::Compare</name>
+    <message>
+        <source>only here</source>
+        <translation>chỉ có ở đây</translation>
+    </message>
+    <message>
+        <source>newer</source>
+        <translation>mới hơn</translation>
+    </message>
+    <message>
+        <source>older</source>
+        <translation>cũ hơn</translation>
+    </message>
+    <message>
+        <source>different</source>
+        <translation>khác nhau</translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <translation>giống hệt</translation>
+    </message>
+    <message>
+        <source>same size and time</source>
+        <translation>cùng kích thước và thời gian</translation>
+    </message>
+    <message>
+        <source>file vs. folder</source>
+        <translation>tệp/thư mục</translation>
+    </message>
+    <message>
+        <source>Missing in the other panel.</source>
+        <translation>Không có trong bảng kia.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is newer.</source>
+        <translation>Khác với bảng kia và mới hơn.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel and is older.</source>
+        <translation>Khác với bảng kia và cũ hơn.</translation>
+    </message>
+    <message>
+        <source>Differs from the other panel.</source>
+        <translation>Khác với bảng kia.</translation>
+    </message>
+    <message>
+        <source>Same content as in the other panel.</source>
+        <translation>Nội dung giống bảng kia.</translation>
+    </message>
+    <message>
+        <source>Same size and time as in the other panel.</source>
+        <translation>Cùng kích thước và thời gian với bảng kia.</translation>
+    </message>
+    <message>
+        <source>The other panel has a file where this is a folder, or the other way round.</source>
+        <translation>Một bên là tệp, bên kia là thư mục.</translation>
+    </message>
+    <message>
+        <source>The content differs.</source>
+        <translation>Nội dung khác nhau.</translation>
+    </message>
+    <message>
+        <source>The content could not be checked.</source>
+        <translation>Không thể kiểm tra nội dung.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n only here</source>
+        <translation>
+            <numerusform>%n chỉ có ở đây</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n newer</source>
+        <translation>
+            <numerusform>%n mới hơn</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n older</source>
+        <translation>
+            <numerusform>%n cũ hơn</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n different</source>
+        <translation>
+            <numerusform>%n khác nhau</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n identical</source>
+        <translation>
+            <numerusform>%n giống hệt</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n not verified</source>
+        <translation>
+            <numerusform>%n chưa xác minh</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>nothing to compare</source>
+        <translation>không có gì để so sánh</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>list separator in the comparison summary</comment>
+        <translation>, </translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::CompareDialog</name>
+    <message>
+        <source>Compare Panels</source>
+        <translation>So sánh hai bảng</translation>
+    </message>
+    <message>
+        <source>Compare modification &amp;times</source>
+        <translation>So sánh &amp;thời gian sửa đổi</translation>
+    </message>
+    <message>
+        <source> s</source>
+        <comment>seconds</comment>
+        <translation> giây</translation>
+    </message>
+    <message>
+        <source>T&amp;olerance:</source>
+        <translation>Dung &amp;sai:</translation>
+    </message>
+    <message>
+        <source>Compare the &amp;content of files with the same size</source>
+        <translation>So sánh &amp;nội dung các tệp cùng kích thước</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Local files are read. S3 objects are compared by ETag (the MD5 sum of single-part uploads) and stored checksums; when the ETag alone does not tell, one or two requests per object are needed.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Tệp cục bộ sẽ được đọc. Đối tượng S3 được so sánh theo ETag (tổng MD5 của các lần tải lên một phần) và các tổng kiểm tra đã lưu; khi chỉ ETag không đủ để biết, cần một hoặc hai yêu cầu cho mỗi đối tượng.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Mark &amp;folders that exist on one side only</source>
+        <translation>Đánh dấu thư &amp;mục chỉ có ở một bên</translation>
+    </message>
+    <message>
+        <source>&lt;small&gt;Only the listings shown are compared, not the contents of folders. Items missing on the other side, newer, or different are selected in both panels, ready to copy with F5. S3 times are upload times.&lt;/small&gt;</source>
+        <translation>&lt;small&gt;Chỉ so sánh các danh sách đang hiển thị, không so sánh nội dung thư mục. Các mục thiếu ở bên kia, mới hơn hoặc khác nhau được chọn ở cả hai bảng, sẵn sàng để sao chép bằng F5. Thời gian trên S3 là thời gian tải lên.&lt;/small&gt;</translation>
+    </message>
+    <message>
+        <source>Compare</source>
+        <translation>So sánh</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::ConflictDialog</name>
     <message>
         <source>File already exists</source>
@@ -1155,6 +1307,21 @@
     </message>
 </context>
 <context>
+    <name>s3fm::ContentCompare</name>
+    <message>
+        <source>Error reading %1</source>
+        <translation>Lỗi khi đọc %1</translation>
+    </message>
+    <message>
+        <source>The object has no checksum to compare with (encrypted with SSE-KMS or SSE-C, and no stored checksum).</source>
+        <translation>Đối tượng không có tổng kiểm tra để so sánh (được mã hóa bằng SSE-KMS hoặc SSE-C và không có tổng kiểm tra đã lưu).</translation>
+    </message>
+    <message>
+        <source>The objects were uploaded in different parts or are encrypted with SSE-KMS or SSE-C; their ETags do not tell whether the content is the same.</source>
+        <translation>Các đối tượng được tải lên theo các phần khác nhau hoặc được mã hóa bằng SSE-KMS hoặc SSE-C; ETag của chúng không cho biết nội dung có giống nhau hay không.</translation>
+    </message>
+</context>
+<context>
     <name>s3fm::CreateBucketDialog</name>
     <message>
         <source>New Bucket</source>
@@ -1354,6 +1521,10 @@
     <message>
         <source>Version</source>
         <translation>Phiên bản</translation>
+    </message>
+    <message>
+        <source>Comparison</source>
+        <translation>So sánh</translation>
     </message>
 </context>
 <context>
@@ -1747,6 +1918,10 @@
         <translation>Tìm tệ&amp;p…</translation>
     </message>
     <message>
+        <source>&amp;Compare Panels…</source>
+        <translation>&amp;So sánh hai bảng…</translation>
+    </message>
+    <message>
         <source>Go to &amp;Containing Folder</source>
         <translation>Đến thư mục c&amp;hứa</translation>
     </message>
@@ -1890,6 +2065,44 @@
     <message>
         <source>Open a drive to search in it.</source>
         <translation>Mở một ổ đĩa để tìm kiếm trong đó.</translation>
+    </message>
+    <message>
+        <source>Compare Panels</source>
+        <translation>So sánh hai bảng</translation>
+    </message>
+    <message>
+        <source>Both panels need to show a folder.</source>
+        <translation>Cả hai bảng cần hiển thị một thư mục.</translation>
+    </message>
+    <message>
+        <source>Leave the versions view to compare the panels.</source>
+        <translation>Hãy thoát chế độ xem phiên bản để so sánh hai bảng.</translation>
+    </message>
+    <message>
+        <source>Both panels show the same folder.</source>
+        <translation>Cả hai bảng đang hiển thị cùng một thư mục.</translation>
+    </message>
+    <message>
+        <source>Comparing contents…</source>
+        <translation>Đang so sánh nội dung…</translation>
+    </message>
+    <message>
+        <source>Comparison cancelled</source>
+        <translation>Đã hủy so sánh</translation>
+    </message>
+    <message>
+        <source>A panel changed during the comparison; compare again.</source>
+        <translation>Một bảng đã thay đổi trong lúc so sánh; hãy so sánh lại.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n content check(s) failed; see the tooltips in the comparison column.</source>
+        <translation>
+            <numerusform>%n lần kiểm tra nội dung thất bại; xem chú giải trong cột So sánh.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Only the items loaded so far were compared (scroll down to load more).</source>
+        <translation>Chỉ các mục đã tải đến giờ được so sánh (cuộn xuống để tải thêm).</translation>
     </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
@@ -2690,6 +2903,10 @@ Bắt đầu bởi: %2</translation>
     <message>
         <source> — %1 scanned</source>
         <translation> — đã quét %1</translation>
+    </message>
+    <message>
+        <source> — compared: %1</source>
+        <translation> — đã so sánh: %1</translation>
     </message>
     <message>
         <source> — loading…</source>

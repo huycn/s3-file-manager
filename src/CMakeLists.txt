@@ -12,6 +12,7 @@ add_library(s3fm_core STATIC
 
     core/Async.cpp core/Async.h
     core/BandwidthLimiter.cpp core/BandwidthLimiter.h
+    core/Compare.cpp core/Compare.h
     core/Entry.h
     core/Format.cpp core/Format.h
     core/NaturalSort.cpp core/NaturalSort.h
@@ -24,6 +25,7 @@ add_library(s3fm_core STATIC
     core/ProviderRegistry.cpp core/ProviderRegistry.h
     core/TransferParams.h
 
+    providers/ContentCompare.cpp providers/ContentCompare.h
     providers/local/LocalProvider.cpp providers/local/LocalProvider.h
 
     providers/s3/AwsConvert.h
@@ -80,6 +82,7 @@ add_library(s3fm_ui STATIC
     ui/dialogs/PresignDialog.cpp ui/dialogs/PresignDialog.h
     ui/dialogs/PropertiesDialog.cpp ui/dialogs/PropertiesDialog.h
     ui/dialogs/RestoreArchiveDialog.cpp ui/dialogs/RestoreArchiveDialog.h
+    ui/dialogs/CompareDialog.cpp ui/dialogs/CompareDialog.h
     ui/dialogs/SearchDialog.cpp ui/dialogs/SearchDialog.h
     ui/dialogs/SettingsDialog.cpp ui/dialogs/SettingsDialog.h
     ui/dialogs/SseKeyDialog.cpp ui/dialogs/SseKeyDialog.h
