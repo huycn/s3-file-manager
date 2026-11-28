@@ -1,6 +1,8 @@
 #include "ui/panel/PanelWidget.h"
 
+#include "core/Async.h"
 #include "core/Format.h"
+#include "core/OperationContext.h"
 #include "core/ProviderRegistry.h"
 #include "models/EntryListModel.h"
 #include "models/EntrySortProxy.h"
@@ -14,9 +16,12 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
+#include <QLocale>
 #include <QMenu>
+#include <QMutex>
 #include <QPushButton>
 #include <QSettings>
+#include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
 
@@ -55,6 +60,15 @@ private:
 };
 
 } // namespace
+
+// A running search: the worker appends matches to `pending`, the GUI drains them.
+struct PanelWidget::SearchRun
+{
+    OperationContext ctx;
+    std::atomic<qint64> scanned{0};
+    QMutex mutex;
+    EntryList pending;
+};
 
 PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     : QWidget(parent), m_registry(registry), m_model(new EntryListModel(registry, this)),
@@ -122,6 +136,38 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     errLayout->addWidget(close);
     m_errorFrame->hide();
     layout->addWidget(m_errorFrame);
+
+    // Search results bar
+    m_searchBar = new QFrame(this);
+    m_searchBar->setObjectName(QStringLiteral("searchBar"));
+    m_searchBar->setFrameShape(QFrame::StyledPanel);
+    auto* searchLayout = new QHBoxLayout(m_searchBar);
+    searchLayout->setContentsMargins(6, 2, 2, 2);
+    m_searchLabel = new QLabel(m_searchBar);
+    m_searchLabel->setTextFormat(Qt::PlainText);
+    m_searchLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    searchLayout->addWidget(m_searchLabel, 1);
+    m_stopButton = new QPushButton(tr("Stop"), m_searchBar);
+    m_stopButton->setFocusPolicy(Qt::NoFocus);
+    m_stopButton->setToolTip(tr("Stop searching (Esc)"));
+    connect(m_stopButton, &QPushButton::clicked, this, &PanelWidget::stopSearch);
+    searchLayout->addWidget(m_stopButton);
+    auto* newSearch = new QPushButton(tr("New Search…"), m_searchBar);
+    newSearch->setFocusPolicy(Qt::NoFocus);
+    connect(newSearch, &QPushButton::clicked, this, &PanelWidget::searchRequested);
+    searchLayout->addWidget(newSearch);
+    auto* closeSearch = new QToolButton(m_searchBar);
+    closeSearch->setText(QStringLiteral("✕"));
+    closeSearch->setAutoRaise(true);
+    closeSearch->setFocusPolicy(Qt::NoFocus);
+    closeSearch->setToolTip(tr("Close the search results"));
+    connect(closeSearch, &QToolButton::clicked, this, &PanelWidget::goUp);
+    searchLayout->addWidget(closeSearch);
+    m_searchBar->hide();
+    layout->addWidget(m_searchBar);
+    m_searchTimer = new QTimer(this);
+    m_searchTimer->setInterval(200);
+    connect(m_searchTimer, &QTimer::timeout, this, &PanelWidget::drainSearch);
 
     // File list
     m_view = new PanelView(this);
@@ -211,7 +257,11 @@ PanelWidget::PanelWidget(ProviderRegistry* registry, QWidget* parent)
     updateStatus();
 }
 
-PanelWidget::~PanelWidget() = default;
+PanelWidget::~PanelWidget()
+{
+    if (m_search)
+        m_search->ctx.cancel();
+}
 
 Location PanelWidget::location() const
 {
@@ -227,6 +277,7 @@ void PanelWidget::navigate(const Location& location, const Location& select, boo
 {
     if (!location.isValid())
         return;
+    leaveResults();
     m_recordHistory = recordHistory;
     m_pendingSelect = select;
     m_model->setLocation(location);
@@ -234,12 +285,18 @@ void PanelWidget::navigate(const Location& location, const Location& select, boo
 
 void PanelWidget::refresh()
 {
+    if (isSearchResults())
+        return; // rerunSearch() searches again
     hideError();
     m_model->refresh();
 }
 
 void PanelWidget::goUp()
 {
+    if (isSearchResults()) {
+        navigate(location(), {}, true); // the folder that was searched
+        return;
+    }
     const Location current = location();
     const Location parent = current.parent();
     if (parent.isValid())
@@ -250,23 +307,201 @@ void PanelWidget::goBack()
 {
     if (m_back.isEmpty())
         return;
-    const Location target = m_back.takeLast();
-    m_forward.push_back(location());
-    navigate(target, {}, false);
+    const HistoryItem target = m_back.takeLast();
+    m_forward.push_back(m_current);
+    goTo(target);
 }
 
 void PanelWidget::goForward()
 {
     if (m_forward.isEmpty())
         return;
-    const Location target = m_forward.takeLast();
-    m_back.push_back(location());
-    navigate(target, {}, false);
+    const HistoryItem target = m_forward.takeLast();
+    m_back.push_back(m_current);
+    goTo(target);
 }
 
 void PanelWidget::goHome()
 {
     navigate(Location::local(QDir::homePath()), {}, true);
+}
+
+void PanelWidget::revealEntry(const Entry& entry)
+{
+    const Location parent = entry.location.parent();
+    if (parent.isValid())
+        navigate(parent, entry.location, true);
+}
+
+void PanelWidget::goTo(const HistoryItem& item)
+{
+    if (item.searchId != 0)
+        showSearch(item.location, item.criteria, item.searchId, false);
+    else
+        navigate(item.location, {}, false);
+}
+
+// ---------------------------------------------------------------------------
+// Search results
+// ---------------------------------------------------------------------------
+
+bool PanelWidget::isSearchResults() const
+{
+    return m_model->isResults();
+}
+
+void PanelWidget::startSearch(const Location& root, const SearchCriteria& criteria)
+{
+    showSearch(root, criteria, ++m_lastSearchId, true);
+}
+
+void PanelWidget::rerunSearch()
+{
+    if (isSearchResults())
+        showSearch(location(), m_searchCriteria, ++m_lastSearchId, false);
+}
+
+void PanelWidget::showSearch(const Location& root, const SearchCriteria& criteria, quint64 id,
+                             bool recordHistory)
+{
+    auto provider = m_registry ? m_registry->providerFor(root) : nullptr;
+    if (!provider) {
+        showError(tr("Cannot search %1").arg(root.displayString()));
+        return;
+    }
+    leaveResults();
+    const HistoryItem previous = m_current;
+    m_current = HistoryItem{root, id, criteria};
+    if (recordHistory && previous.location.isValid() && !(previous == m_current)) {
+        m_back.push_back(previous);
+        if (m_back.size() > 100)
+            m_back.removeFirst();
+        m_forward.clear();
+    }
+    m_searchCriteria = criteria;
+    m_searchId = id;
+    m_searchStats = {};
+    m_searchStopped = false;
+    m_pendingSelect = Location();
+    hideError();
+    if (!m_filterEdit->text().isEmpty()) {
+        m_filterEdit->clear();
+        m_filterEdit->hide();
+    }
+    m_model->showResults(root);
+    m_address->setLocation(root);
+    m_view->setColumnHidden(EntryListModel::StorageClassColumn, !root.isS3());
+    m_view->setColumnHidden(EntryListModel::VersionColumn, true);
+    m_view->selectionModel()->clearSelection();
+    m_view->setCurrentIndex(m_proxy->index(0, 0));
+
+    if (m_resultsCache.searchId == id) {
+        m_model->appendResults(m_resultsCache.entries);
+        m_searchStats = m_resultsCache.stats;
+        m_searchStopped = !m_resultsCache.complete;
+    } else {
+        auto run = std::make_shared<SearchRun>();
+        m_search = run;
+        m_searchTimer->start();
+        runIo([provider, root, criteria, run] {
+            return runSearch(
+                *provider, root, criteria,
+                [&run](const Entry& e) {
+                    QMutexLocker lock(&run->mutex);
+                    run->pending.push_back(e);
+                },
+                run->ctx, &run->scanned);
+        }).then(this, [this, run](const Result<SearchStats>& result) { finishSearch(run, result); });
+    }
+    updateSearchBar();
+    updateStatus();
+    Q_EMIT locationChanged(root);
+}
+
+void PanelWidget::drainSearch()
+{
+    if (!m_search)
+        return;
+    EntryList batch;
+    {
+        QMutexLocker lock(&m_search->mutex);
+        batch.swap(m_search->pending);
+    }
+    m_searchStats.scanned = m_search->scanned.load(std::memory_order_relaxed);
+    if (!batch.isEmpty()) {
+        m_searchStats.found += batch.size();
+        m_model->appendResults(batch);
+        if (!m_view->currentIndex().isValid() && m_proxy->rowCount() > 0)
+            m_view->setCurrentIndex(m_proxy->index(0, 0));
+    }
+    updateStatus();
+}
+
+void PanelWidget::finishSearch(const std::shared_ptr<SearchRun>& run, const Result<SearchStats>& result)
+{
+    if (run != m_search)
+        return; // superseded or left
+    drainSearch();
+    m_search.reset();
+    m_searchTimer->stop();
+    if (result) {
+        m_searchStats = result.value();
+    } else {
+        m_searchStopped = true;
+        if (!result.error().isCancelled())
+            showError(tr("Search failed: %1").arg(result.error().toString()));
+    }
+    updateSearchBar();
+    updateStatus();
+}
+
+void PanelWidget::stopSearch()
+{
+    if (m_search)
+        m_search->ctx.cancel(); // finishSearch() follows
+}
+
+void PanelWidget::leaveResults()
+{
+    if (m_search) {
+        drainSearch();
+        m_search->ctx.cancel();
+        m_search.reset();
+        m_searchTimer->stop();
+        m_searchStopped = true;
+    }
+    if (m_model->isResults())
+        m_resultsCache = ResultsCache{m_searchId, m_model->entries(), m_searchStats, !m_searchStopped};
+    updateSearchBar();
+}
+
+void PanelWidget::removeResults(const std::function<bool(const Entry&)>& remove)
+{
+    m_model->removeResults(remove);
+    m_resultsCache.entries.removeIf(remove);
+    updateStatus();
+}
+
+void PanelWidget::updateSearchBar()
+{
+    const bool results = isSearchResults();
+    m_searchBar->setVisible(results);
+    if (!results)
+        return;
+    m_searchLabel->setText(
+        tr("Search results: %1 in %2").arg(m_searchCriteria.summary(), location().displayString()));
+    m_searchLabel->setToolTip(m_searchLabel->text());
+    m_stopButton->setVisible(m_search != nullptr);
+}
+
+void PanelWidget::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Escape && m_search) {
+        stopSearch();
+        event->accept();
+        return;
+    }
+    QWidget::keyPressEvent(event);
 }
 
 void PanelWidget::resolveTypedAddress(const QString& text)
@@ -305,8 +540,9 @@ void PanelWidget::resolveTypedAddress(const QString& text)
 
 void PanelWidget::onModelLocationChanged(const Location& location)
 {
-    const Location previous = m_address->location();
-    if (m_recordHistory && previous.isValid() && previous != location) {
+    const HistoryItem previous = m_current;
+    m_current = HistoryItem{location, 0, {}};
+    if (m_recordHistory && previous.location.isValid() && !(previous == m_current)) {
         m_back.push_back(previous);
         if (m_back.size() > 100)
             m_back.removeFirst();
@@ -314,6 +550,7 @@ void PanelWidget::onModelLocationChanged(const Location& location)
     }
     m_recordHistory = true;
     hideError();
+    updateSearchBar();
     m_address->setLocation(location);
     if (!m_filterEdit->text().isEmpty()) {
         m_filterEdit->clear();
@@ -561,6 +798,17 @@ void PanelWidget::updateStatus()
         const ListOptions& o = m_model->listOptions();
         text =
             (o.asOf.isValid() ? tr("[As of %1] ").arg(formatDateTime(o.asOf)) : tr("[All versions] ")) + text;
+    }
+    if (isSearchResults()) {
+        const QString scanned = QLocale().toString(m_searchStats.scanned);
+        if (m_search)
+            text += tr(" — searching… (%1 scanned)").arg(scanned);
+        else if (m_searchStats.limitReached)
+            text += tr(" — search stopped at %n result(s)", nullptr, int(m_searchStats.found));
+        else if (m_searchStopped)
+            text += tr(" — search stopped");
+        else
+            text += tr(" — %1 scanned").arg(scanned);
     }
     if (m_model->isLoading())
         text += tr(" — loading…");

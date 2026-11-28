@@ -1743,6 +1743,14 @@
         <translation>빠른 필터(&amp;F)…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>파일 찾기(&amp;I)…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>포함된 폴더로 이동(&amp;C)</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>새로 고침(&amp;R)</translation>
     </message>
@@ -1871,6 +1879,18 @@
         <source>Same as Other Panel</source>
         <translation>다른 패널과 동일</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>파일 찾기</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>검색하려면 버킷을 여세요.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>검색하려면 드라이브를 여세요.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1970,6 +1990,10 @@
         <translation>이름에 경로 구분 기호를 포함할 수 없습니다.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>검색 결과에는 폴더를 만들 수 없습니다</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>여기에는 폴더를 만들 수 없습니다</translation>
     </message>
@@ -2066,6 +2090,10 @@
         <translation>
             <numerusform>업데이트됨: 객체 %n개 중 %1개, 실패: %2개.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>먼저 검색 결과를 닫으세요</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2573,8 +2601,36 @@ Started by: %2</source>
         <translation>다시 시도</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>중지</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>검색 중지 (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>새 검색…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>검색 결과 닫기</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>필터(부분 문자열 또는 와일드카드 * ?) — 닫으려면 Esc</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>%1에서 검색할 수 없습니다</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>검색 실패: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>검색 결과: %2에서 %1</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2616,6 +2672,24 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[모든 버전] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — 검색 중… (%1개 검사함)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — 결과 %n개에서 검색 중지됨</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — 검색 중지됨</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1개 검사함</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3814,6 +3888,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>AWS 프로필 &quot;%1&quot;의 자격 증명을 가져올 수 없습니다. AWS SSO(IAM Identity Center)를 사용하는 경우 세션이 만료되었을 수 있습니다. &quot;aws sso login&quot;을 실행한 후 다시 시도하세요.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>환경에 AWS 자격 증명이 없습니다. 애플리케이션을 시작하기 전에 AWS_ACCESS_KEY_ID와 AWS_SECRET_ACCESS_KEY를 설정하세요.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>AWS 자격 증명을 찾을 수 없습니다(환경, ~/.aws 프로필, SSO, 웹 ID 또는 인스턴스 메타데이터). AWS SSO를 사용하는 경우 &quot;aws sso login&quot;을 실행한 후 다시 시도하세요.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>이 연결에 저장된 보안 키가 없습니다. 연결을 편집하여 입력하십시오</translation>
     </message>
@@ -3908,6 +3994,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>하루 이상 복원하십시오</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; 아래</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>%1 이후 수정됨</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>%1 이전 수정됨</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>위치 %1의 정규식이 잘못되었습니다: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>와일드카드 패턴 &quot;%1&quot;이(가) 잘못되었습니다: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>파일 찾기</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>검색 위치:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>예: *.log; report — 비워 두면 모두</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>와일드카드: * 임의의 텍스트, ? 한 문자, [abc] 이 중 하나. 여러 패턴은 &apos;;&apos;로 구분합니다. 와일드카드가 없는 텍스트는 이름의 어느 위치에서든 일치합니다.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>이름(&amp;N):</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>와일드카드</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>정규식</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>구문(&amp;Y):</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>대/소문자 구분(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>검색 폴더 아래의 전체 경로와 비교(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>이름만이 아니라 &quot;logs/2024/a.csv&quot;에 대해 &quot;2024/*.csv&quot;를 비교합니다. 이때 *는 &apos;/&apos;와도 일치합니다</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>예: logs/2024- (선택 사항)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>검색 폴더 아래에서 이 텍스트로 시작하는 경로만 검색합니다. S3에서는 서버가 이 키 접두사로 필터링하므로 전체를 나열하는 것보다 훨씬 빠릅니다.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>경로 접두사(&amp;R):</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>예: 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>예: 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>최소 크기(&amp;L):</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>최대 크기(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>이후 수정됨(&amp;A):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>이전 수정됨(&amp;B):</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>모두</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>스토리지 클래스(&amp;T):</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>파일 및 폴더</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>파일만</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>폴더만</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>포함(&amp;I):</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>숨김 파일 및 폴더 포함(&amp;H)</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>제한 없음</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>최대 결과 수(&amp;X):</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>검색(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&quot;%1&quot;은(는) 크기가 아닙니다(예: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>최소 크기가 최대 크기보다 큽니다.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>&quot;이후&quot; 날짜가 &quot;이전&quot; 날짜보다 늦습니다.</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>폴더에는 크기, 날짜, 스토리지 클래스가 없습니다. 이 조건을 사용하려면 파일을 검색하세요.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>경로 접두사는 검색 폴더 밖을 가리킬 수 없습니다.</translation>
     </message>
 </context>
 <context>

@@ -59,7 +59,7 @@ void EntryListModel::setLocation(const Location& location)
 
 void EntryListModel::refresh()
 {
-    if (!m_location.isValid())
+    if (!m_location.isValid() || m_results)
         return;
     if (m_ctx)
         m_ctx->cancel();
@@ -68,6 +68,68 @@ void EntryListModel::refresh()
     if (auto provider = m_registry ? m_registry->providerFor(m_location) : nullptr)
         provider->invalidateCache(m_location);
     requestPage(m_location, {}, LoadMode::Refresh);
+}
+
+void EntryListModel::showResults(const Location& root)
+{
+    if (m_ctx)
+        m_ctx->cancel();
+    ++m_generation;
+    m_refreshBuffer.clear();
+    beginResetModel();
+    m_results = true;
+    m_location = root;
+    m_pendingLocation = root;
+    m_entries.clear();
+    m_resultPaths.clear();
+    m_nextToken.clear();
+    m_hasParentRow = true;
+    m_parentEntry = Entry{};
+    m_parentEntry.name = QStringLiteral("..");
+    m_parentEntry.location = root;
+    m_parentEntry.type = Entry::Type::Directory;
+    endResetModel();
+    updateWatcher();
+    setLoading(false);
+}
+
+void EntryListModel::appendResults(const EntryList& entries)
+{
+    if (!m_results || entries.isEmpty())
+        return;
+    const int first = rowOffset() + int(m_entries.size());
+    beginInsertRows({}, first, first + int(entries.size()) - 1);
+    for (const Entry& e : entries) {
+        m_entries.push_back(e);
+        m_resultPaths.push_back(m_location.relativePathTo(e.location));
+    }
+    endInsertRows();
+}
+
+void EntryListModel::removeResults(const std::function<bool(const Entry&)>& remove)
+{
+    if (!m_results)
+        return;
+    for (qsizetype i = m_entries.size() - 1; i >= 0; --i) {
+        if (!remove(m_entries[i]))
+            continue;
+        // Contiguous runs are removed together.
+        qsizetype from = i;
+        while (from > 0 && remove(m_entries[from - 1]))
+            --from;
+        beginRemoveRows({}, rowOffset() + int(from), rowOffset() + int(i));
+        m_entries.remove(from, i - from + 1);
+        m_resultPaths.remove(from, i - from + 1);
+        endRemoveRows();
+        i = from;
+    }
+}
+
+QString EntryListModel::displayPath(int row) const
+{
+    if (m_results && !isParentRow(row))
+        return m_resultPaths.at(row - rowOffset());
+    return entryAt(row).name;
 }
 
 void EntryListModel::setListOptions(const ListOptions& options)
@@ -81,7 +143,7 @@ void EntryListModel::setListOptions(const ListOptions& options)
 
 bool EntryListModel::showsVersions() const
 {
-    if (m_options.isDefault() || !m_registry)
+    if (m_options.isDefault() || !m_registry || m_results)
         return false;
     auto provider = m_registry->providerFor(m_location);
     return provider && provider->capabilities(m_location).testFlag(Capability::Versions);
@@ -130,6 +192,8 @@ void EntryListModel::handlePage(quint64 generation, LoadMode mode, const Locatio
     switch (mode) {
     case LoadMode::Navigate: {
         beginResetModel();
+        m_results = false;
+        m_resultPaths.clear();
         m_location = location;
         m_entries = std::move(page.entries);
         const Location parentLocation = location.parent();
@@ -229,7 +293,7 @@ void EntryListModel::updateWatcher()
 {
     if (m_watcher && !m_watcher->directories().isEmpty())
         m_watcher->removePaths(m_watcher->directories());
-    if (!m_watchLocal || !m_location.isLocal() || m_location.localPath().isEmpty())
+    if (!m_watchLocal || m_results || !m_location.isLocal() || m_location.localPath().isEmpty())
         return;
     if (!m_watcher) {
         m_watcher = new QFileSystemWatcher(this);
@@ -313,8 +377,9 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
     case Qt::EditRole:
         switch (index.column()) {
         case NameColumn: {
+            const QString name = displayPath(row);
             const QString label = e.metadata.value(QStringLiteral("label"));
-            return label.isEmpty() ? e.name : QStringLiteral("%1 (%2)").arg(e.name, label);
+            return label.isEmpty() ? name : QStringLiteral("%1 (%2)").arg(name, label);
         }
         case SizeColumn:
             if (parentRow)
@@ -343,7 +408,7 @@ QVariant EntryListModel::data(const QModelIndex& index, int role) const
     case SortRole:
         switch (index.column()) {
         case NameColumn:
-            return e.name;
+            return displayPath(row);
         case SizeColumn:
             return e.size;
         case ModifiedColumn:

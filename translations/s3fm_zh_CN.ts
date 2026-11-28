@@ -1734,6 +1734,14 @@
         <translation>快速筛选(&amp;F)…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>查找文件(&amp;I)…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>转到所在文件夹(&amp;C)</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>刷新(&amp;R)</translation>
     </message>
@@ -1862,6 +1870,18 @@
         <source>Same as Other Panel</source>
         <translation>与另一面板相同</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>查找文件</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>请打开一个存储桶以在其中搜索。</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>请打开一个驱动器以在其中搜索。</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1961,6 +1981,10 @@
         <translation>名称中不能包含路径分隔符。</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>无法在搜索结果中创建文件夹</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>无法在此处创建文件夹</translation>
     </message>
@@ -2057,6 +2081,10 @@
         <translation>
             <numerusform>已更新 %1/%n 个对象；%2 个失败。</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>请先关闭搜索结果</translation>
     </message>
     <message numerus="yes">
         <source>Deleted %Ln item(s)…</source>
@@ -2573,8 +2601,36 @@ Started by: %2</source>
         <translation>重试</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>停止搜索 (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>新建搜索…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>关闭搜索结果</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>筛选（子字符串或通配符 * ?）— 按 Esc 关闭</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>无法搜索 %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>搜索失败：%1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>搜索结果：%1，位于 %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2616,6 +2672,24 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[所有版本] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — 正在搜索…（已扫描 %1 项）</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — 搜索已在 %n 个结果处停止</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — 搜索已停止</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — 已扫描 %1 项</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3814,6 +3888,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>无法获取 AWS 配置文件“%1”的凭证。如果它使用 AWS SSO（IAM Identity Center），会话可能已过期：请运行“aws sso login”后重试。</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>环境中没有 AWS 凭证：请在启动应用程序前设置 AWS_ACCESS_KEY_ID 和 AWS_SECRET_ACCESS_KEY。</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>未找到 AWS 凭证（环境变量、~/.aws 配置文件、SSO、Web 身份或实例元数据）。如果您使用 AWS SSO，请运行“aws sso login”后重试。</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>此连接未存储私有密钥；请编辑连接以输入密钥</translation>
     </message>
@@ -3908,6 +3994,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>还原时长至少为一天</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>位于“%1”下</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>修改时间晚于 %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>修改时间早于 %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>，</translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>位置 %1 处的正则表达式无效：%2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>通配符模式“%1”无效：%2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>查找文件</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>搜索位置：</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>例如 *.log; report — 留空：全部</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>通配符：* 任意文本，? 一个字符，[abc] 其中之一。多个模式用“;”分隔。不含通配符的文本可匹配名称中的任意位置。</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>名称(&amp;N)：</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>通配符</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>正则表达式</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>语法(&amp;Y)：</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>区分大小写(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>匹配搜索文件夹下的完整路径(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>用“2024/*.csv”匹配“logs/2024/a.csv”而不仅仅是名称；此时 * 也匹配“/”</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>例如 logs/2024-（可选）</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>只搜索搜索文件夹下以此文本开头的路径。在 S3 上由服务器按此键前缀筛选，比列出全部内容快得多。</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>路径前缀(&amp;R)：</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>例如 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>例如 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>最小大小(&amp;L)：</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>最大大小(&amp;O)：</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>修改时间晚于(&amp;A)：</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>修改时间早于(&amp;B)：</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>任意</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>存储类别(&amp;T)：</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>文件和文件夹</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>仅文件</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>仅文件夹</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>包括(&amp;I)：</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>包括隐藏的文件和文件夹(&amp;H)</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>无限制</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>最大结果数(&amp;X)：</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>搜索(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>“%1”不是有效的大小（例如：1500、10 KB、1.5 GB）</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>最小大小大于最大大小。</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>“晚于”日期晚于“早于”日期。</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>文件夹没有大小、日期或存储类别：要使用这些条件，请搜索文件。</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>路径前缀不能超出搜索文件夹。</translation>
     </message>
 </context>
 <context>

@@ -1743,6 +1743,14 @@
         <translation>&amp;Lọc nhanh…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>Tìm tệ&amp;p…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>Đến thư mục c&amp;hứa</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>&amp;Làm mới</translation>
     </message>
@@ -1871,6 +1879,18 @@
         <source>Same as Other Panel</source>
         <translation>Giống bảng kia</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>Tìm tệp</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>Mở một bucket để tìm kiếm trong đó.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>Mở một ổ đĩa để tìm kiếm trong đó.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1970,6 +1990,10 @@
         <translation>Tên không được chứa dấu phân cách đường dẫn.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>Không thể tạo thư mục trong kết quả tìm kiếm</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>Không thể tạo thư mục ở đây</translation>
     </message>
@@ -2066,6 +2090,10 @@
         <translation>
             <numerusform>Đã cập nhật %1/%n đối tượng; %2 thất bại.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>Hãy đóng kết quả tìm kiếm trước</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2573,8 +2601,36 @@ Bắt đầu bởi: %2</translation>
         <translation>Thử lại</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>Dừng</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>Dừng tìm kiếm (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>Tìm kiếm mới…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>Đóng kết quả tìm kiếm</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>Bộ lọc (chuỗi con hoặc ký tự đại diện * ?) — Esc để đóng</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>Không thể tìm kiếm trong %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>Tìm kiếm thất bại: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>Kết quả tìm kiếm: %1 trong %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2616,6 +2672,24 @@ Bắt đầu bởi: %2</translation>
     <message>
         <source>[All versions] </source>
         <translation>[Tất cả phiên bản] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — đang tìm… (đã quét %1)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — đã dừng tìm kiếm ở %n kết quả</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — đã dừng tìm kiếm</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — đã quét %1</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3814,6 +3888,18 @@ Bắt đầu bởi: %2</translation>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>Không thể lấy thông tin xác thực cho hồ sơ AWS &quot;%1&quot;. Nếu hồ sơ dùng AWS SSO (IAM Identity Center), phiên có thể đã hết hạn: chạy &quot;aws sso login&quot; rồi thử lại.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>Không có thông tin xác thực AWS trong môi trường: hãy đặt AWS_ACCESS_KEY_ID và AWS_SECRET_ACCESS_KEY trước khi khởi động ứng dụng.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>Không tìm thấy thông tin xác thực AWS (môi trường, hồ sơ ~/.aws, SSO, danh tính web hoặc siêu dữ liệu phiên bản máy). Nếu bạn dùng AWS SSO, hãy chạy &quot;aws sso login&quot; rồi thử lại.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>Chưa lưu khóa bí mật cho kết nối này; hãy chỉnh sửa kết nối để nhập</translation>
     </message>
@@ -3908,6 +3994,185 @@ Bắt đầu bởi: %2</translation>
     <message>
         <source>Restore for at least one day</source>
         <translation>Khôi phục trong ít nhất một ngày</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>trong &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>sửa đổi sau %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>sửa đổi trước %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>Biểu thức chính quy không hợp lệ tại vị trí %1: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>Mẫu ký tự đại diện &quot;%1&quot; không hợp lệ: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>Tìm tệp</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>Tìm trong:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>ví dụ *.log; baocao — để trống: tất cả</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>Ký tự đại diện: * văn bản bất kỳ, ? một ký tự, [abc] một trong các ký tự này. Phân tách nhiều mẫu bằng &apos;;&apos;. Văn bản không có ký tự đại diện được so khớp ở bất kỳ đâu trong tên.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>&amp;Tên:</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>Ký tự đại diện</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>Biểu thức chính quy</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>&amp;Cú pháp:</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>Phân biệt chữ &amp;hoa/thường</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>So khớp toàn bộ đường &amp;dẫn bên dưới thư mục tìm kiếm</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>So khớp &quot;2024/*.csv&quot; với &quot;logs/2024/a.csv&quot; thay vì chỉ với tên; khi đó * cũng khớp với &apos;/&apos;</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>ví dụ logs/2024- (không bắt buộc)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>Chỉ tìm các đường dẫn bên dưới thư mục tìm kiếm bắt đầu bằng văn bản này. Trên S3, máy chủ lọc theo tiền tố khóa này, nhanh hơn nhiều so với liệt kê mọi thứ.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>T&amp;iền tố đường dẫn:</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>ví dụ 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>ví dụ 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>Kích thước tối thiể&amp;u:</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>Kích thước tối đ&amp;a:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>Sửa đổi &amp;sau:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>Sửa đổi t&amp;rước:</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Bất kỳ</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>Lớp &amp;lưu trữ:</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>Tệp và thư mục</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>Chỉ tệp</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>Chỉ thư mục</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>&amp;Bao gồm:</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>Bao gồm tệp và thư mục ẩ&amp;n</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>Không giới hạn</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>Số kết &amp;quả tối đa:</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>Tìm &amp;kiếm</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&quot;%1&quot; không phải là kích thước (ví dụ: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>Kích thước tối thiểu lớn hơn kích thước tối đa.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>Ngày &quot;sau&quot; muộn hơn ngày &quot;trước&quot;.</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>Thư mục không có kích thước, ngày hay lớp lưu trữ: hãy tìm tệp để dùng các tiêu chí này.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>Tiền tố đường dẫn không được vượt ra ngoài thư mục tìm kiếm.</translation>
     </message>
 </context>
 <context>

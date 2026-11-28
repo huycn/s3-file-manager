@@ -1746,6 +1746,14 @@
         <translation>দ্রুত ফিল্টার(&amp;F)…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>ফাইল খুঁজুন(&amp;I)…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>ধারণকারী ফোল্ডারে যান(&amp;C)</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>রিফ্রেশ করুন(&amp;R)</translation>
     </message>
@@ -1874,6 +1882,18 @@
         <source>Same as Other Panel</source>
         <translation>অন্য প্যানেলের অনুরূপ</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>ফাইল খুঁজুন</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>এর ভিতরে খুঁজতে একটি বাকেট খুলুন।</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>এর ভিতরে খুঁজতে একটি ড্রাইভ খুলুন।</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1978,6 +1998,10 @@
         <translation>নামে পাথ বিভাজক থাকা চলবে না।</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>অনুসন্ধানের ফলাফলে ফোল্ডার তৈরি করা যায় না</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>এখানে ফোল্ডার তৈরি করা যায় না</translation>
     </message>
@@ -2079,6 +2103,10 @@
             <numerusform>%nটি অবজেক্টের মধ্যে %1টি হালনাগাদ হয়েছে; %2টি ব্যর্থ।</numerusform>
             <numerusform>%nটি অবজেক্টের মধ্যে %1টি হালনাগাদ হয়েছে; %2টি ব্যর্থ।</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>আগে অনুসন্ধানের ফলাফল বন্ধ করুন</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2604,8 +2632,36 @@ Started by: %2</source>
         <translation>আবার চেষ্টা করুন</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>থামান</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>অনুসন্ধান থামান (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>নতুন অনুসন্ধান…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>অনুসন্ধানের ফলাফল বন্ধ করুন</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>ফিল্টার (সাবস্ট্রিং, অথবা ওয়াইল্ডকার্ড * ?) — বন্ধ করতে Esc</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>%1-এ অনুসন্ধান করা যাচ্ছে না</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>অনুসন্ধান ব্যর্থ: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>অনুসন্ধানের ফলাফল: %2-এ %1</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2649,6 +2705,25 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[সব সংস্করণ] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — অনুসন্ধান চলছে… (%1টি পরীক্ষিত)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — %nটি ফলাফলে অনুসন্ধান থামানো হয়েছে</numerusform>
+            <numerusform> — %nটি ফলাফলে অনুসন্ধান থামানো হয়েছে</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — অনুসন্ধান থামানো হয়েছে</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1টি পরীক্ষিত</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3849,6 +3924,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>AWS প্রোফাইল &quot;%1&quot;-এর জন্য ক্রেডেনশিয়াল পাওয়া যায়নি। এটি AWS SSO (IAM Identity Center) ব্যবহার করলে সেশনের মেয়াদ শেষ হয়ে থাকতে পারে: &quot;aws sso login&quot; চালান এবং আবার চেষ্টা করুন।</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>পরিবেশে কোনো AWS ক্রেডেনশিয়াল নেই: অ্যাপ্লিকেশন চালু করার আগে AWS_ACCESS_KEY_ID এবং AWS_SECRET_ACCESS_KEY সেট করুন।</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>কোনো AWS ক্রেডেনশিয়াল পাওয়া যায়নি (পরিবেশ, ~/.aws প্রোফাইল, SSO, ওয়েব আইডেন্টিটি বা ইনস্ট্যান্স মেটাডেটা)। আপনি AWS SSO ব্যবহার করলে &quot;aws sso login&quot; চালান এবং আবার চেষ্টা করুন।</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>এই সংযোগের জন্য কোনো সিক্রেট কী সংরক্ষিত নেই; এটি লিখতে সংযোগটি সম্পাদনা করুন</translation>
     </message>
@@ -3946,6 +4033,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>অন্তত এক দিনের জন্য পুনরুদ্ধার করুন</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>&quot;%1&quot;-এর অধীনে</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>%1-এর পরে পরিবর্তিত</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>%1-এর আগে পরিবর্তিত</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>অবস্থান %1-এ অবৈধ রেগুলার এক্সপ্রেশন: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>অবৈধ ওয়াইল্ডকার্ড প্যাটার্ন &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>ফাইল খুঁজুন</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>যেখানে খুঁজবেন:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>যেমন *.log; report — খালি: সবকিছু</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>ওয়াইল্ডকার্ড: * যেকোনো টেক্সট, ? একটি অক্ষর, [abc] এগুলোর একটি। একাধিক প্যাটার্ন &apos;;&apos; দিয়ে আলাদা করুন। ওয়াইল্ডকার্ড ছাড়া টেক্সট নামের যেকোনো জায়গায় মেলে।</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>নাম(&amp;N):</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>ওয়াইল্ডকার্ড</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>রেগুলার এক্সপ্রেশন</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>সিনট্যাক্স(&amp;Y):</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>বড়/ছোট হাতের অক্ষর আলাদা(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>অনুসন্ধান ফোল্ডারের নিচের সম্পূর্ণ পাথের সাথে মেলান(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>শুধু নামের বদলে &quot;logs/2024/a.csv&quot;-এর সাথে &quot;2024/*.csv&quot; মেলান; তখন * &apos;/&apos;-এর সাথেও মেলে</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>যেমন logs/2024- (ঐচ্ছিক)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>অনুসন্ধান ফোল্ডারের নিচে শুধু এই টেক্সট দিয়ে শুরু হওয়া পাথগুলো খোঁজা হয়। S3-এ সার্ভার এই কী প্রিফিক্স দিয়ে ফিল্টার করে, যা সবকিছু তালিকাভুক্ত করার চেয়ে অনেক দ্রুত।</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>পাথ প্রিফিক্স(&amp;R):</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>যেমন 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>যেমন 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>সর্বনিম্ন আকার(&amp;L):</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>সর্বোচ্চ আকার(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>এর পরে পরিবর্তিত(&amp;A):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>এর আগে পরিবর্তিত(&amp;B):</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>যেকোনো</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>স্টোরেজ ক্লাস(&amp;T):</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>ফাইল ও ফোল্ডার</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>শুধু ফাইল</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>শুধু ফোল্ডার</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>অন্তর্ভুক্ত করুন(&amp;I):</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>লুকানো ফাইল ও ফোল্ডার অন্তর্ভুক্ত করুন(&amp;H)</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>কোনো সীমা নেই</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>সর্বোচ্চ ফলাফল(&amp;X):</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>খুঁজুন(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&quot;%1&quot; কোনো আকার নয় (উদাহরণ: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>সর্বনিম্ন আকার সর্বোচ্চ আকারের চেয়ে বড়।</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>&quot;পরে&quot; তারিখটি &quot;আগে&quot; তারিখের চেয়ে পরের।</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>ফোল্ডারের কোনো আকার, তারিখ বা স্টোরেজ ক্লাস নেই: এই মানদণ্ড ব্যবহার করতে ফাইল খুঁজুন।</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>পাথ প্রিফিক্স অনুসন্ধান ফোল্ডারের বাইরে যেতে পারে না।</translation>
     </message>
 </context>
 <context>

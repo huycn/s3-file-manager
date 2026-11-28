@@ -51,6 +51,8 @@ public:
     VoidResult download(const Location& from, const QString& localFile, OperationContext& ctx) override;
     VoidResult upload(const QString& localFile, const Location& to, OperationContext& ctx) override;
     VoidResult walk(const Location& dir, const Visitor& visit, OperationContext& ctx) override;
+    VoidResult walkPrefix(const Location& dir, const QString& prefix, const Visitor& visit,
+                          OperationContext& ctx) override;
     void discardPartialTransfer(const Location& remote, const QString& localFile,
                                 const TransferCheckpoint& checkpoint) override;
     void invalidateCache(const Location& location) override;

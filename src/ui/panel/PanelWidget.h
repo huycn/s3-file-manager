@@ -4,10 +4,12 @@
 #include "core/Error.h"
 #include "core/Location.h"
 #include "core/Provider.h"
+#include "core/Search.h"
 
 #include <QWidget>
 
 #include <functional>
+#include <memory>
 #include <optional>
 
 class QLabel;
@@ -17,6 +19,7 @@ class QPushButton;
 class QSettings;
 class QToolButton;
 class QFrame;
+class QTimer;
 
 namespace s3fm {
 
@@ -51,6 +54,8 @@ public:
     void goBack();
     void goForward();
     void goHome();
+    // Shows the folder containing `entry` with it as the current row.
+    void revealEntry(const Entry& entry);
     bool canGoBack() const { return !m_back.isEmpty(); }
     bool canGoForward() const { return !m_forward.isEmpty(); }
 
@@ -59,6 +64,21 @@ public:
     EntryList selectedEntries() const;
     std::optional<Entry> currentEntry() const;
     void selectLocationWhenLoaded(const Location& location);
+
+    // Recursive search below `root`; the results replace the listing ("virtual panel":
+    // location() stays `root`, ".." and Backspace return to it, Back returns to the
+    // results). A new search while showing results replaces them.
+    void startSearch(const Location& root, const SearchCriteria& criteria);
+    // Searches again with the same criteria (refresh of a results view).
+    void rerunSearch();
+    void stopSearch();
+    bool isSearchResults() const;
+    bool isSearching() const { return m_search != nullptr; }
+    // Criteria of the results shown (or the last search).
+    const SearchCriteria& searchCriteria() const { return m_searchCriteria; }
+    // Removes results (shown or kept for Back) for which `remove` returns true, e.g.
+    // after they were deleted.
+    void removeResults(const std::function<bool(const Entry&)>& remove);
 
     void selectAll();
     void deselectAll();
@@ -93,8 +113,32 @@ Q_SIGNALS:
     void locationChanged(const s3fm::Location& location);
     void selectionChanged();
     void contextMenuRequested(const QPoint& globalPos);
+    // "New Search…" on the results bar.
+    void searchRequested();
+
+protected:
+    void keyPressEvent(QKeyEvent* event) override;
 
 private:
+    struct SearchRun;
+    struct HistoryItem
+    {
+        Location location;
+        quint64 searchId = 0; // non-zero: search results below `location`
+        SearchCriteria criteria;
+        bool operator==(const HistoryItem& o) const
+        {
+            return location == o.location && searchId == o.searchId;
+        }
+    };
+    struct ResultsCache
+    {
+        quint64 searchId = 0;
+        EntryList entries;
+        SearchStats stats;
+        bool complete = false;
+    };
+
     void onModelLocationChanged(const Location& location);
     void onLoadFailed(const Location& location, const Error& error);
     void onLoadFinished();
@@ -105,6 +149,13 @@ private:
     void showError(const QString& text);
     void hideError();
     void resolveTypedAddress(const QString& text);
+    void goTo(const HistoryItem& item);
+    void showSearch(const Location& root, const SearchCriteria& criteria, quint64 id, bool recordHistory);
+    void drainSearch();
+    void finishSearch(const std::shared_ptr<SearchRun>& run, const Result<SearchStats>& result);
+    // Stops a running search and keeps the results shown, for Back.
+    void leaveResults();
+    void updateSearchBar();
 
     ProviderRegistry* m_registry;
     EntryListModel* m_model;
@@ -120,8 +171,21 @@ private:
     PlacesMenuBuilder m_placesBuilder;
     AddressResolver m_addressResolver;
 
-    QList<Location> m_back;
-    QList<Location> m_forward;
+    QFrame* m_searchBar;
+    QLabel* m_searchLabel;
+    QPushButton* m_stopButton;
+    QTimer* m_searchTimer;
+    std::shared_ptr<SearchRun> m_search;
+    SearchCriteria m_searchCriteria;
+    quint64 m_searchId = 0;
+    quint64 m_lastSearchId = 0;
+    SearchStats m_searchStats;
+    bool m_searchStopped = false;
+    ResultsCache m_resultsCache;
+
+    HistoryItem m_current;
+    QList<HistoryItem> m_back;
+    QList<HistoryItem> m_forward;
     bool m_recordHistory = true;
     Location m_pendingSelect;
     Location m_lastFailed;

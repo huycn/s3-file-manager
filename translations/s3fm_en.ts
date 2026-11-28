@@ -246,6 +246,13 @@
             <numerusform>%n folders</numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — search stopped at %n result</numerusform>
+            <numerusform> — search stopped at %n results</numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>s3fm::RestoreArchiveDialog</name>

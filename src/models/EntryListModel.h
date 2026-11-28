@@ -8,6 +8,7 @@
 #include <QAbstractTableModel>
 #include <QTimer>
 
+#include <functional>
 #include <memory>
 
 class QFileSystemWatcher;
@@ -26,6 +27,9 @@ class OperationContext;
 // * refresh() reloads and applies the difference (rows keep their identity, so
 //   selection and current item survive).
 // * Row 0 is a synthetic ".." entry when the location has a parent.
+// * Search results mode (showResults()): a virtual listing of entries from anywhere below
+//   location(), filled with appendResults(). Names show the path relative to location(),
+//   ".." leads to location() itself, refresh() does nothing. setLocation() leaves it.
 class EntryListModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -66,6 +70,15 @@ public:
     bool showsVersions() const;
     void cancelLoading();
     bool isLoading() const { return m_loading; }
+
+    // Search results (see class comment). showResults() clears the rows.
+    void showResults(const Location& root);
+    void appendResults(const EntryList& entries);
+    // Drops result rows for which `remove` returns true.
+    void removeResults(const std::function<bool(const Entry&)>& remove);
+    bool isResults() const { return m_results; }
+    // Path of a result row relative to location() (the name outside results mode).
+    QString displayPath(int row) const;
 
     bool hasParentRow() const { return m_hasParentRow; }
     bool isParentRow(int row) const { return m_hasParentRow && row == 0; }
@@ -117,6 +130,8 @@ private:
     bool m_hasParentRow = false;
     QString m_nextToken;
     bool m_loading = false;
+    bool m_results = false;
+    QStringList m_resultPaths; // results mode: per entry, relative to m_location
     quint64 m_generation = 0;
     std::shared_ptr<OperationContext> m_ctx;
     EntryList m_refreshBuffer;

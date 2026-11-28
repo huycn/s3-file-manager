@@ -99,6 +99,12 @@ public:
     // before its contents). Returning false from the visitor aborts with Cancelled.
     using Visitor = std::function<bool(const Entry&)>;
     virtual VoidResult walk(const Location& dir, const Visitor& visit, OperationContext& ctx);
+    // walk() restricted to the entries whose path relative to `dir` starts with `prefix`
+    // ("logs/2024-" visits logs/2024-01/, logs/2024-01/a.txt, …, but not logs/ itself).
+    // The default walks the folder part of the prefix and filters its first level; S3
+    // lists the key prefix, so the server does the filtering.
+    virtual VoidResult walkPrefix(const Location& dir, const QString& prefix, const Visitor& visit,
+                                  OperationContext& ctx);
 
     // Drops cached listings at or below `location` (no-op for uncached providers).
     // Called before an explicit refresh.

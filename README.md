@@ -30,6 +30,9 @@ A dual-panel (Commander-style) file manager for Amazon S3 and S3-compatible stor
   Glacier / Deep Archive; find and abort incomplete multipart uploads
 - Internal viewer, edit-and-upload with conflict detection, copy S3 URI / HTTP URL / ARN
 - The address bar accepts `s3://bucket/key` and pasted `https://…amazonaws.com/…` URLs
+- Find Files (Alt+F7): recursive search by name (wildcards or regular expression), path,
+  size, date and storage class; on S3 a path prefix is filtered by the server. Results open
+  in the panel, where every operation works on them (Ctrl+G goes to a file's folder)
 
 ## Using it
 

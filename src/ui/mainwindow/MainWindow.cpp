@@ -26,6 +26,7 @@
 #include "ui/dialogs/PresignDialog.h"
 #include "ui/dialogs/PropertiesDialog.h"
 #include "ui/dialogs/RestoreArchiveDialog.h"
+#include "ui/dialogs/SearchDialog.h"
 #include "ui/dialogs/SettingsDialog.h"
 #include "ui/dialogs/TargetDialog.h"
 #include "ui/dialogs/TransferSettingsDialog.h"
@@ -148,6 +149,10 @@ MainWindow::MainWindow(ProviderRegistry* registry, ConnectionStore* connections,
             m_active->focusView();
         });
         connect(panel, &PanelWidget::openFileRequested, this, &MainWindow::openEntry);
+        connect(panel, &PanelWidget::searchRequested, this, [this, panel] {
+            setActivePanel(panel);
+            findFiles();
+        });
         connect(panel, &PanelWidget::contextMenuRequested, this,
                 [this, panel](const QPoint& pos) { showContextMenu(panel, pos); });
     }
@@ -253,6 +258,10 @@ void MainWindow::createActions()
               &MainWindow::invertSelection);
     addAction(QStringLiteral("quickFilter"), tr("Quick &Filter…"), {K(Qt::CTRL | Qt::Key_F)},
               &MainWindow::quickFilter);
+    addAction(QStringLiteral("findFiles"), tr("F&ind Files…"),
+              {K(Qt::ALT | Qt::Key_F7), K(Qt::CTRL | Qt::SHIFT | Qt::Key_F)}, &MainWindow::findFiles);
+    addAction(QStringLiteral("containingFolder"), tr("Go to &Containing Folder"), {K(Qt::CTRL | Qt::Key_G)},
+              &MainWindow::goToContainingFolder);
 
     addAction(QStringLiteral("refresh"), tr("&Refresh"), {K(Qt::CTRL | Qt::Key_R)},
               &MainWindow::refreshActive);
@@ -311,7 +320,7 @@ void MainWindow::createMenus()
     add(menuBar()->addMenu(tr("&File")),
         {QStringLiteral("view"),         QStringLiteral("edit"),       {},
          QStringLiteral("copy"),         QStringLiteral("move"),       QStringLiteral("rename"),
-         QStringLiteral("mkdir"),        QStringLiteral("delete"),     {},
+         QStringLiteral("mkdir"),        QStringLiteral("delete"),     QStringLiteral("findFiles"), {},
          QStringLiteral("copyLocation"), QStringLiteral("copyS3Uri"),  QStringLiteral("copyUrl"),
          QStringLiteral("copyArn"),      QStringLiteral("shareLink"),  {},
          QStringLiteral("editObjects"),  QStringLiteral("properties"), {},
@@ -330,6 +339,7 @@ void MainWindow::createMenus()
                                         QStringLiteral("forward"),
                                         QStringLiteral("home"),
                                         QStringLiteral("root"),
+                                        QStringLiteral("containingFolder"),
                                         {},
                                         QStringLiteral("address"),
                                         QStringLiteral("leftPlaces"),
@@ -516,7 +526,10 @@ void MainWindow::setActivePanel(PanelWidget* panel)
 
 void MainWindow::refreshActive()
 {
-    m_active->refresh();
+    if (m_active->isSearchResults())
+        m_active->rerunSearch();
+    else
+        m_active->refresh();
 }
 
 void MainWindow::toggleHidden()
@@ -598,6 +611,88 @@ void MainWindow::editAddress()
 void MainWindow::quickFilter()
 {
     m_active->showQuickFilter();
+}
+
+void MainWindow::findFiles()
+{
+    PanelWidget* panel = m_active;
+    const Location root = panel->location();
+    if (!root.isValid())
+        return;
+    if (root.isS3() && root.bucket().isEmpty()) {
+        QMessageBox::information(this, tr("Find Files"), tr("Open a bucket to search in it."));
+        return;
+    }
+    if (root.isLocal() && root.localPath().isEmpty()) {
+        QMessageBox::information(this, tr("Find Files"), tr("Open a drive to search in it."));
+        return;
+    }
+    SearchCriteria initial;
+    if (panel->isSearchResults()) {
+        initial = panel->searchCriteria();
+    } else if (m_lastSearch) {
+        initial = *m_lastSearch;
+    } else {
+        initial.includeHidden = panel->showHidden();
+    }
+    SearchDialog dialog(root, initial, this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+    m_lastSearch = dialog.criteria();
+    panel->startSearch(root, *m_lastSearch);
+    panel->focusView();
+}
+
+void MainWindow::goToContainingFolder()
+{
+    if (const auto current = m_active->currentEntry())
+        m_active->revealEntry(*current);
+}
+
+void MainWindow::pruneSearchResults(const TransferJob* job)
+{
+    if (job->kind() != TransferKind::Delete && job->kind() != TransferKind::Move)
+        return;
+    const EntryList sources = job->request().sources;
+    auto removedBy = [sources](const Entry& e) {
+        return std::any_of(sources.cbegin(), sources.cend(), [&e](const Entry& source) {
+            return source.location == e.location ||
+                   (source.isDirectory() && source.location.asDirectory().isAncestorOf(e.location));
+        });
+    };
+    for (PanelWidget* panel : {m_left, m_right}) {
+        if (!panel->isSearchResults())
+            continue;
+        if (job->state() == JobState::Done) {
+            panel->removeResults(removedBy);
+            continue;
+        }
+        // Failed or cancelled: some sources are gone, some not. Ask the provider.
+        EntryList affected;
+        for (const Entry& e : panel->model()->entries()) {
+            if (removedBy(e))
+                affected.push_back(e);
+        }
+        if (affected.isEmpty())
+            continue;
+        QPointer<PanelWidget> guard(panel);
+        runIo([registry = m_registry, affected] {
+            QSet<Location> gone;
+            OperationContext ctx;
+            for (const Entry& e : affected) {
+                auto provider = registry->providerFor(e.location);
+                if (!provider)
+                    continue;
+                auto exists = provider->exists(e.location, ctx);
+                if (exists && !exists.value())
+                    gone.insert(e.location);
+            }
+            return gone;
+        }).then(this, [guard](const QSet<Location>& gone) {
+            if (guard && !gone.isEmpty())
+                guard->removeResults([&gone](const Entry& e) { return gone.contains(e.location); });
+        });
+    }
 }
 
 void MainWindow::goRoot()
@@ -693,6 +788,7 @@ void MainWindow::onTransferFinished(TransferJob* job)
 {
     m_left->refresh();
     m_right->refresh();
+    pruneSearchResults(job);
     const QList<TransferFailure> failures = job->failures();
     switch (job->state()) {
     case JobState::Done:
@@ -866,6 +962,10 @@ void MainWindow::renameCurrent()
 
 void MainWindow::makeDirectory()
 {
+    if (m_active->isSearchResults()) {
+        statusBar()->showMessage(tr("Folders cannot be created in search results"), 4000);
+        return;
+    }
     const Location dir = m_active->location();
     if (dir.isS3Connection()) {
         createBucket();
@@ -1104,6 +1204,11 @@ void MainWindow::toggleVersions()
     const Location here = m_active->location();
     QAction* action = m_actions.value(QStringLiteral("showVersions"));
     const bool on = action->isChecked();
+    if (m_active->isSearchResults()) {
+        action->setChecked(m_active->showsVersions());
+        statusBar()->showMessage(tr("Close the search results first"), 4000);
+        return;
+    }
     if (on && (!here.isS3() || here.bucket().isEmpty())) {
         action->setChecked(false);
         statusBar()->showMessage(tr("Versions can be shown inside S3 buckets"), 4000);
@@ -1132,6 +1237,10 @@ void MainWindow::toggleVersions()
 void MainWindow::browseAsOf()
 {
     const Location here = m_active->location();
+    if (m_active->isSearchResults()) {
+        statusBar()->showMessage(tr("Close the search results first"), 4000);
+        return;
+    }
     if (!here.isS3() || here.bucket().isEmpty()) {
         statusBar()->showMessage(tr("Point-in-time browsing works inside S3 buckets"), 4000);
         return;

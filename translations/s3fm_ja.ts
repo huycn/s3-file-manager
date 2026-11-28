@@ -1743,6 +1743,14 @@
         <translation>クイックフィルター(&amp;F)…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>ファイルを検索(&amp;I)…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>含まれるフォルダーへ移動(&amp;C)</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>最新の情報に更新(&amp;R)</translation>
     </message>
@@ -1871,6 +1879,18 @@
         <source>Same as Other Panel</source>
         <translation>反対側のパネルと同じ</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>ファイルを検索</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>検索するにはバケットを開いてください。</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>検索するにはドライブを開いてください。</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1970,6 +1990,10 @@
         <translation>名前にパス区切り文字を含めることはできません。</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>検索結果にはフォルダーを作成できません</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>ここにはフォルダーを作成できません</translation>
     </message>
@@ -2066,6 +2090,10 @@
         <translation>
             <numerusform>%n 個中 %1 個のオブジェクトを更新しました。%2 個は失敗しました。</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>先に検索結果を閉じてください</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2573,8 +2601,36 @@ Started by: %2</source>
         <translation>再試行</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>検索を停止 (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>新しい検索…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>検索結果を閉じる</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>フィルター（部分文字列、またはワイルドカード * ?）— Esc で閉じる</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>%1 を検索できません</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>検索に失敗しました：%1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>検索結果：%2 で %1</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2616,6 +2672,24 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[全バージョン] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — 検索中…（%1 件を走査）</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — %n 件で検索を停止</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — 検索を停止しました</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1 件を走査</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3814,6 +3888,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>AWS プロファイル「%1」の認証情報を取得できませんでした。AWS SSO (IAM Identity Center) を使用している場合はセッションの有効期限が切れている可能性があります。「aws sso login」を実行してから再試行してください。</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>環境変数に AWS 認証情報がありません。アプリケーションを起動する前に AWS_ACCESS_KEY_ID と AWS_SECRET_ACCESS_KEY を設定してください。</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>AWS 認証情報が見つかりません（環境変数、~/.aws プロファイル、SSO、Web ID、インスタンスメタデータ）。AWS SSO を使用している場合は「aws sso login」を実行してから再試行してください。</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>この接続にはシークレットキーが保存されていません。接続を編集して入力してください</translation>
     </message>
@@ -3908,6 +3994,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>少なくとも 1 日間は復元してください</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>「%1」以下</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>%1 より後に更新</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>%1 より前に更新</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>、</translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>位置 %1 の正規表現が無効です：%2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>ワイルドカードパターン「%1」が無効です：%2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>ファイルを検索</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>検索場所：</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>例：*.log; report — 空欄：すべて</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>ワイルドカード：* 任意の文字列、? 任意の 1 文字、[abc] いずれか 1 文字。複数のパターンは「;」で区切ります。ワイルドカードを含まない文字列は名前のどこにあっても一致します。</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>名前(&amp;N)：</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>ワイルドカード</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>正規表現</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>構文(&amp;Y)：</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>大文字と小文字を区別(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>検索フォルダー以下のフルパスと照合(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>名前だけでなく「logs/2024/a.csv」に対して「2024/*.csv」を照合します。この場合 * は「/」にも一致します</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>例：logs/2024-（省略可）</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>検索フォルダー以下で、この文字列で始まるパスだけを検索します。S3 ではサーバーがこのキープレフィックスで絞り込むため、すべてを一覧表示するよりはるかに高速です。</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>パスのプレフィックス(&amp;R)：</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>例：10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>例：1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>最小サイズ(&amp;L)：</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>最大サイズ(&amp;O)：</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>更新日時がこれより後(&amp;A)：</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>更新日時がこれより前(&amp;B)：</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>すべて</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>ストレージクラス(&amp;T)：</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>ファイルとフォルダー</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>ファイルのみ</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>フォルダーのみ</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>対象(&amp;I)：</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>隠しファイルと隠しフォルダーを含める(&amp;H)</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>制限なし</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>最大結果数(&amp;X)：</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>検索(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>「%1」はサイズではありません（例：1500、10 KB、1.5 GB）</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>最小サイズが最大サイズより大きくなっています。</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>「後」の日時が「前」の日時より後になっています。</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>フォルダーにはサイズ、日時、ストレージクラスがありません。これらの条件を使うにはファイルを検索してください。</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>パスのプレフィックスで検索フォルダーの外を指定することはできません。</translation>
     </message>
 </context>
 <context>

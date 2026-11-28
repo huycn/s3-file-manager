@@ -11,3 +11,6 @@ s3fm_add_test(tst_s3buckets SOURCES tst_s3buckets.cpp LABELS integration LIBS s3
 s3fm_add_test(tst_s3bucketui SOURCES tst_s3bucketui.cpp LABELS integration LIBS s3fm_ui)
 # Real Amazon S3 (public bucket, anonymous): skips unless S3FM_TEST_AWS_PUBLIC=1.
 s3fm_add_test(tst_awsregions SOURCES tst_awsregions.cpp LABELS integration LIBS s3fm_core)
+# Real Amazon S3, read-only search with a named profile: skips unless S3FM_TEST_AWS_PROFILE,
+# S3FM_TEST_AWS_BUCKET and S3FM_TEST_AWS_SEARCH_PREFIX are set.
+s3fm_add_test(tst_awssearch SOURCES tst_awssearch.cpp LABELS integration LIBS s3fm_core)

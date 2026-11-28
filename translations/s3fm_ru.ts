@@ -1749,6 +1749,14 @@
         <translation>&amp;Быстрый фильтр…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>Поиск &amp;файлов…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>Перейти в папку с &amp;файлом</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>&amp;Обновить</translation>
     </message>
@@ -1877,6 +1885,18 @@
         <source>Same as Other Panel</source>
         <translation>Как в другой панели</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>Поиск файлов</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>Откройте бакет, чтобы искать в нём.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>Откройте диск, чтобы искать на нём.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1986,6 +2006,10 @@
         <translation>Имя не должно содержать разделителей пути.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>В результатах поиска нельзя создавать папки</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>Здесь нельзя создавать папки</translation>
     </message>
@@ -2092,6 +2116,10 @@
             <numerusform>Обновлено объектов: %1 из %n; с ошибкой: %2.</numerusform>
             <numerusform>Обновлено объектов: %1 из %n; с ошибкой: %2.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>Сначала закройте результаты поиска</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2635,8 +2663,36 @@ Started by: %2</source>
         <translation>Повторить</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>Стоп</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>Остановить поиск (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>Новый поиск…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>Закрыть результаты поиска</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>Фильтр (подстрока или подстановочные знаки * ?) — Esc для закрытия</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>Не удалось выполнить поиск в %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>Ошибка поиска: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>Результаты поиска: %1 в %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2682,6 +2738,26 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[Все версии] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — поиск… (просмотрено: %1)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — поиск остановлен на %n результате</numerusform>
+            <numerusform> — поиск остановлен на %n результатах</numerusform>
+            <numerusform> — поиск остановлен на %n результатах</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — поиск остановлен</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — просмотрено: %1</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3884,6 +3960,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>Не удалось получить учётные данные для профиля AWS «%1». Если он использует AWS SSO (IAM Identity Center), сеанс мог истечь: выполните «aws sso login» и повторите попытку.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>В окружении нет учётных данных AWS: задайте AWS_ACCESS_KEY_ID и AWS_SECRET_ACCESS_KEY перед запуском приложения.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>Учётные данные AWS не найдены (окружение, профили ~/.aws, SSO, веб-идентификация или метаданные экземпляра). Если вы используете AWS SSO, выполните «aws sso login» и повторите попытку.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>Для этого подключения не сохранён секретный ключ; измените подключение, чтобы ввести его</translation>
     </message>
@@ -3984,6 +4072,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>Восстанавливайте не менее чем на один день</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>в «%1»</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>изменён после %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>изменён до %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>Недопустимое регулярное выражение в позиции %1: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>Недопустимый шаблон «%1»: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>Поиск файлов</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>Искать в:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>например *.log; отчёт — пусто: всё</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>Подстановочные знаки: * любой текст, ? один символ, [abc] один из этих символов. Несколько шаблонов разделяйте «;». Текст без подстановочных знаков ищется в любом месте имени.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>&amp;Имя:</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>Подстановочные знаки</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>Регулярное выражение</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>Син&amp;таксис:</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>&amp;Учитывать регистр</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>Сравнивать полный &amp;путь внутри папки поиска</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>Сравнивать «2024/*.csv» с «logs/2024/a.csv», а не только с именем; * тогда совпадает и с «/»</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>например logs/2024- (необязательно)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>Просматриваются только пути внутри папки поиска, начинающиеся с этого текста. В S3 сервер фильтрует по этому префиксу ключа, что намного быстрее, чем выводить всё.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>Пре&amp;фикс пути:</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>например 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>например 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>Размер не мен&amp;ее:</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>Размер не &amp;более:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>Изменён по&amp;сле:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>Изменён &amp;до:</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Любой</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>&amp;Класс хранилища:</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>Файлы и папки</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>Только файлы</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>Только папки</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>&amp;Включить:</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>Включая скр&amp;ытые файлы и папки</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>Без ограничений</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>&amp;Максимум результатов:</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Найти</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>«%1» — не размер (примеры: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>Минимальный размер больше максимального.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>Дата «после» позже даты «до».</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>У папок нет размера, даты и класса хранилища: ищите файлы, чтобы использовать эти условия.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>Префикс пути не может выходить за пределы папки поиска.</translation>
     </message>
 </context>
 <context>

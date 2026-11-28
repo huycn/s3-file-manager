@@ -1749,6 +1749,14 @@
         <translation>تصفية سريعة(&amp;F)…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>البحث عن ملفات(&amp;I)…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>الانتقال إلى المجلد الحاوي(&amp;C)</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>تحديث(&amp;R)</translation>
     </message>
@@ -1877,6 +1885,18 @@
         <source>Same as Other Panel</source>
         <translation>مثل اللوحة الأخرى</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>البحث عن ملفات</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>افتح حاوية للبحث فيها.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>افتح محرك أقراص للبحث فيه.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -2001,6 +2021,10 @@
         <translation>يجب ألا يحتوي الاسم على فواصل مسارات.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>لا يمكن إنشاء مجلدات في نتائج البحث</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>لا يمكن إنشاء مجلدات هنا</translation>
     </message>
@@ -2122,6 +2146,10 @@
             <numerusform>الكائنات المحدَّثة: %1 من %n؛ الفاشلة: %2.</numerusform>
             <numerusform>الكائنات المحدَّثة: %1 من %n؛ الفاشلة: %2.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>أغلق نتائج البحث أولاً</translation>
     </message>
     <message numerus="yes">
         <source>Deleted %Ln item(s)…</source>
@@ -2728,8 +2756,36 @@ Started by: %2</source>
         <translation>إعادة المحاولة</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>إيقاف</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>إيقاف البحث (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>بحث جديد…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>إغلاق نتائج البحث</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>تصفية (جزء من النص، أو أحرف البدل * ?) — Esc للإغلاق</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>تعذّر البحث في %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>فشل البحث: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>نتائج البحث: %1 في %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2781,6 +2837,29 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[كل الإصدارات] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — جارٍ البحث… (تم فحص %1)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — توقف البحث عند عدم وجود نتائج</numerusform>
+            <numerusform> — توقف البحث عند نتيجة واحدة</numerusform>
+            <numerusform> — توقف البحث عند نتيجتين</numerusform>
+            <numerusform> — توقف البحث عند %n نتائج</numerusform>
+            <numerusform> — توقف البحث عند %n نتيجةً</numerusform>
+            <numerusform> — توقف البحث عند %n نتيجة</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — توقف البحث</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — تم فحص %1</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3989,6 +4068,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>تعذّر الحصول على بيانات الاعتماد لملف تعريف AWS ‏&quot;%1&quot;. إذا كان يستخدم AWS SSO ‏(IAM Identity Center)، فربما انتهت صلاحية الجلسة: شغّل &quot;aws sso login&quot; ثم أعد المحاولة.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>لا توجد بيانات اعتماد AWS في البيئة: عيّن AWS_ACCESS_KEY_ID و AWS_SECRET_ACCESS_KEY قبل تشغيل التطبيق.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>لم يُعثر على بيانات اعتماد AWS (البيئة، ملفات تعريف ~/.aws، ‏SSO، هوية الويب أو بيانات تعريف المثيل). إذا كنت تستخدم AWS SSO، فشغّل &quot;aws sso login&quot; ثم أعد المحاولة.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>لا يوجد مفتاح سري مخزّن لهذا الاتصال؛ حرّر الاتصال لإدخاله</translation>
     </message>
@@ -4098,6 +4189,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>الاستعادة لمدة يوم واحد على الأقل</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>ضمن &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>معدّل بعد %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>معدّل قبل %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>، </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>تعبير نمطي غير صالح عند الموضع %1: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>نمط أحرف بدل غير صالح &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>البحث عن ملفات</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>البحث في:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>مثل *.log; report — فارغ: كل شيء</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>أحرف البدل: * أي نص، ? حرف واحد، [abc] أحد هذه الأحرف. افصل بين عدة أنماط بـ &apos;;&apos;. النص الخالي من أحرف البدل يطابق أي موضع في الاسم.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>الاسم(&amp;N):</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>أحرف البدل</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>تعبير نمطي</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>الصيغة(&amp;Y):</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>مطابقة حالة الأحرف(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>مطابقة المسار الكامل أسفل مجلد البحث(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>مطابقة &quot;2024/*.csv&quot; مع &quot;logs/2024/a.csv&quot; بدلاً من الاسم فقط؛ عندها يطابق * الحرف &apos;/&apos; أيضاً</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>مثل logs/2024- (اختياري)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>يُبحث فقط في المسارات أسفل مجلد البحث التي تبدأ بهذا النص. في S3 يُرشِّح الخادم حسب بادئة المفتاح هذه، وهذا أسرع بكثير من سرد كل شيء.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>بادئة المسار(&amp;R):</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>مثل 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>مثل 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>الحجم الأدنى(&amp;L):</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>الحجم الأقصى(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>معدّل بعد(&amp;A):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>معدّل قبل(&amp;B):</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>أي فئة</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>فئة التخزين(&amp;T):</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>الملفات والمجلدات</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>الملفات فقط</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>المجلدات فقط</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>تضمين(&amp;I):</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>تضمين الملفات والمجلدات المخفية(&amp;H)</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>بلا حد</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>الحد الأقصى للنتائج(&amp;X):</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>بحث(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&quot;%1&quot; ليس حجماً (أمثلة: 1500، 10 KB، 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>الحجم الأدنى أكبر من الحجم الأقصى.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>تاريخ &quot;بعد&quot; لاحق لتاريخ &quot;قبل&quot;.</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>ليس للمجلدات حجم أو تاريخ أو فئة تخزين: ابحث عن ملفات لاستخدام هذه المعايير.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>لا يمكن لبادئة المسار الخروج من مجلد البحث.</translation>
     </message>
 </context>
 <context>

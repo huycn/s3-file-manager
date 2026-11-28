@@ -1746,6 +1746,14 @@
         <translation>Snel&amp;filter…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>Bestanden &amp;zoeken…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>Naar &amp;map met bestand</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>&amp;Vernieuwen</translation>
     </message>
@@ -1874,6 +1882,18 @@
         <source>Same as Other Panel</source>
         <translation>Zelfde als ander paneel</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>Bestanden zoeken</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>Open een bucket om erin te zoeken.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>Open een station om erin te zoeken.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1978,6 +1998,10 @@
         <translation>De naam mag geen padscheidingstekens bevatten.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>In zoekresultaten kunnen geen mappen worden gemaakt</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>Hier kunnen geen mappen worden gemaakt</translation>
     </message>
@@ -2079,6 +2103,10 @@
             <numerusform>Bijgewerkt: %1 van %n object; mislukt: %2.</numerusform>
             <numerusform>Bijgewerkt: %1 van %n objecten; mislukt: %2.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>Sluit eerst de zoekresultaten</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2604,8 +2632,36 @@ Gestart door: %2</translation>
         <translation>Opnieuw proberen</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>Stoppen</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>Zoeken stoppen (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>Nieuwe zoekopdracht…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>Zoekresultaten sluiten</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>Filter (deeltekenreeks of jokertekens * ?) — Esc om te sluiten</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>Kan niet zoeken in %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>Zoeken mislukt: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>Zoekresultaten: %1 in %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2649,6 +2705,25 @@ Gestart door: %2</translation>
     <message>
         <source>[All versions] </source>
         <translation>[Alle versies] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — zoeken… (%1 doorzocht)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — zoeken gestopt bij %n resultaat</numerusform>
+            <numerusform> — zoeken gestopt bij %n resultaten</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — zoeken gestopt</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1 doorzocht</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3849,6 +3924,18 @@ Gestart door: %2</translation>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>Kan geen aanmeldgegevens ophalen voor AWS-profiel &apos;%1&apos;. Als het AWS SSO (IAM Identity Center) gebruikt, is de sessie mogelijk verlopen: voer &apos;aws sso login&apos; uit en probeer het opnieuw.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>Geen AWS-aanmeldgegevens in de omgeving: stel AWS_ACCESS_KEY_ID en AWS_SECRET_ACCESS_KEY in voordat u de toepassing start.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>Geen AWS-aanmeldgegevens gevonden (omgeving, ~/.aws-profielen, SSO, webidentiteit of instantiemetadata). Als u AWS SSO gebruikt, voer dan &apos;aws sso login&apos; uit en probeer het opnieuw.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>Er is geen geheime sleutel opgeslagen voor deze verbinding; bewerk de verbinding om deze in te voeren</translation>
     </message>
@@ -3946,6 +4033,185 @@ Gestart door: %2</translation>
     <message>
         <source>Restore for at least one day</source>
         <translation>Herstel voor minimaal één dag</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>onder &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>gewijzigd na %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>gewijzigd vóór %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>Ongeldige reguliere expressie op positie %1: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>Ongeldig jokertekenpatroon &apos;%1&apos;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>Bestanden zoeken</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>Zoeken in:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>bijv. *.log; rapport — leeg: alles</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>Jokertekens: * willekeurige tekst, ? één teken, [abc] een van deze. Scheid meerdere patronen met &apos;;&apos;. Tekst zonder jokertekens wordt overal in de naam gevonden.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>&amp;Naam:</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>Jokertekens</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>Reguliere expressie</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>S&amp;yntaxis:</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>&amp;Hoofdlettergevoelig</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>Het volledige &amp;pad onder de zoekmap vergelijken</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>&apos;2024/*.csv&apos; vergelijken met &apos;logs/2024/a.csv&apos; in plaats van alleen met de naam; * past dan ook op &apos;/&apos;</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>bijv. logs/2024- (optioneel)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>Alleen paden onder de zoekmap die met deze tekst beginnen worden doorzocht. Bij S3 filtert de server op dit sleutelvoorvoegsel, wat veel sneller is dan alles opsommen.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>Padvoorvoegse&amp;l:</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>bijv. 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>bijv. 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>Grootte &amp;minimaal:</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>Grootte ma&amp;ximaal:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>Gewijzigd n&amp;a:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>Gewijzigd &amp;vóór:</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Alle</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>&amp;Opslagklasse:</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>Bestanden en mappen</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>Alleen bestanden</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>Alleen mappen</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>Opn&amp;emen:</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>Verborgen &amp;bestanden en mappen opnemen</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>Geen limiet</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>Maximaal aantal &amp;resultaten:</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Zoeken</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&apos;%1&apos; is geen grootte (voorbeelden: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>De minimale grootte is groter dan de maximale grootte.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>De datum &apos;na&apos; ligt later dan de datum &apos;vóór&apos;.</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>Mappen hebben geen grootte, datum of opslagklasse: zoek naar bestanden om deze criteria te gebruiken.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>Het padvoorvoegsel mag de zoekmap niet verlaten.</translation>
     </message>
 </context>
 <context>

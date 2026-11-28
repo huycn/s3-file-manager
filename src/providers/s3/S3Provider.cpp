@@ -496,27 +496,36 @@ VoidResult S3Provider::walk(const Location& dir, const Visitor& visit, Operation
 {
     if (dir.bucket().isEmpty())
         return Provider::walk(dir, visit, ctx);
+    return walkPrefix(dir, {}, visit, ctx);
+}
+
+VoidResult S3Provider::walkPrefix(const Location& dir, const QString& prefix, const Visitor& visit,
+                                  OperationContext& ctx)
+{
+    if (dir.bucket().isEmpty())
+        return Provider::walkPrefix(dir, prefix, visit, ctx);
 
     // One flat listing instead of a request per directory. Keys arrive in
     // lexicographic order; every directory is emitted when the first key below it
-    // is seen, so directories always precede their contents.
+    // is seen, so directories always precede their contents. Directories above the
+    // prefix ("logs/" for "logs/2024-") are not part of the result.
     const QString& bucket = dir.bucket();
-    const QString prefix = dir.asDirectory().key();
+    const QString base = dir.asDirectory().key();
     const QString conn = dir.connectionId();
     QSet<QString> emittedDirs;
     return listFlat(
-        bucket, prefix,
+        bucket, base + prefix,
         [&](const Entry& object) {
             const QString key = object.location.key();
-            const QString rest = key.mid(prefix.size());
+            const QString rest = key.mid(base.size());
             if (rest.isEmpty())
                 return true; // marker of `dir` itself
             qsizetype segmentStart = 0;
             for (qsizetype i = 0; i < rest.size(); ++i) {
                 if (rest.at(i) != u'/')
                     continue;
-                const QString dirKey = prefix + rest.left(i + 1);
-                if (!emittedDirs.contains(dirKey)) {
+                const QString dirKey = base + rest.left(i + 1);
+                if (i >= prefix.size() && !emittedDirs.contains(dirKey)) {
                     emittedDirs.insert(dirKey);
                     Entry d;
                     d.name = rest.mid(segmentStart, i - segmentStart);

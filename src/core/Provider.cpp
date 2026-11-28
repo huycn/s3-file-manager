@@ -63,6 +63,27 @@ VoidResult Provider::walk(const Location& dir, const Visitor& visit, OperationCo
     return {};
 }
 
+VoidResult Provider::walkPrefix(const Location& dir, const QString& prefix, const Visitor& visit,
+                                OperationContext& ctx)
+{
+    const qsizetype slash = prefix.lastIndexOf(u'/');
+    Location start = dir;
+    for (const QString& part : prefix.left(slash < 0 ? 0 : slash).split(u'/', Qt::SkipEmptyParts))
+        start = start.child(part, true);
+    if (!start.isValid())
+        return Error::make(ErrorCode::NotFound, {});
+    const QString namePrefix = prefix.mid(slash + 1);
+    if (namePrefix.isEmpty())
+        return walk(start, visit, ctx);
+    return walk(
+        start,
+        [&](const Entry& e) {
+            const QString rel = start.relativePathTo(e.location);
+            return !rel.section(u'/', 0, 0).startsWith(namePrefix) || visit(e);
+        },
+        ctx);
+}
+
 Result<ListPage> Provider::listWithOptions(const Location& dir, const QString& pageToken,
                                            const ListOptions& options, OperationContext& ctx)
 {

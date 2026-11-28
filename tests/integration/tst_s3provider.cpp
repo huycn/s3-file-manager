@@ -3,6 +3,7 @@
 
 #include "common/S3TestEnv.h"
 #include "core/ProviderRegistry.h"
+#include "core/Search.h"
 #include "providers/local/LocalProvider.h"
 #include "providers/s3/AwsSdk.h"
 #include "providers/s3/S3Provider.h"
@@ -333,6 +334,60 @@ private Q_SLOTS:
                  (QSet<QString>{"a/|d", "a/1.txt", "a/b/|d", "a/b/2.txt", "c.txt", "empty/|d"}));
         QVERIFY(seen.indexOf(QStringLiteral("a/|d")) < seen.indexOf(QStringLiteral("a/1.txt")));
         QVERIFY(seen.indexOf(QStringLiteral("a/b/|d")) < seen.indexOf(QStringLiteral("a/b/2.txt")));
+    }
+
+    // Recursive search (10.1): the path prefix is the listing prefix, so only those keys are
+    // scanned; folders come from the keys and markers, above the prefix they are left out.
+    void searchWithServerSidePrefix()
+    {
+        S3FM_REQUIRE_S3(m_env);
+        for (const char* key : {"search/top.log", "search/logs/2023/a.log", "search/logs/2024-01/b.log",
+                                "search/logs/2024-01/c.txt", "search/logs/2024-02/deep/d.log", "search/x y/é.log"})
+            put(QString::fromUtf8(key), "data");
+        OperationContext mk;
+        QVERIFY(m_s3->makeDirectory(loc(QStringLiteral("search/logs/2024-03/")), mk));
+        m_s3->setListPageSize(2);
+        const Location root = loc(QStringLiteral("search/"));
+        auto run = [&](const SearchCriteria& c, SearchStats* stats) {
+            QStringList found;
+            OperationContext ctx;
+            auto r = runSearch(
+                *m_s3, root, c, [&](const Entry& e) { found.push_back(root.relativePathTo(e.location)); }, ctx);
+            if (!r)
+                return QStringList{r.error().toString()};
+            *stats = r.value();
+            found.sort();
+            return found;
+        };
+        SearchStats stats;
+        SearchCriteria c;
+        c.pattern = QStringLiteral("*.log");
+        QCOMPARE(run(c, &stats),
+                 QStringList({QStringLiteral("logs/2023/a.log"), QStringLiteral("logs/2024-01/b.log"),
+                              QStringLiteral("logs/2024-02/deep/d.log"), QStringLiteral("top.log"),
+                              QStringLiteral("x y/é.log")}));
+
+        c.pathPrefix = QStringLiteral("logs/2024-");
+        c.pattern.clear();
+        QCOMPARE(run(c, &stats),
+                 QStringList({QStringLiteral("logs/2024-01"), QStringLiteral("logs/2024-01/b.log"),
+                              QStringLiteral("logs/2024-01/c.txt"), QStringLiteral("logs/2024-02"),
+                              QStringLiteral("logs/2024-02/deep"), QStringLiteral("logs/2024-02/deep/d.log"),
+                              QStringLiteral("logs/2024-03")}));
+        QCOMPARE(stats.scanned, 7); // nothing outside the prefix was listed
+
+        c.pattern = QStringLiteral("*.txt");
+        c.minSize = 1;
+        QCOMPARE(run(c, &stats), QStringList({QStringLiteral("logs/2024-01/c.txt")}));
+        c.storageClasses = {QStringLiteral("GLACIER")};
+        QCOMPARE(run(c, &stats), QStringList());
+        c.storageClasses = {QStringLiteral("STANDARD")};
+        QCOMPARE(run(c, &stats), QStringList({QStringLiteral("logs/2024-01/c.txt")}));
+
+        c = {};
+        c.pathPrefix = QStringLiteral("nothing-here/");
+        QCOMPARE(run(c, &stats), QStringList());
+        m_s3->setListPageSize(1000);
     }
 
     void removeRecursivePrefix()

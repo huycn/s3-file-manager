@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/Entry.h"
+#include "core/Search.h"
 #include "transfer/TransferTypes.h"
 #include "ui/HeaderColors.h"
 
@@ -100,6 +101,10 @@ private:
     void goRoot();
     void editAddress();
     void quickFilter();
+    void findFiles();
+    void goToContainingFolder();
+    // After a delete/move job: drops the results it removed from search result panels.
+    void pruneSearchResults(const TransferJob* job);
     void leftPlaces();
     void rightPlaces();
     void copyLocation();
@@ -148,6 +153,7 @@ private:
     QList<QPair<QPointer<TransferJob>, ConflictInfo>> m_pendingConflicts;
     bool m_conflictOpen = false;
     TransferOptions m_lastOptions;
+    std::optional<SearchCriteria> m_lastSearch;
     std::optional<HeaderColors> m_headerColors;
     QWidget* m_functionKeyBar = nullptr;
     QStyle* m_menuBarStyle = nullptr;

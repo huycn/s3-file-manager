@@ -1737,6 +1737,14 @@
         <translation>&amp;Filtre rapide…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>Rechercher des f&amp;ichiers…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>Aller au dossier &amp;contenant</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>&amp;Actualiser</translation>
     </message>
@@ -1865,6 +1873,18 @@
         <source>Same as Other Panel</source>
         <translation>Identique à l&apos;autre panneau</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>Rechercher des fichiers</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>Ouvrez un compartiment pour y effectuer une recherche.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>Ouvrez un lecteur pour y effectuer une recherche.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1969,6 +1989,10 @@
         <translation>Le nom ne doit pas contenir de séparateurs de chemin.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>Impossible de créer des dossiers dans les résultats de recherche</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>Impossible de créer des dossiers ici</translation>
     </message>
@@ -2070,6 +2094,10 @@
             <numerusform>Objets mis à jour&#xa0;: %1 sur %n&#xa0;; en échec&#xa0;: %2.</numerusform>
             <numerusform>Objets mis à jour&#xa0;: %1 sur %n&#xa0;; en échec&#xa0;: %2.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>Fermez d&apos;abord les résultats de recherche</translation>
     </message>
     <message numerus="yes">
         <source>Deleted %Ln item(s)…</source>
@@ -2604,8 +2632,36 @@ Démarré par&#xa0;: %2</translation>
         <translation>Réessayer</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>Arrêter</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>Arrêter la recherche (Échap)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>Nouvelle recherche…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>Fermer les résultats de recherche</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>Filtre (sous-chaîne ou caractères génériques *&#xa0;?) — Échap pour fermer</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>Impossible de rechercher dans %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>La recherche a échoué : %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>Résultats de recherche : %1 dans %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2649,6 +2705,25 @@ Démarré par&#xa0;: %2</translation>
     <message>
         <source>[All versions] </source>
         <translation>[Toutes les versions] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — recherche… (%1 examinés)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — recherche arrêtée à %n résultat</numerusform>
+            <numerusform> — recherche arrêtée à %n résultats</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — recherche arrêtée</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1 examinés</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3849,6 +3924,18 @@ Démarré par&#xa0;: %2</translation>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>Impossible d&apos;obtenir les identifiants du profil AWS « %1 ». S&apos;il utilise AWS SSO (IAM Identity Center), la session a peut-être expiré : exécutez « aws sso login » puis réessayez.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>Aucun identifiant AWS dans l&apos;environnement : définissez AWS_ACCESS_KEY_ID et AWS_SECRET_ACCESS_KEY avant de lancer l&apos;application.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>Aucun identifiant AWS trouvé (environnement, profils ~/.aws, SSO, identité web ou métadonnées d&apos;instance). Si vous utilisez AWS SSO, exécutez « aws sso login » puis réessayez.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>Aucune clé secrète n&apos;est stockée pour cette connexion&#xa0;; modifiez la connexion pour la saisir</translation>
     </message>
@@ -3946,6 +4033,185 @@ Démarré par&#xa0;: %2</translation>
     <message>
         <source>Restore for at least one day</source>
         <translation>Restaurez pour au moins un jour</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>sous « %1 »</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>modifié après le %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>modifié avant le %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>Expression régulière non valide à la position %1 : %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>Motif générique « %1 » non valide : %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>Rechercher des fichiers</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>Rechercher dans :</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>par ex. *.log; rapport — vide : tout</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>Caractères génériques : * n&apos;importe quel texte, ? un caractère, [abc] l&apos;un de ceux-ci. Séparez plusieurs motifs par « ; ». Un texte sans caractère générique est cherché n&apos;importe où dans le nom.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>&amp;Nom :</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>Caractères génériques</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>Expression régulière</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>S&amp;yntaxe :</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>Respecter la &amp;casse</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>Comparer le chemin com&amp;plet sous le dossier de recherche</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>Comparer « 2024/*.csv » à « logs/2024/a.csv » au lieu du seul nom ; * correspond alors aussi à « / »</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>par ex. logs/2024- (facultatif)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>Seuls les chemins sous le dossier de recherche qui commencent par ce texte sont examinés. Sur S3, le serveur filtre selon ce préfixe de clé, ce qui est bien plus rapide que de tout lister.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>Préfi&amp;xe de chemin :</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>par ex. 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>par ex. 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>Taille m&amp;inimale :</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>Taille maxi&amp;male :</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>Modifié &amp;après le :</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>Modifié a&amp;vant le :</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Toutes</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>Classe de s&amp;tockage :</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>Fichiers et dossiers</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>Fichiers uniquement</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>Dossiers uniquement</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>Incl&amp;ure :</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>Inclure les fichiers et dossiers mas&amp;qués</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>Aucune limite</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>Nom&amp;bre maximal de résultats :</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Rechercher</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>« %1 » n&apos;est pas une taille (exemples : 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>La taille minimale est supérieure à la taille maximale.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>La date « après » est postérieure à la date « avant ».</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>Les dossiers n&apos;ont ni taille, ni date, ni classe de stockage : recherchez des fichiers pour utiliser ces critères.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>Le préfixe de chemin ne peut pas sortir du dossier de recherche.</translation>
     </message>
 </context>
 <context>

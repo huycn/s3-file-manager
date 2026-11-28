@@ -1743,6 +1743,14 @@
         <translation>Penapis Pan&amp;tas…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>&amp;Cari Fail…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>Pergi ke &amp;Folder Mengandungi</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>&amp;Muat Semula</translation>
     </message>
@@ -1871,6 +1879,18 @@
         <source>Same as Other Panel</source>
         <translation>Sama seperti Panel Lain</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>Cari Fail</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>Buka baldi untuk mencari di dalamnya.</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>Buka pemacu untuk mencari di dalamnya.</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1970,6 +1990,10 @@
         <translation>Nama tidak boleh mengandungi pemisah laluan.</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>Folder tidak boleh dicipta dalam hasil carian</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>Folder tidak boleh dicipta di sini</translation>
     </message>
@@ -2066,6 +2090,10 @@
         <translation>
             <numerusform>Dikemas kini: %1 daripada %n objek; gagal: %2.</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>Tutup hasil carian terlebih dahulu</translation>
     </message>
     <message>
         <source>Versions can be shown inside S3 buckets</source>
@@ -2573,8 +2601,36 @@ Dimulakan oleh: %2</translation>
         <translation>Cuba Semula</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>Henti</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>Hentikan carian (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>Carian Baharu…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>Tutup hasil carian</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>Penapis (subrentetan, atau kad liar * ?) — Esc untuk menutup</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>Tidak dapat mencari dalam %1</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>Carian gagal: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>Hasil carian: %1 dalam %2</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2616,6 +2672,24 @@ Dimulakan oleh: %2</translation>
     <message>
         <source>[All versions] </source>
         <translation>[Semua versi] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — mencari… (%1 diimbas)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — carian dihentikan pada %n hasil</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — carian dihentikan</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1 diimbas</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3814,6 +3888,18 @@ Dimulakan oleh: %2</translation>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>Tidak dapat mendapatkan kelayakan untuk profil AWS &quot;%1&quot;. Jika profil itu menggunakan AWS SSO (IAM Identity Center), sesi mungkin telah tamat: jalankan &quot;aws sso login&quot; dan cuba lagi.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>Tiada kelayakan AWS dalam persekitaran: tetapkan AWS_ACCESS_KEY_ID dan AWS_SECRET_ACCESS_KEY sebelum memulakan aplikasi.</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>Tiada kelayakan AWS ditemui (persekitaran, profil ~/.aws, SSO, identiti web atau metadata tika). Jika anda menggunakan AWS SSO, jalankan &quot;aws sso login&quot; dan cuba lagi.</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>Tiada kunci rahsia disimpan untuk sambungan ini; edit sambungan untuk memasukkannya</translation>
     </message>
@@ -3908,6 +3994,185 @@ Dimulakan oleh: %2</translation>
     <message>
         <source>Restore for at least one day</source>
         <translation>Pulihkan untuk sekurang-kurangnya satu hari</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>di bawah &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>diubah selepas %1</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>diubah sebelum %1</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>Ungkapan nalar tidak sah pada kedudukan %1: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>Corak kad bebas &quot;%1&quot; tidak sah: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>Cari Fail</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>Cari dalam:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>cth. *.log; laporan — kosong: semua</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>Kad bebas: * sebarang teks, ? satu aksara, [abc] salah satu daripadanya. Pisahkan beberapa corak dengan &apos;;&apos;. Teks tanpa kad bebas dipadankan di mana-mana dalam nama.</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>&amp;Nama:</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>Kad bebas</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>Ungkapan nalar</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>Sin&amp;taks:</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>Peka &amp;huruf besar/kecil</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>Padankan &amp;laluan penuh di bawah folder carian</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>Padankan &quot;2024/*.csv&quot; dengan &quot;logs/2024/a.csv&quot; dan bukan nama sahaja; * kemudian turut sepadan dengan &apos;/&apos;</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>cth. logs/2024- (pilihan)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>Hanya laluan di bawah folder carian yang bermula dengan teks ini dicari. Pada S3, pelayan menapis mengikut awalan kunci ini, jauh lebih pantas daripada menyenaraikan semuanya.</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>&amp;Awalan laluan:</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>cth. 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>cth. 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>Saiz se&amp;kurang-kurangnya:</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>Saiz se&amp;banyak-banyaknya:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>Diubah s&amp;elepas:</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>Diubah sebel&amp;um:</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Mana-mana</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>Kelas &amp;storan:</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>Fail dan folder</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>Fail sahaja</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>Folder sahaja</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>Se&amp;rtakan:</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>Sertakan fail dan folder tersembun&amp;yi</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>Tiada had</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>Hasil &amp;maksimum:</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>&amp;Cari</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&quot;%1&quot; bukan saiz (contoh: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>Saiz minimum lebih besar daripada saiz maksimum.</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>Tarikh &quot;selepas&quot; lebih lewat daripada tarikh &quot;sebelum&quot;.</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>Folder tiada saiz, tarikh atau kelas storan: cari fail untuk menggunakan kriteria ini.</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>Awalan laluan tidak boleh keluar dari folder carian.</translation>
     </message>
 </context>
 <context>

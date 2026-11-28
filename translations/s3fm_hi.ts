@@ -1737,6 +1737,14 @@
         <translation>त्वरित फ़िल्टर(&amp;F)…</translation>
     </message>
     <message>
+        <source>F&amp;ind Files…</source>
+        <translation>फ़ाइलें खोजें(&amp;I)…</translation>
+    </message>
+    <message>
+        <source>Go to &amp;Containing Folder</source>
+        <translation>संबंधित फ़ोल्डर पर जाएँ(&amp;C)</translation>
+    </message>
+    <message>
         <source>&amp;Refresh</source>
         <translation>रीफ़्रेश करें(&amp;R)</translation>
     </message>
@@ -1865,6 +1873,18 @@
         <source>Same as Other Panel</source>
         <translation>दूसरे पैनल के समान</translation>
     </message>
+    <message>
+        <source>Find Files</source>
+        <translation>फ़ाइलें खोजें</translation>
+    </message>
+    <message>
+        <source>Open a bucket to search in it.</source>
+        <translation>इसमें खोजने के लिए कोई बकेट खोलें।</translation>
+    </message>
+    <message>
+        <source>Open a drive to search in it.</source>
+        <translation>इसमें खोजने के लिए कोई ड्राइव खोलें।</translation>
+    </message>
     <message numerus="yes">
         <source>Copied %n location(s) to the clipboard</source>
         <translation>
@@ -1969,6 +1989,10 @@
         <translation>नाम में पाथ विभाजक नहीं होने चाहिए।</translation>
     </message>
     <message>
+        <source>Folders cannot be created in search results</source>
+        <translation>खोज परिणामों में फ़ोल्डर नहीं बनाए जा सकते</translation>
+    </message>
+    <message>
         <source>Folders cannot be created here</source>
         <translation>यहाँ फ़ोल्डर नहीं बनाए जा सकते</translation>
     </message>
@@ -2070,6 +2094,10 @@
             <numerusform>%n में से %1 ऑब्जेक्ट अपडेट किए गए; %2 विफल रहे।</numerusform>
             <numerusform>%n में से %1 ऑब्जेक्ट अपडेट किए गए; %2 विफल रहे।</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Close the search results first</source>
+        <translation>पहले खोज परिणाम बंद करें</translation>
     </message>
     <message numerus="yes">
         <source>Deleted %Ln item(s)…</source>
@@ -2604,8 +2632,36 @@ Started by: %2</source>
         <translation>पुनः प्रयास करें</translation>
     </message>
     <message>
+        <source>Stop</source>
+        <translation>रोकें</translation>
+    </message>
+    <message>
+        <source>Stop searching (Esc)</source>
+        <translation>खोज रोकें (Esc)</translation>
+    </message>
+    <message>
+        <source>New Search…</source>
+        <translation>नई खोज…</translation>
+    </message>
+    <message>
+        <source>Close the search results</source>
+        <translation>खोज परिणाम बंद करें</translation>
+    </message>
+    <message>
         <source>Filter (substring, or wildcards * ?) — Esc to close</source>
         <translation>फ़िल्टर (सबस्ट्रिंग, या वाइल्डकार्ड * ?) — बंद करने के लिए Esc</translation>
+    </message>
+    <message>
+        <source>Cannot search %1</source>
+        <translation>%1 में नहीं खोजा जा सका</translation>
+    </message>
+    <message>
+        <source>Search failed: %1</source>
+        <translation>खोज विफल: %1</translation>
+    </message>
+    <message>
+        <source>Search results: %1 in %2</source>
+        <translation>खोज परिणाम: %2 में %1</translation>
     </message>
     <message>
         <source>Unknown address: %1</source>
@@ -2649,6 +2705,25 @@ Started by: %2</source>
     <message>
         <source>[All versions] </source>
         <translation>[सभी संस्करण] </translation>
+    </message>
+    <message>
+        <source> — searching… (%1 scanned)</source>
+        <translation> — खोज रहा है… (%1 जाँचे गए)</translation>
+    </message>
+    <message numerus="yes">
+        <source> — search stopped at %n result(s)</source>
+        <translation>
+            <numerusform> — %n परिणाम पर खोज रोकी गई</numerusform>
+            <numerusform> — %n परिणामों पर खोज रोकी गई</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> — search stopped</source>
+        <translation> — खोज रोकी गई</translation>
+    </message>
+    <message>
+        <source> — %1 scanned</source>
+        <translation> — %1 जाँचे गए</translation>
     </message>
     <message>
         <source> — loading…</source>
@@ -3849,6 +3924,18 @@ Started by: %2</source>
 <context>
     <name>s3fm::S3Session</name>
     <message>
+        <source>Could not get credentials for AWS profile &quot;%1&quot;. If it uses AWS SSO (IAM Identity Center), the session may have expired: run &quot;aws sso login&quot; and try again.</source>
+        <translation>AWS प्रोफ़ाइल &quot;%1&quot; के लिए क्रेडेंशियल नहीं मिल सके। यदि यह AWS SSO (IAM Identity Center) का उपयोग करती है, तो सत्र की अवधि समाप्त हो गई हो सकती है: &quot;aws sso login&quot; चलाएँ और फिर से प्रयास करें।</translation>
+    </message>
+    <message>
+        <source>No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY before starting the application.</source>
+        <translation>परिवेश में कोई AWS क्रेडेंशियल नहीं है: ऐप्लिकेशन शुरू करने से पहले AWS_ACCESS_KEY_ID और AWS_SECRET_ACCESS_KEY सेट करें।</translation>
+    </message>
+    <message>
+        <source>No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or instance metadata). If you use AWS SSO, run &quot;aws sso login&quot; and try again.</source>
+        <translation>कोई AWS क्रेडेंशियल नहीं मिला (परिवेश, ~/.aws प्रोफ़ाइलें, SSO, वेब पहचान या इंस्टेंस मेटाडेटा)। यदि आप AWS SSO का उपयोग करते हैं, तो &quot;aws sso login&quot; चलाएँ और फिर से प्रयास करें।</translation>
+    </message>
+    <message>
         <source>No secret key is stored for this connection; edit the connection to enter it</source>
         <translation>इस कनेक्शन के लिए कोई सीक्रेट कुंजी संग्रहीत नहीं है; इसे दर्ज करने के लिए कनेक्शन संपादित करें</translation>
     </message>
@@ -3946,6 +4033,185 @@ Started by: %2</source>
     <message>
         <source>Restore for at least one day</source>
         <translation>कम से कम एक दिन के लिए पुनर्स्थापित करें</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::Search</name>
+    <message>
+        <source>under &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; के अंतर्गत</translation>
+    </message>
+    <message>
+        <source>≥ %1</source>
+        <translation>≥ %1</translation>
+    </message>
+    <message>
+        <source>≤ %1</source>
+        <translation>≤ %1</translation>
+    </message>
+    <message>
+        <source>modified after %1</source>
+        <translation>%1 के बाद संशोधित</translation>
+    </message>
+    <message>
+        <source>modified before %1</source>
+        <translation>%1 से पहले संशोधित</translation>
+    </message>
+    <message>
+        <source>, </source>
+        <comment>separator between search criteria</comment>
+        <translation>, </translation>
+    </message>
+    <message>
+        <source>Invalid regular expression at position %1: %2</source>
+        <translation>स्थान %1 पर अमान्य रेगुलर एक्सप्रेशन: %2</translation>
+    </message>
+    <message>
+        <source>Invalid wildcard pattern &quot;%1&quot;: %2</source>
+        <translation>अमान्य वाइल्डकार्ड पैटर्न &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>s3fm::SearchDialog</name>
+    <message>
+        <source>Find Files</source>
+        <translation>फ़ाइलें खोजें</translation>
+    </message>
+    <message>
+        <source>Search in:</source>
+        <translation>इसमें खोजें:</translation>
+    </message>
+    <message>
+        <source>e.g. *.log; report — empty: everything</source>
+        <translation>जैसे *.log; report — खाली: सब कुछ</translation>
+    </message>
+    <message>
+        <source>Wildcards: * any text, ? one character, [abc] one of these. Separate several patterns with &apos;;&apos;. Text without wildcards matches anywhere in the name.</source>
+        <translation>वाइल्डकार्ड: * कोई भी टेक्स्ट, ? एक वर्ण, [abc] इनमें से एक। कई पैटर्न &apos;;&apos; से अलग करें। बिना वाइल्डकार्ड वाला टेक्स्ट नाम में कहीं भी मेल खाता है।</translation>
+    </message>
+    <message>
+        <source>&amp;Name:</source>
+        <translation>नाम(&amp;N):</translation>
+    </message>
+    <message>
+        <source>Wildcards</source>
+        <translation>वाइल्डकार्ड</translation>
+    </message>
+    <message>
+        <source>Regular expression</source>
+        <translation>रेगुलर एक्सप्रेशन</translation>
+    </message>
+    <message>
+        <source>S&amp;yntax:</source>
+        <translation>सिंटैक्स(&amp;Y):</translation>
+    </message>
+    <message>
+        <source>&amp;Case sensitive</source>
+        <translation>केस संवेदी(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Match the full &amp;path below the search folder</source>
+        <translation>खोज फ़ोल्डर के नीचे पूरे पथ से मिलान करें(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Match &quot;2024/*.csv&quot; against &quot;logs/2024/a.csv&quot; instead of the name only; * then also matches &apos;/&apos;</source>
+        <translation>केवल नाम के बजाय &quot;logs/2024/a.csv&quot; से &quot;2024/*.csv&quot; का मिलान करें; तब * &apos;/&apos; से भी मेल खाता है</translation>
+    </message>
+    <message>
+        <source>e.g. logs/2024- (optional)</source>
+        <translation>जैसे logs/2024- (वैकल्पिक)</translation>
+    </message>
+    <message>
+        <source>Only paths below the search folder starting with this text are searched. On S3 the server filters by this key prefix, which is much faster than listing everything.</source>
+        <translation>खोज फ़ोल्डर के नीचे केवल इस टेक्स्ट से शुरू होने वाले पथ खोजे जाते हैं। S3 पर सर्वर इस की प्रीफ़िक्स से फ़िल्टर करता है, जो सब कुछ सूचीबद्ध करने से बहुत तेज़ है।</translation>
+    </message>
+    <message>
+        <source>Path p&amp;refix:</source>
+        <translation>पथ प्रीफ़िक्स(&amp;R):</translation>
+    </message>
+    <message>
+        <source>e.g. 10 MB</source>
+        <translation>जैसे 10 MB</translation>
+    </message>
+    <message>
+        <source>e.g. 1.5 GB</source>
+        <translation>जैसे 1.5 GB</translation>
+    </message>
+    <message>
+        <source>Size at &amp;least:</source>
+        <translation>न्यूनतम आकार(&amp;L):</translation>
+    </message>
+    <message>
+        <source>Size at m&amp;ost:</source>
+        <translation>अधिकतम आकार(&amp;O):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;after:</source>
+        <translation>इसके बाद संशोधित(&amp;A):</translation>
+    </message>
+    <message>
+        <source>Modified &amp;before:</source>
+        <translation>इससे पहले संशोधित(&amp;B):</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>कोई भी</translation>
+    </message>
+    <message>
+        <source>S&amp;torage class:</source>
+        <translation>स्टोरेज क्लास(&amp;T):</translation>
+    </message>
+    <message>
+        <source>Files and folders</source>
+        <translation>फ़ाइलें और फ़ोल्डर</translation>
+    </message>
+    <message>
+        <source>Files only</source>
+        <translation>केवल फ़ाइलें</translation>
+    </message>
+    <message>
+        <source>Folders only</source>
+        <translation>केवल फ़ोल्डर</translation>
+    </message>
+    <message>
+        <source>&amp;Include:</source>
+        <translation>शामिल करें(&amp;I):</translation>
+    </message>
+    <message>
+        <source>Include &amp;hidden files and folders</source>
+        <translation>छिपी फ़ाइलें और फ़ोल्डर शामिल करें(&amp;H)</translation>
+    </message>
+    <message>
+        <source>No limit</source>
+        <translation>कोई सीमा नहीं</translation>
+    </message>
+    <message>
+        <source>Ma&amp;ximum results:</source>
+        <translation>अधिकतम परिणाम(&amp;X):</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation>खोजें(&amp;S)</translation>
+    </message>
+    <message>
+        <source>&quot;%1&quot; is not a size (examples: 1500, 10 KB, 1.5 GB)</source>
+        <translation>&quot;%1&quot; कोई आकार नहीं है (उदाहरण: 1500, 10 KB, 1.5 GB)</translation>
+    </message>
+    <message>
+        <source>The minimum size is larger than the maximum size.</source>
+        <translation>न्यूनतम आकार अधिकतम आकार से बड़ा है।</translation>
+    </message>
+    <message>
+        <source>The &quot;after&quot; date is later than the &quot;before&quot; date.</source>
+        <translation>&quot;बाद&quot; वाली तिथि &quot;पहले&quot; वाली तिथि से बाद की है।</translation>
+    </message>
+    <message>
+        <source>Folders have no size, date or storage class: search for files to use these criteria.</source>
+        <translation>फ़ोल्डरों का कोई आकार, तिथि या स्टोरेज क्लास नहीं होता: इन मानदंडों का उपयोग करने के लिए फ़ाइलें खोजें।</translation>
+    </message>
+    <message>
+        <source>The path prefix cannot leave the search folder.</source>
+        <translation>पथ प्रीफ़िक्स खोज फ़ोल्डर से बाहर नहीं जा सकता।</translation>
     </message>
 </context>
 <context>
