@@ -172,6 +172,9 @@ private Q_SLOTS:
 
     void headerColorsFromKdeColorScheme()
     {
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MACOS)
+        QSKIP("kdeglobals is only looked up through $XDG_CONFIG_DIRS on Linux/BSD");
+#endif
         // A KDE colour scheme found through $XDG_CONFIG_DIRS (test mode only redirects the
         // user config dir).
         QTemporaryDir xdg;

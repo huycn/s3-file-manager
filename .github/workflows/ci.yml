@@ -73,3 +73,20 @@ jobs:
         run: cmake --build --preset windows-vcpkg
       - name: Test
         run: ctest --preset windows-vcpkg -LE integration
+      # ctest sometimes shows no output for a failed test; run each one directly instead.
+      - name: Show failed tests
+        if: failure()
+        shell: pwsh
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          $failed = "build/windows-vcpkg/Testing/Temporary/LastTestsFailed.log"
+          if (-not (Test-Path $failed)) { exit 0 }
+          foreach ($line in Get-Content $failed) {
+            $name = ($line -split ':', 2)[1]
+            $exe = Get-ChildItem build/windows-vcpkg -Recurse -Filter "$name.exe" | Select-Object -First 1
+            Write-Host "::group::$name"
+            & $exe.FullName 2>&1 | Out-Host
+            Write-Host ("exit code: {0} (0x{0:X8})" -f $LASTEXITCODE)
+            Write-Host "::endgroup::"
+          }

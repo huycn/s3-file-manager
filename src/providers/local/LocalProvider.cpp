@@ -142,7 +142,8 @@ Entry LocalProvider::entryFromFileInfo(const QFileInfo& info)
     e.type = info.isDir() ? Entry::Type::Directory : Entry::Type::File;
     e.size = e.type == Entry::Type::File && info.exists() ? info.size() : -1;
     e.modified = info.lastModified();
-    e.hidden = info.isHidden();
+    // Dot-files count as hidden everywhere; on Windows isHidden() only checks the attribute.
+    e.hidden = info.isHidden() || e.name.startsWith(u'.');
     e.permissions = info.permissions();
     return e;
 }
