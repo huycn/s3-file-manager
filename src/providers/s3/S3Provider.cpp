@@ -1330,7 +1330,7 @@ VoidResult S3Provider::download(const Location& from, const QString& localFile, 
 {
     const TransferParams& params = paramsOf(ctx);
     CheckpointWriter checkpoint(params);
-    const QString partFile = localFile + kPartialSuffix;
+    const QString partFile = localFile + kPartialSuffix.toString();
     const std::filesystem::path partPath = toFsPath(partFile);
 
     qint64 resumeFrom = 0;

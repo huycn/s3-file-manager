@@ -229,7 +229,7 @@ private Q_SLOTS:
         for (const auto& [name, json] : policyTemplates(bucket)) {
             const auto issues = validatePolicy(json, bucket);
             for (const PolicyIssue& i : issues)
-                QVERIFY2(!i.error, qPrintable(name + u": " + i.message));
+                QVERIFY2(!i.error, qPrintable(name + QStringLiteral(": ") + i.message));
         }
         QVERIFY(validatePolicy(QString(), bucket).isEmpty());
 

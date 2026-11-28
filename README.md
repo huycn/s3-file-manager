@@ -101,6 +101,16 @@ scripts/dev-minio.sh stop
 Credentials: `s3fmadmin` / `s3fmadmin-secret`. Buckets: `s3fm-test` (sample tree),
 `s3fm-versioned` (versioning on), `s3fm-locked` (object lock).
 
+### Minimum Qt check
+
+Linux CI builds with Arch's current Qt; only the Windows job uses the minimum supported
+version (6.8). To catch newer-Qt APIs before pushing, build and run the unit + UI tests
+against that version in a container (Podman or Docker; Qt is cached between runs):
+
+```sh
+scripts/check-qt-min.sh        # all errors in one pass; logs in build/qt-min/
+```
+
 ### Code style
 
 ```sh

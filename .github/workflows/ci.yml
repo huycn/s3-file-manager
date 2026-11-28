@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Syu --noconfirm --needed git
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: scripts/ci-linux.sh deps
       - run: scripts/ci-linux.sh build
       - run: scripts/ci-linux.sh test
@@ -28,7 +28,7 @@ jobs:
     name: Linux integration (MinIO)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Start MinIO
         run: S3FM_CONTAINER_ENGINE=docker scripts/dev-minio.sh start
       - name: Build and run integration tests in Arch container
@@ -46,7 +46,7 @@ jobs:
     env:
       VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}\vcpkg-cache,readwrite
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Cache vcpkg binaries
         uses: actions/cache@v4
         with:

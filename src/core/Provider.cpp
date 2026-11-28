@@ -38,7 +38,7 @@ void Provider::discardPartialTransfer(const Location& remote, const QString& loc
     Q_UNUSED(remote)
     Q_UNUSED(checkpoint)
     if (!localFile.isEmpty())
-        QFile::remove(localFile + kPartialSuffix);
+        QFile::remove(localFile + kPartialSuffix.toString());
 }
 
 VoidResult Provider::walk(const Location& dir, const Visitor& visit, OperationContext& ctx)

@@ -24,6 +24,9 @@ if(NOT Qt6Keychain_FOUND)
     block()
         # Build QtKeychain as a static library without affecting our own targets.
         set(BUILD_SHARED_LIBS OFF)
+        # QtKeychain's include(CTest) would register its autotests, which are never built
+        # (EXCLUDE_FROM_ALL) and so show up in our ctest runs as "Not Run" failures.
+        set(BUILD_TESTING OFF)
         FetchContent_MakeAvailable(qtkeychain)
     endblock()
     add_library(S3FM::Keychain ALIAS qt6keychain)
