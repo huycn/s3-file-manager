@@ -36,8 +36,8 @@ jobs:
           docker run --rm --network host -v "$GITHUB_WORKSPACE:/src" -w /src \
             $(scripts/dev-minio.sh env | sed -e 's/^export /-e /') \
             archlinux:latest bash -c "
-              git config --global --add safe.directory /src &&
               scripts/ci-linux.sh deps &&
+              git config --global --add safe.directory /src &&
               scripts/ci-linux.sh build &&
               scripts/ci-linux.sh test integration"
 
@@ -48,11 +48,6 @@ jobs:
       VCPKG_BINARY_SOURCES: clear;files,${{ github.workspace }}\vcpkg-cache,readwrite
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare vcpkg
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\vcpkg-cache" | Out-Null
-          "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Cache vcpkg binaries
         uses: actions/cache@v4
         with:
@@ -66,6 +61,13 @@ jobs:
           arch: win64_msvc2022_64
           cache: true
       - uses: ilammy/msvc-dev-cmd@v1
+      # After msvc-dev-cmd: vcvars points VCPKG_ROOT at Visual Studio's bundled vcpkg,
+      # which we don't want; use the runner's full vcpkg clone instead.
+      - name: Prepare vcpkg
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "${{ github.workspace }}\vcpkg-cache" | Out-Null
+          "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Configure
         run: cmake --preset windows-vcpkg -DS3FM_WARNINGS_AS_ERRORS=ON
       - name: Build

@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "s3-file-manager",
   "version": "0.1.0",
+  "builtin-baseline": "9eec002df1cd109f8f104cd966a763daf9751489",
   "description": "Dual-panel file manager for Amazon S3 (Qt is provided separately, e.g. by the Qt online installer)",
   "dependencies": [
     {

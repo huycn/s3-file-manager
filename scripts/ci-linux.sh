@@ -10,7 +10,7 @@ set -euo pipefail
 case "${1:-}" in
 deps)
     pacman -Syu --noconfirm --needed base-devel git cmake ninja curl python \
-        qt6-base qt6-svg qt6-tools qtkeychain-qt6 aws-sdk-cpp-core aws-sdk-cpp-s3
+        qt6-base qt6-declarative qt6-svg qt6-tools qtkeychain-qt6 aws-sdk-cpp-core aws-sdk-cpp-s3
     ;;
 build)
     cmake --preset ci
