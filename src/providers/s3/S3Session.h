@@ -52,7 +52,8 @@ public:
     // limits how long presigned URLs work. Fills `expiration` when known.
     bool usesTemporaryCredentials(QDateTime* expiration = nullptr);
 
-    // Client for `region` (empty: the profile's region).
+    // Client for `region` (empty: the profile's region). Fails with an Authentication
+    // error when the credential source currently yields no credentials.
     Result<std::shared_ptr<Aws::S3::S3Client>> client(const QString& region = {});
     Result<std::shared_ptr<Aws::S3::S3Client>> clientForBucket(const QString& bucket);
 
@@ -66,6 +67,8 @@ public:
 
 private:
     Result<std::shared_ptr<Aws::Auth::AWSCredentialsProvider>> credentials();
+    Result<std::shared_ptr<Aws::S3::S3Client>> cachedClient(const QString& region);
+    Result<void> checkCredentials();
 
     ConnectionProfile m_profile;
     SecretFetcher m_fetchSecret;

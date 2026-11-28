@@ -1,5 +1,6 @@
 #include "providers/s3/S3Session.h"
 
+#include "connections/AwsConfig.h"
 #include "core/Logging.h"
 #include "providers/s3/AwsConvert.h"
 #include "providers/s3/S3Errors.h"
@@ -30,18 +31,63 @@ struct Tr
     Q_DECLARE_TR_FUNCTIONS(s3fm::S3Session)
 };
 
+// True unless ~/.aws describes `name` without SSO settings (unknown: keep SSO).
+bool mayUseSso(const QString& name)
+{
+    const auto profiles = AwsConfig::profiles();
+    for (const AwsProfileInfo& p : profiles) {
+        if (p.name == name)
+            return p.isSso;
+    }
+    return true;
+}
+
 // Credentials from a named profile: assume-role / credential_source / static keys
 // (CRT profile provider), then SSO, then credential_process.
 class NamedProfileChain : public Aws::Auth::AWSCredentialsProviderChain
 {
 public:
-    explicit NamedProfileChain(const Aws::String& profile)
+    explicit NamedProfileChain(const QString& profile)
     {
-        AddProvider(std::make_shared<Aws::Auth::ProfileCredentialsProvider>(profile.c_str()));
-        AddProvider(std::make_shared<Aws::Auth::SSOCredentialsProvider>(profile));
-        AddProvider(std::make_shared<Aws::Auth::ProcessCredentialsProvider>(profile));
+        const Aws::String name = toAws(profile);
+        AddProvider(std::make_shared<Aws::Auth::ProfileCredentialsProvider>(name.c_str()));
+        // The SSO provider builds its token client from a default configuration, which
+        // asks EC2 instance metadata for a region when [default] has none: seconds of
+        // timeouts on a desktop. Only pay for it on SSO profiles.
+        if (mayUseSso(profile)) {
+            auto config = std::make_shared<const Aws::Client::ClientConfiguration>(name.c_str(), true);
+            AddProvider(std::make_shared<Aws::Auth::SSOCredentialsProvider>(name, config));
+        }
+        AddProvider(std::make_shared<Aws::Auth::ProcessCredentialsProvider>(name));
     }
 };
+
+// Why no credentials could be found for `profile`'s credential source.
+Error missingCredentials(const ConnectionProfile& profile)
+{
+    using Source = ConnectionProfile::CredentialSource;
+    QString message;
+    switch (profile.credentialSource) {
+    case Source::AwsProfile:
+        message = Tr::tr("Could not get credentials for AWS profile \"%1\". If it uses AWS SSO "
+                         "(IAM Identity Center), the session may have expired: run \"aws sso login\" "
+                         "and try again.")
+                      .arg(profile.awsProfile);
+        break;
+    case Source::Environment:
+        message = Tr::tr("No AWS credentials in the environment: set AWS_ACCESS_KEY_ID and "
+                         "AWS_SECRET_ACCESS_KEY before starting the application.");
+        break;
+    default:
+        message = Tr::tr("No AWS credentials found (environment, ~/.aws profiles, SSO, web identity or "
+                         "instance metadata). If you use AWS SSO, run \"aws sso login\" and "
+                         "try again.");
+        break;
+    }
+    Error e = Error::make(ErrorCode::Authentication, message);
+    e.retryable = true; // fixed outside the app (aws sso login, …), then Retry works
+    return e;
+}
 
 } // namespace
 
@@ -79,7 +125,7 @@ Result<std::shared_ptr<Aws::Auth::AWSCredentialsProvider>> S3Session::credential
         break;
     }
     case Source::AwsProfile:
-        m_credentials = std::make_shared<NamedProfileChain>(toAws(m_profile.awsProfile));
+        m_credentials = std::make_shared<NamedProfileChain>(m_profile.awsProfile);
         break;
     case Source::Environment:
         m_credentials = std::make_shared<Aws::Auth::EnvironmentAWSCredentialsProvider>();
@@ -94,7 +140,39 @@ Result<std::shared_ptr<Aws::Auth::AWSCredentialsProvider>> S3Session::credential
     return m_credentials;
 }
 
-Result<std::shared_ptr<Aws::S3::S3Client>> S3Session::client(const QString& regionOverride)
+Result<std::shared_ptr<Aws::S3::S3Client>> S3Session::client(const QString& region)
+{
+    auto c = cachedClient(region);
+    if (!c)
+        return c;
+    if (auto ok = checkCredentials(); !ok)
+        return ok.error();
+    return c;
+}
+
+Result<void> S3Session::checkCredentials()
+{
+    using Source = ConnectionProfile::CredentialSource;
+    // Static keys are validated when they are read; anonymous requests need none.
+    if (m_profile.credentialSource == Source::StaticKeys || m_profile.credentialSource == Source::Anonymous)
+        return {};
+    std::shared_ptr<Aws::Auth::AWSCredentialsProvider> provider;
+    {
+        QMutexLocker lock(&m_mutex);
+        provider = m_credentials;
+    }
+    // The SDK sends requests unsigned when the provider comes back empty (expired SSO
+    // token, failing credential_process…). AWS then redirects ListBuckets to its web
+    // site and the only error is an XML parse failure, so check first. Providers cache
+    // valid credentials, and the call runs outside the lock as it may start a process.
+    if (provider && provider->GetAWSCredentials().IsEmpty()) {
+        qCWarning(lcS3) << "no credentials for connection" << m_profile.id;
+        return missingCredentials(m_profile);
+    }
+    return {};
+}
+
+Result<std::shared_ptr<Aws::S3::S3Client>> S3Session::cachedClient(const QString& regionOverride)
 {
     const QString region = regionOverride.isEmpty() ? m_profile.region : regionOverride;
     QMutexLocker lock(&m_mutex);
