@@ -37,7 +37,6 @@ jobs:
             $(scripts/dev-minio.sh env | sed -e 's/^export /-e /') \
             archlinux:latest bash -c "
               scripts/ci-linux.sh deps &&
-              git config --global --add safe.directory /src &&
               scripts/ci-linux.sh build &&
               scripts/ci-linux.sh test integration"
 

@@ -9,11 +9,13 @@ if(CLANG_FORMAT_EXE)
     add_custom_target(format
         COMMAND ${CLANG_FORMAT_EXE} -i ${S3FM_ALL_SOURCES}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "Formatting sources with clang-format")
+        COMMENT "Formatting sources with clang-format"
+        VERBATIM)
     add_custom_target(format-check
         COMMAND ${CLANG_FORMAT_EXE} --dry-run --Werror ${S3FM_ALL_SOURCES}
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "Checking source formatting")
+        COMMENT "Checking source formatting"
+        VERBATIM)
 endif()
 
 find_program(RUN_CLANG_TIDY_EXE NAMES run-clang-tidy)
@@ -21,5 +23,6 @@ if(RUN_CLANG_TIDY_EXE)
     add_custom_target(tidy
         COMMAND ${RUN_CLANG_TIDY_EXE} -quiet -p ${PROJECT_BINARY_DIR} "${PROJECT_SOURCE_DIR}/src/.*\\.cpp$"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-        COMMENT "Running clang-tidy")
+        COMMENT "Running clang-tidy"
+        VERBATIM)
 endif()

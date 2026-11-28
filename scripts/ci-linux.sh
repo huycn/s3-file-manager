@@ -17,7 +17,8 @@ build)
     cmake --build --preset ci
     # translations/ must match the sources: a new or changed %n string needs its English forms.
     cmake --build --preset ci --target update_translations
-    if ! git diff --exit-code -- translations/; then
+    # safe.directory: in CI containers the checkout is owned by another user than root.
+    if ! git -c safe.directory="$PWD" diff --exit-code -- translations/; then
         echo "translations/ is out of date: run the update_translations target and fill in the new forms" >&2
         exit 1
     fi
