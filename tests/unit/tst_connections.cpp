@@ -107,7 +107,11 @@ private Q_SLOTS:
         ConnectionProfile loaded = ConnectionProfile::load(s);
         loaded.id = p.id;
         QCOMPARE(loaded, p);
-        QVERIFY(!QFile(file).readAll().contains("secret"));
+        QFile f(file);
+        QVERIFY(f.open(QIODevice::ReadOnly));
+        const QByteArray content = f.readAll();
+        QVERIFY(content.contains("AKIA123"));
+        QVERIFY(!content.contains("secret"));
     }
 
     void storeSaveLoadRemove()
@@ -121,10 +125,12 @@ private Q_SLOTS:
             QCOMPARE(invalidated.size(), 1);
             QCOMPARE(store.profiles().size(), 1);
         }
-        // Settings file never contains the secret.
+        // Settings file never contains the secret. (Closed again before the next save: Windows
+        // cannot replace a file that is open.)
         QFile f(file);
         QVERIFY(f.open(QIODevice::ReadOnly));
         const QByteArray content = f.readAll();
+        f.close();
         QVERIFY(content.contains("AKIA123"));
         QVERIFY(!content.contains("s3cr3t"));
 
